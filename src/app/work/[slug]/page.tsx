@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
-import { getPosts } from "@/utils/utils";
 import { Meta, Schema, AvatarGroup, Button, Column, Flex, Heading, Media, Text } from "@once-ui-system/core";
 import { baseURL, about, person, work } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
 import { ScrollToHash, CustomMDX } from "@/components";
 import { Metadata } from "next";
+import { getProjectsFromDB, getProjectBySlug } from "@/lib/projects";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const posts = getPosts(["src", "app", "work", "projects"]);
-  return posts.map((post) => ({
-    slug: post.slug,
+  const projects = await getProjectsFromDB();
+  return projects.map((project) => ({
+    slug: project.slug,
   }));
 }
 
@@ -21,17 +21,16 @@ export async function generateMetadata({
   const routeParams = await params;
   const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-  const posts = getPosts(["src", "app", "work", "projects"])
-  let post = posts.find((post) => post.slug === slugPath);
+  const project = await getProjectBySlug(slugPath);
 
-  if (!post) return {};
+  if (!project) return {};
 
   return Meta.generate({
-    title: post.metadata.title,
-    description: post.metadata.summary,
+    title: project.title,
+    description: project.summary,
     baseURL: baseURL,
-    image: post.metadata.image || `/api/og/generate?title=${post.metadata.title}`,
-    path: `${work.path}/${post.slug}`,
+    image: project.images[0] || `/api/og/generate?title=${project.title}`,
+    path: `${work.path}/${project.slug}`,
   });
 }
 
@@ -41,28 +40,23 @@ export default async function Project({
   const routeParams = await params;
   const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-  let post = getPosts(["src", "app", "work", "projects"]).find((post) => post.slug === slugPath);
+  const project = await getProjectBySlug(slugPath);
 
-  if (!post) {
+  if (!project) {
     notFound();
   }
-
-  const avatars =
-    post.metadata.team?.map((person) => ({
-      src: person.avatar,
-    })) || [];
 
   return (
     <Column as="section" maxWidth="m" horizontal="center" gap="l">
       <Schema
         as="blogPosting"
         baseURL={baseURL}
-        path={`${work.path}/${post.slug}`}
-        title={post.metadata.title}
-        description={post.metadata.summary}
-        datePublished={post.metadata.publishedAt}
-        dateModified={post.metadata.publishedAt}
-        image={post.metadata.image || `/api/og/generate?title=${encodeURIComponent(post.metadata.title)}`}
+        path={`${work.path}/${project.slug}`}
+        title={project.title}
+        description={project.summary}
+        datePublished={project.published_at}
+        dateModified={project.published_at}
+        image={project.images[0] || `/api/og/generate?title=${encodeURIComponent(project.title)}`}
         author={{
           name: person.name,
           url: `${baseURL}${about.path}`,
@@ -73,25 +67,24 @@ export default async function Project({
         <Button data-border="rounded" href="/work" variant="tertiary" weight="default" size="s" prefixIcon="chevronLeft">
           Projects
         </Button>
-        <Heading variant="display-strong-s">{post.metadata.title}</Heading>
+        <Heading variant="display-strong-s">{project.title}</Heading>
       </Column>
-      {post.metadata.images.length > 0 && (
+      {project.images.length > 0 && (
         <Media
           priority
           aspectRatio="16 / 9"
           radius="m"
           alt="image"
-          src={post.metadata.images[0]}
+          src={project.images[0]}
         />
       )}
       <Column style={{ margin: "auto" }} as="article" maxWidth="xs">
         <Flex gap="12" marginBottom="24" vertical="center">
-          {post.metadata.team && <AvatarGroup reverse avatars={avatars} size="m" />}
           <Text variant="body-default-s" onBackground="neutral-weak">
-            {post.metadata.publishedAt && formatDate(post.metadata.publishedAt)}
+            {project.published_at && formatDate(project.published_at)}
           </Text>
         </Flex>
-        <CustomMDX source={post.content} />
+        <CustomMDX source={project.content} />
       </Column>
       <ScrollToHash />
     </Column>
