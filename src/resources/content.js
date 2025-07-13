@@ -265,4 +265,11 @@ const gallery = {
   ],
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+const dbTest = {
+  path: "/db-test",
+  label: "DB Test",
+  title: `Database Test – ${person.name}`,
+  description: `Database connection diagnostic tool`,
+};
+
+export { person, social, newsletter, home, about, blog, work, gallery, dbTest };
