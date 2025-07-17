@@ -7,6 +7,8 @@ import { Fade, Flex, Line, ToggleButton } from "@once-ui-system/core";
 
 import { routes, display, person, about, blog, work, gallery, dbTest } from "@/resources";
 import { ThemeToggle } from "./ThemeToggle";
+import { AuthButton } from "./AuthButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 import styles from "./Header.module.scss";
 
 type TimeDisplayProps = {
@@ -44,6 +46,7 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
+  const { language } = useLanguage();
 
   return (
     <>
@@ -61,7 +64,9 @@ export const Header = () => {
         data-border="rounded"
       >
         <Flex paddingLeft="12" fillWidth vertical="center" textVariant="body-default-s">
-          {display.location && <Flex hide="s">{person.location}</Flex>}
+          {display.location && <Flex hide="s">
+            <AuthButton />
+          </Flex>}
         </Flex>
         <Flex fillWidth horizontal="center">
           <Flex
