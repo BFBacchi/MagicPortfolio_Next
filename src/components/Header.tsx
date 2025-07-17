@@ -46,7 +46,7 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
-  const { language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <>
@@ -80,7 +80,7 @@ export const Header = () => {
           >
             <Flex gap="4" vertical="center" textVariant="body-default-s" suppressHydrationWarning>
               {routes["/"] && (
-                <ToggleButton prefixIcon="home" href="/" selected={pathname === "/"} />
+                <ToggleButton prefixIcon="home" href="/" label={t('home')} selected={pathname === "/"} />
               )}
               <Line background="neutral-alpha-medium" vert maxHeight="24" />
               {routes["/about"] && (
@@ -89,7 +89,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="person"
                     href="/about"
-                    label={about.label}
+                    label={t('about')}
                     selected={pathname === "/about"}
                   />
                   <ToggleButton
@@ -106,7 +106,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="grid"
                     href="/work"
-                    label={work.label}
+                    label={t('work')}
                     selected={pathname.startsWith("/work")}
                   />
                   <ToggleButton
@@ -123,7 +123,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="book"
                     href="/blog"
-                    label={blog.label}
+                    label={t('blog')}
                     selected={pathname.startsWith("/blog")}
                   />
                   <ToggleButton
@@ -140,7 +140,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="gallery"
                     href="/gallery"
-                    label={gallery.label}
+                    label={t('gallery')}
                     selected={pathname.startsWith("/gallery")}
                   />
                   <ToggleButton
@@ -157,7 +157,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="document"
                     href="/db-test"
-                    label={dbTest.label}
+                    label={t('db_test')}
                     selected={pathname === "/db-test"}
                   />
                   <ToggleButton

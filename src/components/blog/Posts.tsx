@@ -9,7 +9,7 @@ interface PostsProps {
     direction?: 'row' | 'column';
 }
 
-export function Posts({
+export default function Posts({
     range,
     columns = '1',
     thumbnail = false,

@@ -1,6 +1,6 @@
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
 import { Mailchimp } from "@/components";
-import { Posts } from "@/components/blog/Posts";
+import Posts from "@/components/blog/Posts";
 import { baseURL, blog, person, newsletter } from "@/resources";
 
 export async function generateMetadata() {
@@ -13,7 +13,7 @@ export async function generateMetadata() {
   });
 }
 
-export default function Blog() {
+export default function BlogPage() {
   return (
     <Column maxWidth="s">
       <Schema
@@ -32,12 +32,11 @@ export default function Blog() {
       <Heading marginBottom="l" variant="display-strong-s">
         {blog.title}
       </Heading>
-      <Column
-				fillWidth flex={1}>
-				<Posts range={[1,1]} thumbnail direction="column"/>
-				<Posts range={[2,3]} thumbnail/>
-				<Posts range={[4]} columns="2"/>
-			</Column>
+      <Column fillWidth flex={1}>
+        <Posts range={[1,1]} thumbnail direction="column"/>
+        <Posts range={[2,3]} thumbnail/>
+        <Posts range={[4]} columns="2"/>
+      </Column>
       {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>
   );

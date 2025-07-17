@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Column, Text, Button, Heading } from '@once-ui-system/core';
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DbStatus {
   status: 'connected' | 'error' | 'loading' | 'idle';
@@ -23,7 +24,8 @@ interface DbStatus {
   suggestions?: string[];
 }
 
-export default function DbTestPage() {
+export default function DBTestPage() {
+  const { t } = useLanguage();
   const [status, setStatus] = useState<DbStatus>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,10 +60,10 @@ export default function DbTestPage() {
 
   return (
     <Column maxWidth="m" padding="xl" gap="l">
-      <Heading variant="display-default-l">Diagnóstico de Base de Datos</Heading>
+      <Heading>{t('db_test')}</Heading>
       
       <Text variant="body-default-m">
-        Esta página te permite verificar la conexión con Supabase y diagnosticar problemas de conectividad.
+        {t('db_test_description')}
       </Text>
 
       <Button 

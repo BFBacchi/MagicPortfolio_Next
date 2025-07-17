@@ -1,4 +1,4 @@
-import { Column, Meta, Schema } from "@once-ui-system/core";
+import { Column, Meta, Schema, Heading } from "@once-ui-system/core";
 import { baseURL, about, person, work } from "@/resources";
 import { Projects } from "@/components/work/Projects";
 
@@ -12,9 +12,10 @@ export async function generateMetadata() {
   });
 }
 
-export default function Work() {
+export default function WorkPage() {
   return (
     <Column maxWidth="m">
+      <Heading>{work.title}</Heading>
       <Schema
         as="webPage"
         baseURL={baseURL}

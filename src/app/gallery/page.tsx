@@ -12,19 +12,19 @@ export async function generateMetadata() {
   });
 }
 
-export default function Gallery() {
+export default function GalleryPage() {
   return (
     <Flex maxWidth="l">
       <Schema
         as="webPage"
         baseURL={baseURL}
+        path={gallery.path}
         title={gallery.title}
         description={gallery.description}
-        path={gallery.path}
         image={`/api/og/generate?title=${encodeURIComponent(gallery.title)}`}
         author={{
           name: person.name,
-          url: `${baseURL}${gallery.path}`,
+          url: `${baseURL}/gallery`,
           image: `${baseURL}${person.avatar}`,
         }}
       />

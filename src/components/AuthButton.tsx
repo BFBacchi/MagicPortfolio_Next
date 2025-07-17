@@ -136,59 +136,88 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
       )}
 
       {/* Login Modal */}
-      {showLogin && !user && (
-        <Column
-          position="absolute"
-          top="xl"
-          right="0"
-          marginTop="s"
-          background="surface"
-          border="neutral-alpha-weak"
-          radius="m"
-          shadow="l"
-          padding="l"
-          gap="m"
-          minWidth={300}
-          zIndex={10}
-        >
-          <Text variant="body-default-m" onBackground="neutral-strong">
-            {t('login')}
-          </Text>
-          
-          <Column gap="s">
-            <Input
-              id="email"
-              type="email"
-              placeholder={t('email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              errorMessage={error}
-            />
-            <Input
-              id="password"
-              type="password"
-              placeholder={t('password')}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Column>
-
-          <Button
-            variant="primary"
-            onClick={handleLogin}
-            disabled={loading}
-          >
-            {loading ? t('loading') : t('login')}
-          </Button>
-
-          <Button
-            variant="secondary"
+      {showLogin && (
+        <>
+          {/* Fondo semitransparente */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(0,0,0,0.4)',
+              zIndex: 1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             onClick={() => setShowLogin(false)}
-            disabled={loading}
+          />
+          {/* Modal centrado */}
+          <Column
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              zIndex: 1001,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pointerEvents: 'none',
+            }}
           >
-            {t('cancel')}
-          </Button>
-        </Column>
+            <Column
+              background="surface"
+              border="neutral-alpha-weak"
+              radius="m"
+              shadow="l"
+              padding="xl"
+              gap="l"
+              minWidth={0}
+              maxWidth={216}
+              style={{ pointerEvents: 'auto', boxSizing: 'border-box', width: '54vw' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <Text variant="body-default-m" onBackground="neutral-strong">
+                {t('login')}
+              </Text>
+              <Column gap="s">
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={t('email')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  errorMessage={error}
+                />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder={t('password')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Column>
+              <Button
+                variant="primary"
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                {loading ? t('loading') : t('login')}
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setShowLogin(false)}
+                disabled={loading}
+              >
+                {t('cancel')}
+              </Button>
+            </Column>
+          </Column>
+        </>
       )}
     </Flex>
   );
