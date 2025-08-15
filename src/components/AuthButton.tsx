@@ -94,6 +94,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
           size="s"
           onClick={() => setLanguage('es')}
           disabled={loading}
+          className="auth-button"
         >
           ES
         </Button>
@@ -102,6 +103,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
           size="s"
           onClick={() => setLanguage('en')}
           disabled={loading}
+          className="auth-button"
         >
           EN
         </Button>
@@ -130,6 +132,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
           size="s"
           onClick={() => setShowLogin(!showLogin)}
           disabled={loading}
+          className="auth-button"
         >
           {t('login')}
         </Button>

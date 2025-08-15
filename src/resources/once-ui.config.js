@@ -61,10 +61,10 @@ const fonts = {
 
 // default customization applied to the HTML in the main layout.tsx
 const style = {
-  theme: "system", // dark | light | system
+  theme: "dark", // dark | light | system
   neutral: "gray", // sand | gray | slate | custom
-  brand: "cyan", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
-  accent: "red", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
+  brand: "green", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
+  accent: "emerald", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
   solid: "contrast", // color | contrast
   solidStyle: "flat", // flat | plastic
   border: "playful", // rounded | playful | conservative
@@ -95,15 +95,15 @@ const effects = {
     radius: 100,
   },
   gradient: {
-    display: false,
-    opacity: 100,
+    display: true,
+    opacity: 1,
     x: 50,
     y: 60,
     width: 100,
     height: 50,
     tilt: 0,
     colorStart: "accent-background-strong",
-    colorEnd: "page-background",
+    colorEnd: "static-transparent",
   },
   dots: {
     display: true,

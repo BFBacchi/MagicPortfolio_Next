@@ -6,6 +6,7 @@ export interface Introduction {
   name: string
   role: string
   description: string
+  avatar_url?: string
   created_at: string
 }
 

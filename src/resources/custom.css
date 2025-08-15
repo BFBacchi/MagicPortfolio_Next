@@ -1,54 +1,73 @@
-/* :root {
-  /*
-  /* Example setup for custom colors */
-  /* Generate at: https://once-ui.com/customize */
-  /*
-  --scheme-brand-100: #08002f;
-  --scheme-brand-200:  #04025c;
-  --scheme-brand-300:  #1f398e;
-  --scheme-brand-400:  #3856ae;
-  --scheme-brand-500:  #5071cc;
-  --scheme-brand-600:  #6f94f1;
-  --scheme-brand-700:  #8db3ff;
-  --scheme-brand-800:  #b2dbff;
-  --scheme-brand-900:  #bfe8ff;
-  --scheme-brand-1000: #ccf6ff;
-  --scheme-brand-1100: #d2fcff;
-  --scheme-brand-1200: #d2fcff;
-  --scheme-brand-600-10: rgba(111,148,241,0.1);
-  --scheme-brand-600-30: rgba(111,148,241,0.3);
-  --scheme-brand-600-50: rgba(111,148,241,0.5);
+/* Custom theme colors for dark mode with black background and dark green center */
+[data-theme="dark"] {
+  /* Dark green brand colors for center glow */
+  --scheme-brand-100: #000000;
+  --scheme-brand-200: #001a00;
+  --scheme-brand-300: #003300;
+  --scheme-brand-400: #004d00;
+  --scheme-brand-500: #006600;
+  --scheme-brand-600: #008000;
+  --scheme-brand-700: #009900;
+  --scheme-brand-800: #00b300;
+  --scheme-brand-900: #00cc00;
+  --scheme-brand-1000: #00e600;
+  --scheme-brand-1100: #00ff00;
+  --scheme-brand-1200: #1aff1a;
+  --scheme-brand-600-10: rgba(0,128,0,0.1);
+  --scheme-brand-600-30: rgba(0,128,0,0.3);
+  --scheme-brand-600-50: rgba(0,128,0,0.5);
 
-  --scheme-accent-100:  #030b10;
-  --scheme-accent-200:  #0d181d;
-  --scheme-accent-300:  #364248;
-  --scheme-accent-400:  #505d64;
-  --scheme-accent-500:  #69777e;
-  --scheme-accent-600:  #8a989f;
-  --scheme-accent-700:  #a8b7bf;
-  --scheme-accent-800:  #c8d7df;
-  --scheme-accent-900:  #d5e4ec;
-  --scheme-accent-1000: #e2f1f9;
-  --scheme-accent-1100: #e9f8ff;
-  --scheme-accent-1200: #efffff;
-  --scheme-accent-600-10: rgba(138,152,159,0.1);
-  --scheme-accent-600-30: rgba(138,152,159,0.3);
-  --scheme-accent-600-50: rgba(138,152,159,0.5);
+  /* Dark emerald accent colors */
+  --scheme-accent-100: #000000;
+  --scheme-accent-200: #001a0d;
+  --scheme-accent-300: #00331a;
+  --scheme-accent-400: #004d26;
+  --scheme-accent-500: #006633;
+  --scheme-accent-600: #008040;
+  --scheme-accent-700: #00994d;
+  --scheme-accent-800: #00b35a;
+  --scheme-accent-900: #00cc66;
+  --scheme-accent-1000: #00e673;
+  --scheme-accent-1100: #00ff80;
+  --scheme-accent-1200: #1aff8c;
+  --scheme-accent-600-10: rgba(0,128,64,0.1);
+  --scheme-accent-600-30: rgba(0,128,64,0.3);
+  --scheme-accent-600-50: rgba(0,128,64,0.5);
 
-  --scheme-neutral-100:  #020b10;
-  --scheme-neutral-200:  #0b181d;
-  --scheme-neutral-300:  #344248;
-  --scheme-neutral-400:  #4f5d64;
-  --scheme-neutral-500:  #68777e;
-  --scheme-neutral-600:  #89989f;
-  --scheme-neutral-700:  #a7b7be;
-  --scheme-neutral-800:  #c7d7df;
-  --scheme-neutral-900:  #d4e4ec;
-  --scheme-neutral-1000: #e1f2f9;
-  --scheme-neutral-1100: #e7f8ff;
-  --scheme-neutral-1200: #eeffff;
-  --scheme-neutral-600-10: rgba(137,152,159,0.1);
-  --scheme-neutral-600-30: rgba(137,152,159,0.3);
-  --scheme-neutral-600-50: rgba(137,152,159,0.5);
-  /*
-}*/
+  /* Pure black background with dark green center */
+  --page-background: #000000;
+  --surface-background: #000000;
+  --surface-background-strong: #001a00;
+  
+  /* Neutral colors with dark green tint */
+  --scheme-neutral-100: #000000;
+  --scheme-neutral-200: #001a00;
+  --scheme-neutral-300: #003300;
+  --scheme-neutral-400: #004d00;
+  --scheme-neutral-500: #808080;
+  --scheme-neutral-600: #999999;
+  --scheme-neutral-700: #b3b3b3;
+  --scheme-neutral-800: #cccccc;
+  --scheme-neutral-900: #e6e6e6;
+  --scheme-neutral-1000: #f0f0f0;
+  --scheme-neutral-1100: #f5f5f5;
+  --scheme-neutral-1200: #fafafa;
+  --scheme-neutral-600-10: rgba(153,153,153,0.1);
+  --scheme-neutral-600-30: rgba(153,153,153,0.3);
+  --scheme-neutral-600-50: rgba(153,153,153,0.5);
+}
+
+/* Ensure consistent dark theme initialization */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Prevent theme flickering on page load */
+html {
+  transition: none !important;
+}
+
+/* Smooth transitions only after initial load */
+html[data-theme] {
+  transition: all 0.3s ease-in-out;
+}

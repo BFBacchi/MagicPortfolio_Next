@@ -13,6 +13,16 @@ const nextConfig = {
     compiler: "modern",
     silenceDeprecations: ["legacy-js-api"],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ykmzwzvxrdbtsbxsysky.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
 };
 
 export default withMDX(nextConfig);

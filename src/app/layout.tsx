@@ -1,12 +1,16 @@
 import '@once-ui-system/core/css/styles.css';
 import '@once-ui-system/core/css/tokens.css';
-import '@/resources/custom.css'
+import '@/resources/custom.css';
+import '@/resources/dark-theme.css';
+import '@/resources/background-effect.css';
+import '@/resources/override-blue.css';
 
 import classNames from "classnames";
 
 import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
-import { Footer, Header, RouteGuard, Providers } from '@/components';
+import { Footer, Header, RouteGuard } from '@/components';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { Providers } from '@/providers';
 import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
 
 export async function generateMetadata() {
@@ -45,7 +49,7 @@ export default async function RootLayout({
               (function() {
                 try {
                   const root = document.documentElement;
-                  const defaultTheme = 'system';
+                  const defaultTheme = 'dark';
                   
                   // Set defaults from config
                   const config = ${JSON.stringify({
@@ -61,23 +65,28 @@ export default async function RootLayout({
                     'viz-style': dataStyle.variant,
                   })};
                   
-                  // Apply default values
+                  // Apply default values immediately to prevent flickering
                   Object.entries(config).forEach(([key, value]) => {
                     root.setAttribute('data-' + key, value);
                   });
                   
+                  // Set dark theme as default to prevent blue flash
+                  root.setAttribute('data-theme', 'dark');
+                  
                   // Resolve theme
                   const resolveTheme = (themeValue) => {
                     if (!themeValue || themeValue === 'system') {
-                      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                      return 'dark'; // Default to dark instead of system
                     }
                     return themeValue;
                   };
                   
-                  // Apply saved theme
+                  // Apply saved theme if exists, otherwise keep dark
                   const savedTheme = localStorage.getItem('data-theme');
-                  const resolvedTheme = resolveTheme(savedTheme);
-                  root.setAttribute('data-theme', resolvedTheme);
+                  if (savedTheme && savedTheme !== 'system') {
+                    const resolvedTheme = resolveTheme(savedTheme);
+                    root.setAttribute('data-theme', resolvedTheme);
+                  }
                   
                   // Apply any saved style overrides
                   const styleKeys = Object.keys(config);
@@ -87,6 +96,33 @@ export default async function RootLayout({
                       root.setAttribute('data-' + key, value);
                     }
                   });
+                  
+                  // Override any blue/cyan colors with dark green and apply correct background
+                  const style = document.createElement('style');
+                  style.textContent = \`
+                    [data-theme="dark"] {
+                      --page-background: #000000 !important;
+                      --surface-background: #000000 !important;
+                      --scheme-brand-600: #008000 !important;
+                      --scheme-brand-700: #009900 !important;
+                      --scheme-brand-800: #00b300 !important;
+                      --scheme-accent-600: #008040 !important;
+                      --scheme-accent-700: #00994d !important;
+                      --scheme-accent-800: #00b35a !important;
+                    }
+                    
+                    [data-theme="dark"] body,
+                    [data-theme="dark"] [data-background="page"] {
+                      background: radial-gradient(circle at center, #001a00 0%, #000000 30%, #000000 100%) !important;
+                    }
+                    
+                    [data-theme="dark"] .auth-button {
+                      background-color: #000000 !important;
+                      color: #ffffff !important;
+                      border: 1px solid #ffffff !important;
+                    }
+                  \`;
+                  document.head.appendChild(style);
                 } catch (e) {
                   console.error('Failed to initialize theme:', e);
                   document.documentElement.setAttribute('data-theme', 'dark');
@@ -96,8 +132,8 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <LanguageProvider>
-        <Providers>
+      <Providers>
+        <LanguageProvider>
           <Column as="body" background="page" fillWidth style={{minHeight: "100vh"}} margin="0" padding="0" horizontal="center">
             <Background
               position="fixed"
@@ -157,8 +193,8 @@ export default async function RootLayout({
             </Flex>
             <Footer/>
           </Column>
-        </Providers>
-      </LanguageProvider>
+        </LanguageProvider>
+      </Providers>
     </Flex>
   );
 }

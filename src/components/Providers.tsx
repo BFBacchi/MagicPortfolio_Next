@@ -3,6 +3,7 @@
 import { BorderStyle, ChartMode, ChartVariant, DataThemeProvider, IconProvider, NeutralColor, ScalingSize, Schemes, SolidStyle, SolidType, SurfaceStyle, ThemeProvider, ToastProvider, TransitionStyle } from "@once-ui-system/core";
 import { style, dataStyle } from "../resources";
 import { iconLibrary } from "../resources/icons";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -32,7 +33,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
         <ToastProvider>
           <IconProvider icons={iconLibrary}>
-            {children}
+            <AuthProvider>
+              {children}
+            </AuthProvider>
           </IconProvider>
         </ToastProvider>
       </DataThemeProvider>
