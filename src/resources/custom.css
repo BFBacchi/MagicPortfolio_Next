@@ -60,6 +60,10 @@
 /* Ensure consistent dark theme initialization */
 [data-theme="dark"] {
   color-scheme: dark;
+    /* Estilos específicos para los toasts */
+  --toast-background: var(--surface-background-strong);
+  --toast-border: 1px solid var(--scheme-neutral-600);
+  --toast-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Prevent theme flickering on page load */
@@ -70,4 +74,13 @@ html {
 /* Smooth transitions only after initial load */
 html[data-theme] {
   transition: all 0.3s ease-in-out;
+}
+/* Estilos adicionales para los toasts */
+/* Estilos adicionales para los toasts con mayor especificidad */
+[data-theme="dark"] .once-toast[role="status"] {
+  background-color: rgba(0, 26, 0, 0.95) !important;
+  border: 1px solid var(--scheme-neutral-600) !important;
+  box-shadow: var(--toast-shadow) !important;
+  backdrop-filter: blur(8px);
+  color: var(--scheme-neutral-1200);
 }

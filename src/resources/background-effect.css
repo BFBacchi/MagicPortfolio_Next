@@ -1,0 +1,58 @@
+/* Background effect for dark theme - black with dark green center */
+
+[data-theme="dark"] {
+  /* Main background gradient */
+  --page-background: #000000;
+  --surface-background: #000000;
+  --surface-background-strong: #001a00;
+}
+
+/* Apply the gradient effect to the main content area - pure black with dark green center */
+[data-theme="dark"] [data-background="page"] {
+  background: radial-gradient(circle at center, #001a00 0%, #000000 40%, #000000 100%) !important;
+}
+
+/* Ensure the body has the gradient effect */
+[data-theme="dark"] body {
+  background: radial-gradient(circle at center, #001a00 0%, #000000 40%, #000000 100%) !important;
+}
+
+/* Override any blue tones completely */
+[data-theme="dark"] {
+  --scheme-brand-600: #008000 !important;
+  --scheme-brand-700: #009900 !important;
+  --scheme-brand-800: #00b300 !important;
+  --scheme-accent-600: #008040 !important;
+  --scheme-accent-700: #00994d !important;
+  --scheme-accent-800: #00b35a !important;
+  --page-background: #000000 !important;
+  --surface-background: #000000 !important;
+}
+
+/* Override any blue tones with dark green */
+[data-theme="dark"] {
+  --scheme-brand-600: #008000 !important;
+  --scheme-brand-700: #009900 !important;
+  --scheme-brand-800: #00b300 !important;
+  --scheme-accent-600: #008040 !important;
+  --scheme-accent-700: #00994d !important;
+  --scheme-accent-800: #00b35a !important;
+}
+
+/* Ensure auth buttons are visible with dark background, light text, and white border */
+[data-theme="dark"] .auth-button {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-flex !important;
+}
+
+/* Override any green background on auth buttons */
+[data-theme="dark"] .auth-button[data-variant="primary"],
+[data-theme="dark"] .auth-button[data-variant="secondary"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+} 
