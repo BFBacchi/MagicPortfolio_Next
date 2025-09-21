@@ -3,7 +3,7 @@ import '@once-ui-system/core/css/tokens.css';
 import '@/resources/custom.css';
 import '@/resources/dark-theme.css';
 import '@/resources/background-effect.css';
-import '@/resources/override-blue.css';
+
 
 import classNames from "classnames";
 
