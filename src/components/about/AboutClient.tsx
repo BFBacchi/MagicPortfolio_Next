@@ -4,7 +4,7 @@ import { AvatarPanel } from "./AvatarPanel";
 import { IntroductionSection } from "./sections/IntroductionSection";
 import { ImageGallery } from "./ImageGallery";
 import { Introduction, WorkExperience, Study, TechnicalSkill } from "@/lib/supabase/queries";
-import { Column, Text, Button, Dialog, Input, Row } from "@once-ui-system/core";
+import { Column, Text, Button, Dialog, Input, Row, Icon } from "@once-ui-system/core";
 import styles from "./about.module.scss";
 import { useState, useEffect } from "react";
 import { uploadAvatar, getProfile } from "@/lib/supabase/storage";
@@ -252,10 +252,22 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
           onEdit={!loading && user ? () => setIsProfileDialogOpen(true) : undefined}
         />
         <nav className={styles.navLinks}>
-          <button onClick={() => scrollToSection('introduction')} className={styles.navLink}>Introducción</button>
-          <button onClick={() => scrollToSection('work')} className={styles.navLink}>Experiencia</button>
-          <button onClick={() => scrollToSection('studies')} className={styles.navLink}>Estudios</button>
-          <button onClick={() => scrollToSection('skills')} className={styles.navLink}>Habilidades</button>
+          <button onClick={() => scrollToSection('introduction')} className={styles.navLink}>
+            <Icon name="introduction" size="s" />
+            Introducción
+          </button>
+          <button onClick={() => scrollToSection('work')} className={styles.navLink}>
+            <Icon name="experience" size="s" />
+            Experiencia
+          </button>
+          <button onClick={() => scrollToSection('studies')} className={styles.navLink}>
+            <Icon name="studies" size="s" />
+            Estudios
+          </button>
+          <button onClick={() => scrollToSection('skills')} className={styles.navLink}>
+            <Icon name="skills" size="s" />
+            Habilidades
+          </button>
         </nav>
       </aside>
 

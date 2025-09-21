@@ -48,6 +48,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 
   &.navLink:hover, .navLink.active {
     background: var(--color-bg-subtle);
