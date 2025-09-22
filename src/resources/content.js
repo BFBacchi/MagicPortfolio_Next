@@ -38,9 +38,9 @@ const social = [
     link: "https://www.linkedin.com/company/once-ui/",
   },
   {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+    name: "Discord",
+    icon: "discord",
+    link: "https://discord.com/invite/5EyAQ4eNdS",
   },
   {
     name: "Email",

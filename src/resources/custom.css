@@ -1,60 +1,60 @@
-/* Custom theme colors for dark mode with black background and dark green center */
+/* Custom theme colors for dark mode - clean like original Magic Portfolio */
 [data-theme="dark"] {
-  /* Dark green brand colors for center glow */
-  --scheme-brand-100: #000000;
-  --scheme-brand-200: #001a00;
-  --scheme-brand-300: #003300;
-  --scheme-brand-400: #004d00;
-  --scheme-brand-500: #006600;
-  --scheme-brand-600: #008000;
-  --scheme-brand-700: #009900;
-  --scheme-brand-800: #00b300;
-  --scheme-brand-900: #00cc00;
-  --scheme-brand-1000: #00e600;
-  --scheme-brand-1100: #00ff00;
-  --scheme-brand-1200: #1aff1a;
-  --scheme-brand-600-10: rgba(0,128,0,0.1);
-  --scheme-brand-600-30: rgba(0,128,0,0.3);
-  --scheme-brand-600-50: rgba(0,128,0,0.5);
+  /* Clean brand colors - subtle blue tones like original */
+  --scheme-brand-100: #0a0a0a;
+  --scheme-brand-200: #1a1a1a;
+  --scheme-brand-300: #084f93;
+  --scheme-brand-400: #3a3a3a;
+  --scheme-brand-500: #4a4a4a;
+  --scheme-brand-600: #3b82f6;
+  --scheme-brand-700: #2563eb;
+  --scheme-brand-800: #1d4ed8;
+  --scheme-brand-900: #1e40af;
+  --scheme-brand-1000: #1e3a8a;
+  --scheme-brand-1100: #1d3a8a;
+  --scheme-brand-1200: #1c3a8a;
+  --scheme-brand-600-10: rgba(59,130,246,0.1);
+  --scheme-brand-600-30: rgba(59,130,246,0.3);
+  --scheme-brand-600-50: rgba(59,130,246,0.5);
 
-  /* Dark emerald accent colors */
-  --scheme-accent-100: #000000;
-  --scheme-accent-200: #001a0d;
-  --scheme-accent-300: #00331a;
-  --scheme-accent-400: #004d26;
-  --scheme-accent-500: #006633;
-  --scheme-accent-600: #008040;
-  --scheme-accent-700: #00994d;
-  --scheme-accent-800: #00b35a;
-  --scheme-accent-900: #00cc66;
-  --scheme-accent-1000: #00e673;
-  --scheme-accent-1100: #00ff80;
-  --scheme-accent-1200: #1aff8c;
-  --scheme-accent-600-10: rgba(0,128,64,0.1);
-  --scheme-accent-600-30: rgba(0,128,64,0.3);
-  --scheme-accent-600-50: rgba(0,128,64,0.5);
+  /* Clean accent colors - subtle purple tones */
+  --scheme-accent-100: #0a0a0a;
+  --scheme-accent-200: #1a1a1a;
+  --scheme-accent-300: #2a2a2a;
+  --scheme-accent-400: #3a3a3a;
+  --scheme-accent-500: #4a4a4a;
+  --scheme-accent-600: #8b5cf6;
+  --scheme-accent-700: #7c3aed;
+  --scheme-accent-800: #6d28d9;
+  --scheme-accent-900: #5b21b6;
+  --scheme-accent-1000: #4c1d95;
+  --scheme-accent-1100: #3b1a8a;
+  --scheme-accent-1200: #2d1a8a;
+  --scheme-accent-600-10: rgba(139,92,246,0.1);
+  --scheme-accent-600-30: rgba(139,92,246,0.3);
+  --scheme-accent-600-50: rgba(139,92,246,0.5);
 
-  /* Pure black background with dark green center */
-  --page-background: #000000;
-  --surface-background: #000000;
-  --surface-background-strong: #001a00;
+  /* Clean dark background */
+  --page-background: #0a0a0a;
+  --surface-background: #0a0a0a;
+  --surface-background-strong: #1a1a1a;
   
-  /* Neutral colors with dark green tint */
-  --scheme-neutral-100: #000000;
-  --scheme-neutral-200: #001a00;
-  --scheme-neutral-300: #003300;
-  --scheme-neutral-400: #004d00;
-  --scheme-neutral-500: #808080;
-  --scheme-neutral-600: #999999;
-  --scheme-neutral-700: #b3b3b3;
-  --scheme-neutral-800: #cccccc;
-  --scheme-neutral-900: #e6e6e6;
-  --scheme-neutral-1000: #f0f0f0;
-  --scheme-neutral-1100: #f5f5f5;
+  /* Clean neutral colors */
+  --scheme-neutral-100: #0a0a0a;
+  --scheme-neutral-200: #1a1a1a;
+  --scheme-neutral-300: #2a2a2a;
+  --scheme-neutral-400: #3a3a3a;
+  --scheme-neutral-500: #4a4a4a;
+  --scheme-neutral-600: #6a6a6a;
+  --scheme-neutral-700: #8a8a8a;
+  --scheme-neutral-800: #aaaaaa;
+  --scheme-neutral-900: #cacaca;
+  --scheme-neutral-1000: #eaeaea;
+  --scheme-neutral-1100: #f0f0f0;
   --scheme-neutral-1200: #fafafa;
-  --scheme-neutral-600-10: rgba(153,153,153,0.1);
-  --scheme-neutral-600-30: rgba(153,153,153,0.3);
-  --scheme-neutral-600-50: rgba(153,153,153,0.5);
+  --scheme-neutral-600-10: rgba(106,106,106,0.1);
+  --scheme-neutral-600-30: rgba(106,106,106,0.3);
+  --scheme-neutral-600-50: rgba(106,106,106,0.5);
 }
 
 /* Ensure consistent dark theme initialization */
@@ -81,6 +81,7 @@ html[data-theme] {
   background-color: rgba(0, 26, 0, 0.95) !important;
   border: 1px solid var(--scheme-neutral-600) !important;
   box-shadow: var(--toast-shadow) !important;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   color: var(--scheme-neutral-1200);
 }

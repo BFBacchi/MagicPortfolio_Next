@@ -2,10 +2,14 @@
 -- Ejecutar en Supabase SQL Editor
 
 -- Tabla de introducción
-INSERT INTO introduction (name, role, description) VALUES (
+INSERT INTO introduction (name, role, description, github_url, linkedin_url, discord_url, email_url) VALUES (
   'Bruno Bacchi',
   'Full Stack Developer',
-  'Desarrollador Full Stack apasionado por crear soluciones innovadoras y escalables. Especializado en tecnologías modernas como React, Angular, Node.js y Java Spring Boot. Con experiencia en desarrollo frontend y backend, siempre buscando aprender nuevas tecnologías y mejorar mis habilidades.'
+  'Desarrollador Full Stack apasionado por crear soluciones innovadoras y escalables. Especializado en tecnologías modernas como React, Angular, Node.js y Java Spring Boot. Con experiencia en desarrollo frontend y backend, siempre buscando aprender nuevas tecnologías y mejorar mis habilidades.',
+  'https://github.com/bruno-bacchi',
+  'https://www.linkedin.com/in/bruno-bacchi',
+  'https://discord.gg/bruno-bacchi',
+  'bruno@example.com'
 );
 
 -- Tabla de experiencia laboral

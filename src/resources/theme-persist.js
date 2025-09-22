@@ -14,8 +14,8 @@
     
     // Ensure green brand colors are applied
     const greenBrandColors = {
-      'brand': 'indigo',
-      'accent': 'emerald',
+      'brand': 'yellow',
+      'accent': 'orange',
       'neutral': 'gray'
     };
     

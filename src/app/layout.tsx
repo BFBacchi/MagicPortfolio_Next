@@ -97,27 +97,27 @@ export default async function RootLayout({
                     }
                   });
                   
-                  // Override any blue/cyan colors with dark green and apply correct background
+                  // Apply clean background like original Magic Portfolio
                   const style = document.createElement('style');
                   style.textContent = \`
                     [data-theme="dark"] {
-                      --page-background: #000000 !important;
-                      --surface-background: #000000 !important;
-                      --scheme-brand-600: #008000 !important;
-                      --scheme-brand-700: #009900 !important;
-                      --scheme-brand-800: #00b300 !important;
-                      --scheme-accent-600: #008040 !important;
-                      --scheme-accent-700: #00994d !important;
-                      --scheme-accent-800: #00b35a !important;
+                      --page-background: #0a0a0a !important;
+                      --surface-background: #0a0a0a !important;
+                      --scheme-brand-600: #3b82f6 !important;
+                      --scheme-brand-700: #2563eb !important;
+                      --scheme-brand-800: #1d4ed8 !important;
+                      --scheme-accent-600: #8b5cf6 !important;
+                      --scheme-accent-700: #7c3aed !important;
+                      --scheme-accent-800: #6d28d9 !important;
                     }
                     
                     [data-theme="dark"] body,
                     [data-theme="dark"] [data-background="page"] {
-                      background: radial-gradient(circle at center, #001a00 0%, #000000 30%, #000000 100%) !important;
+                      background: #0a0a0a !important;
                     }
                     
                     [data-theme="dark"] .auth-button {
-                      background-color: #000000 !important;
+                      background-color: #0a0a0a !important;
                       color: #ffffff !important;
                       border: 1px solid #ffffff !important;
                     }

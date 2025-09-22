@@ -1,44 +1,44 @@
-/* Dark theme with green tones - ensures consistent styling */
+/* Dark theme - clean like original Magic Portfolio */
 
 [data-theme="dark"] {
-  /* Override any blue tones with green */
-  --scheme-brand-100: #001a00 !important;
-  --scheme-brand-200: #003300 !important;
-  --scheme-brand-300: #004d00 !important;
-  --scheme-brand-400: #006600 !important;
-  --scheme-brand-500: #008000 !important;
-  --scheme-brand-600: #009900 !important;
-  --scheme-brand-700: #00b300 !important;
-  --scheme-brand-800: #00cc00 !important;
-  --scheme-brand-900: #00e600 !important;
-  --scheme-brand-1000: #00ff00 !important;
-  --scheme-brand-1100: #1aff1a !important;
-  --scheme-brand-1200: #33ff33 !important;
-  --scheme-brand-600-10: rgba(0,153,0,0.1) !important;
-  --scheme-brand-600-30: rgba(0,153,0,0.3) !important;
-  --scheme-brand-600-50: rgba(0,153,0,0.5) !important;
+  /* Clean brand colors - subtle blue tones */
+  --scheme-brand-100: #0a0a0a !important;
+  --scheme-brand-200: #1a1a1a !important;
+  --scheme-brand-300: #084f93 !important;
+  --scheme-brand-400: #3a3a3a !important;
+  --scheme-brand-500: #4a4a4a !important;
+  --scheme-brand-600: #3b82f6 !important;
+  --scheme-brand-700: #2563eb !important;
+  --scheme-brand-800: #1d4ed8 !important;
+  --scheme-brand-900: #1e40af !important;
+  --scheme-brand-1000: #1e3a8a !important;
+  --scheme-brand-1100: #1d3a8a !important;
+  --scheme-brand-1200: #1c3a8a !important;
+  --scheme-brand-600-10: rgba(59,130,246,0.1) !important;
+  --scheme-brand-600-30: rgba(59,130,246,0.3) !important;
+  --scheme-brand-600-50: rgba(59,130,246,0.5) !important;
 
-  /* Emerald accent colors */
-  --scheme-accent-100: #001a0d !important;
-  --scheme-accent-200: #00331a !important;
-  --scheme-accent-300: #004d26 !important;
-  --scheme-accent-400: #006633 !important;
-  --scheme-accent-500: #008040 !important;
-  --scheme-accent-600: #00994d !important;
-  --scheme-accent-700: #00b35a !important;
-  --scheme-accent-800: #00cc66 !important;
-  --scheme-accent-900: #00e673 !important;
-  --scheme-accent-1000: #00ff80 !important;
-  --scheme-accent-1100: #1aff8c !important;
-  --scheme-accent-1200: #33ff99 !important;
-  --scheme-accent-600-10: rgba(0,153,77,0.1) !important;
-  --scheme-accent-600-30: rgba(0,153,77,0.3) !important;
-  --scheme-accent-600-50: rgba(0,153,77,0.5) !important;
+  /* Clean accent colors - subtle purple tones */
+  --scheme-accent-100: #0a0a0a !important;
+  --scheme-accent-200: #1a1a1a !important;
+  --scheme-accent-300: #2a2a2a !important;
+  --scheme-accent-400: #3a3a3a !important;
+  --scheme-accent-500: #4a4a4a !important;
+  --scheme-accent-600: #8b5cf6 !important;
+  --scheme-accent-700: #7c3aed !important;
+  --scheme-accent-800: #6d28d9 !important;
+  --scheme-accent-900: #5b21b6 !important;
+  --scheme-accent-1000: #4c1d95 !important;
+  --scheme-accent-1100: #3b1a8a !important;
+  --scheme-accent-1200: #2d1a8a !important;
+  --scheme-accent-600-10: rgba(139,92,246,0.1) !important;
+  --scheme-accent-600-30: rgba(139,92,246,0.3) !important;
+  --scheme-accent-600-50: rgba(139,92,246,0.5) !important;
 
-  /* Background colors with green tint */
-  --page-background: #001a00 !important;
-  --surface-background: #003300 !important;
-  --surface-background-strong: #004d00 !important;
+  /* Clean background colors */
+  --page-background: #0a0a0a !important;
+  --surface-background: #0a0a0a !important;
+  --surface-background-strong: #1a1a1a !important;
   
   /* Text colors */
   --neutral-on-background: #e6e6e6 !important;
@@ -47,7 +47,7 @@
   
   /* Border colors */
   --neutral-alpha-weak: rgba(0,153,0,0.1) !important;
-  --neutral-alpha-medium: rgba(0,153,0,0.3) !important;
+  --neutral-alpha-medium: rgba(105, 180, 180, 0.3) !important;
   --neutral-alpha-strong: rgba(0,153,0,0.5) !important;
 }
 
@@ -65,7 +65,7 @@ html[data-theme="dark"] {
 /* Override any cyan/blue colors that might be applied by Once UI */
 [data-theme="dark"] [data-brand="cyan"],
 [data-theme="dark"] [data-brand="blue"] {
-  --scheme-brand-600: #009900 !important;
-  --scheme-brand-700: #00b300 !important;
-  --scheme-brand-800: #00cc00 !important;
+  --scheme-brand-600: #cdeccd !important;
+  --scheme-brand-700: #d8f1d8 !important;
+  --scheme-brand-800: #b6dfb6 !important;
 } 

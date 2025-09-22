@@ -53,9 +53,13 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
 
   
 
-  // Extend the Introduction type to include avatar_url
+  // Extend the Introduction type to include avatar_url and social links
   type ExtendedIntroduction = Introduction & {
     avatar_url?: string;
+    github_url?: string;
+    linkedin_url?: string;
+    discord_url?: string;
+    email_url?: string;
   };
 
   const [tempData, setTempData] = useState<{
@@ -63,11 +67,19 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
     role: string;
     description: string;
     avatar_url?: string;
+    github_url?: string;
+    linkedin_url?: string;
+    discord_url?: string;
+    email_url?: string;
   }>({
     name: introduction?.name || '',
     role: introduction?.role || '',
     description: introduction?.description || '',
-    avatar_url: (introduction as any)?.avatar_url || ''
+    avatar_url: (introduction as any)?.avatar_url || '',
+    github_url: (introduction as any)?.github_url || '',
+    linkedin_url: (introduction as any)?.linkedin_url || '',
+    discord_url: (introduction as any)?.discord_url || '',
+    email_url: (introduction as any)?.email_url || ''
   });
 
   useEffect(() => {
@@ -114,28 +126,38 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!profileData || !user) return;
+    if (!tempData || !user) return;
 
     try {
       setIsLoading(true);
       // Update the profile data in the database
       const { error } = await supabase
-        .from('profiles')
+        .from('introduction')
         .update({
-          name: profileData.name,
-          role: profileData.role,
-          avatar_url: profileData.avatar_url,
+          name: tempData.name,
+          role: tempData.role,
+          description: tempData.description,
+          avatar_url: tempData.avatar_url,
+          github_url: tempData.github_url,
+          linkedin_url: tempData.linkedin_url,
+          discord_url: tempData.discord_url,
+          email_url: tempData.email_url,
           updated_at: new Date().toISOString()
         })
-        .eq('id', user.id);
+        .eq('id', 1); // Assuming there's only one introduction record
 
       if (error) throw error;
 
       // Update local state
       if (introduction) {
-        introduction.name = profileData.name || '';
-        introduction.role = profileData.role || '';
-        introduction.avatar_url = profileData.avatar_url || '';
+        (introduction as any).name = tempData.name || '';
+        (introduction as any).role = tempData.role || '';
+        (introduction as any).description = tempData.description || '';
+        (introduction as any).avatar_url = tempData.avatar_url || '';
+        (introduction as any).github_url = tempData.github_url || '';
+        (introduction as any).linkedin_url = tempData.linkedin_url || '';
+        (introduction as any).discord_url = tempData.discord_url || '';
+        (introduction as any).email_url = tempData.email_url || '';
       }
 
       // Close the dialog
@@ -249,6 +271,12 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
           location=""
           languages={[]}
           avatarUrl={introduction?.avatar_url || "/images/avatar.jpg"}
+          socialLinks={{
+            github_url: (introduction as any)?.github_url,
+            linkedin_url: (introduction as any)?.linkedin_url,
+            discord_url: (introduction as any)?.discord_url,
+            email_url: (introduction as any)?.email_url
+          }}
           onEdit={!loading && user ? () => setIsProfileDialogOpen(true) : undefined}
         />
         <nav className={styles.navLinks}>
@@ -314,6 +342,42 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                   onChange={(e) => setTempData({ ...tempData!, role: e.target.value })}
                   required
                 />
+                
+                {/* Enlaces Sociales */}
+                <div>
+                  <Text variant="body-default-s" marginBottom="s">Enlaces Sociales</Text>
+                  <Column gap="s">
+                    <Input
+                      id="edit-github"
+                      label="GitHub URL"
+                      placeholder="https://github.com/tu-usuario"
+                      value={tempData?.github_url || ''}
+                      onChange={(e) => setTempData({ ...tempData!, github_url: e.target.value })}
+                    />
+                    <Input
+                      id="edit-linkedin"
+                      label="LinkedIn URL"
+                      placeholder="https://www.linkedin.com/in/tu-perfil"
+                      value={tempData?.linkedin_url || ''}
+                      onChange={(e) => setTempData({ ...tempData!, linkedin_url: e.target.value })}
+                    />
+                    <Input
+                      id="edit-discord"
+                      label="Discord URL"
+                      placeholder="https://discord.gg/tu-servidor"
+                      value={tempData?.discord_url || ''}
+                      onChange={(e) => setTempData({ ...tempData!, discord_url: e.target.value })}
+                    />
+                    <Input
+                      id="edit-email"
+                      label="Email"
+                      type="email"
+                      placeholder="tu@email.com"
+                      value={tempData?.email_url || ''}
+                      onChange={(e) => setTempData({ ...tempData!, email_url: e.target.value })}
+                    />
+                  </Column>
+                </div>
                 
                 <div>
                   <Text variant="body-default-s" marginBottom="s">Imagen de perfil</Text>

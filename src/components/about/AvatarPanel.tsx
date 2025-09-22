@@ -1,7 +1,8 @@
 "use client";
 
-import { Avatar, Button, Column, Flex, Text, Tag, Icon, Heading } from "@once-ui-system/core";
+import { Avatar, Button, Column, Flex, Text, Tag, Icon, Heading, IconButton } from "@once-ui-system/core";
 import { useAuth } from "@/contexts/AuthContext";
+import { social } from "@/resources";
 import styles from "./about.module.scss";
 
 interface AvatarPanelProps {
@@ -11,6 +12,12 @@ interface AvatarPanelProps {
   languages: string[];
   onEdit?: () => void;
   avatarUrl?: string;
+  socialLinks?: {
+    github_url?: string;
+    linkedin_url?: string;
+    discord_url?: string;
+    email_url?: string;
+  };
 }
 
 export const AvatarPanel = ({
@@ -19,7 +26,8 @@ export const AvatarPanel = ({
   location,
   languages,
   onEdit,
-  avatarUrl = "/images/avatar.jpg"
+  avatarUrl = "/images/avatar.jpg",
+  socialLinks
 }: AvatarPanelProps) => {
   const { user, loading } = useAuth();
 
@@ -60,6 +68,46 @@ export const AvatarPanel = ({
             ))}
           </div>
         )}
+
+        {/* Social Links */}
+        <Flex gap="s" wrap>
+          {socialLinks?.github_url && (
+            <IconButton
+              href={socialLinks.github_url}
+              icon="github"
+              tooltip="GitHub"
+              size="s"
+              variant="ghost"
+            />
+          )}
+          {socialLinks?.linkedin_url && (
+            <IconButton
+              href={socialLinks.linkedin_url}
+              icon="linkedin"
+              tooltip="LinkedIn"
+              size="s"
+              variant="ghost"
+            />
+          )}
+          {socialLinks?.discord_url && (
+            <IconButton
+              href={socialLinks.discord_url}
+              icon="discord"
+              tooltip="Discord"
+              size="s"
+              variant="ghost"
+            />
+          )}
+          {socialLinks?.email_url && (
+            <IconButton
+              href={`mailto:${socialLinks.email_url}`}
+              icon="email"
+              tooltip="Email"
+              size="s"
+              variant="ghost"
+            />
+          )}
+        </Flex>
 
         {/* Show edit button only if user is authenticated, not loading, and onEdit function is provided */}
         {!loading && user && onEdit && (

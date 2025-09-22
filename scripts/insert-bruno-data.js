@@ -28,7 +28,11 @@ async function insertBrunoData() {
       .insert({
         name: 'Bruno Bacchi',
         role: 'Full Stack Developer',
-        description: 'Desarrollador Full Stack apasionado por crear soluciones innovadoras y escalables. Especializado en tecnologías modernas como React, Angular, Node.js y Java Spring Boot. Con experiencia en desarrollo frontend y backend, siempre buscando aprender nuevas tecnologías y mejorar mis habilidades.'
+        description: 'Desarrollador Full Stack apasionado por crear soluciones innovadoras y escalables. Especializado en tecnologías modernas como React, Angular, Node.js y Java Spring Boot. Con experiencia en desarrollo frontend y backend, siempre buscando aprender nuevas tecnologías y mejorar mis habilidades.',
+        github_url: 'https://github.com/bruno-bacchi',
+        linkedin_url: 'https://www.linkedin.com/in/bruno-bacchi',
+        discord_url: 'https://discord.gg/bruno-bacchi',
+        email_url: 'bruno@example.com'
       })
       .select()
 

@@ -1,47 +1,37 @@
-/* Background effect for dark theme - black with dark green center */
+/* Background effect for dark theme - clean dark background like original Magic Portfolio */
 
 [data-theme="dark"] {
-  /* Main background gradient */
-  --page-background: #000000;
-  --surface-background: #000000;
-  --surface-background-strong: #001a00;
+  /* Main background - clean dark */
+  --page-background: #0a0a0a;
+  --surface-background: #0a0a0a;
+  --surface-background-strong: #1a1a1a;
 }
 
-/* Apply the gradient effect to the main content area - pure black with dark green center */
+/* Apply clean background to the main content area */
 [data-theme="dark"] [data-background="page"] {
-  background: radial-gradient(circle at center, #001a00 0%, #000000 40%, #000000 100%) !important;
+  background: #0a0a0a !important;
 }
 
-/* Ensure the body has the gradient effect */
+/* Ensure the body has clean background */
 [data-theme="dark"] body {
-  background: radial-gradient(circle at center, #001a00 0%, #000000 40%, #000000 100%) !important;
+  background: #0a0a0a !important;
 }
 
-/* Override any blue tones completely */
+/* Clean theme colors like original Magic Portfolio */
 [data-theme="dark"] {
-  --scheme-brand-600: #008000 !important;
-  --scheme-brand-700: #009900 !important;
-  --scheme-brand-800: #00b300 !important;
-  --scheme-accent-600: #008040 !important;
-  --scheme-accent-700: #00994d !important;
-  --scheme-accent-800: #00b35a !important;
-  --page-background: #000000 !important;
-  --surface-background: #000000 !important;
+  --scheme-brand-600: #3b82f6 !important;
+  --scheme-brand-700: #2563eb !important;
+  --scheme-brand-800: #1d4ed8 !important;
+  --scheme-accent-600: #8b5cf6 !important;
+  --scheme-accent-700: #7c3aed !important;
+  --scheme-accent-800: #6d28d9 !important;
+  --page-background: #0a0a0a !important;
+  --surface-background: #0a0a0a !important;
 }
 
-/* Override any blue tones with dark green */
-[data-theme="dark"] {
-  --scheme-brand-600: #008000 !important;
-  --scheme-brand-700: #009900 !important;
-  --scheme-brand-800: #00b300 !important;
-  --scheme-accent-600: #008040 !important;
-  --scheme-accent-700: #00994d !important;
-  --scheme-accent-800: #00b35a !important;
-}
-
-/* Ensure auth buttons are visible with dark background, light text, and white border */
+/* Ensure auth buttons are visible with clean background */
 [data-theme="dark"] .auth-button {
-  background-color: #000000 !important;
+  background-color: #0a0a0a !important;
   color: #ffffff !important;
   border: 1px solid #ffffff !important;
   opacity: 1 !important;
@@ -49,7 +39,7 @@
   display: inline-flex !important;
 }
 
-/* Override any green background on auth buttons */
+/* Clean auth button styles */
 [data-theme="dark"] .auth-button[data-variant="primary"],
 [data-theme="dark"] .auth-button[data-variant="secondary"] {
   background-color: #000000 !important;
