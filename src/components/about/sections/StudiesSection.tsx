@@ -3,33 +3,13 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Study } from "@/lib/supabase/queries";
-import { Button, Input, Textarea, Column } from "@once-ui-system/core";
+import { Button, Input, Textarea, Column, Dialog } from "@once-ui-system/core";
 import { upsertStudy } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
 
 // Using 'danger' instead of 'error' to match the expected ToastVariant type
 type ToastVariant = 'success' | 'danger' | 'warning' | 'info';
 
-// Custom Dialog component to avoid type issues with the UI library
-const Dialog = ({ 
-  open, 
-  onOpenChange, 
-  children 
-}: { 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void; 
-  children: React.ReactNode 
-}) => {
-  if (!open) return null;
-  
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full m-4 max-h-[90vh] overflow-y-auto">
-        {children}
-      </div>
-    </div>
-  );
-};
 
 interface StudiesSectionProps {
   studies: Study[];
@@ -138,25 +118,14 @@ addToast('Error al guardar el estudio', 'danger');
         ))}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">{isEditing ? 'Editar Estudio' : 'Añadir Estudio'}</h2>
-            <button 
-              onClick={() => setIsDialogOpen(false)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              ×
-            </button>
-          </div>
-          <p className="text-gray-600 mb-4">
-            {isEditing 
-              ? 'Actualiza los detalles de tu formación académica.'
-              : 'Añade un nuevo estudio o certificación a tu perfil.'}
-          </p>
-          
-          <form onSubmit={handleSubmit} className="mt-4">
-            <Column gap="4" className="py-4">
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={isEditing ? 'Editar Estudio' : 'Añadir Estudio'}
+      >
+        <Column fillWidth gap="16" marginTop="12">
+          <form onSubmit={handleSubmit}>
+            <Column gap="16">
               <Input
                 id="degree"
                 name="degree"
@@ -218,7 +187,7 @@ addToast('Error al guardar el estudio', 'danger');
               </Button>
             </div>
           </form>
-        </div>
+        </Column>
       </Dialog>
     </div>
   );

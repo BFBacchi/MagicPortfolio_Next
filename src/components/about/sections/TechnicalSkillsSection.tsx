@@ -3,30 +3,10 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { TechnicalSkill } from "@/lib/supabase/queries";
-import { Button, Input, Column, Select } from "@once-ui-system/core";
+import { Button, Input, Column, Select, Dialog } from "@once-ui-system/core";
 import { upsertTechnicalSkill } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
 
-// Custom Dialog component to avoid type issues with the UI library
-const Dialog = ({ 
-  open, 
-  onOpenChange, 
-  children 
-}: { 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void; 
-  children: React.ReactNode 
-}) => {
-  if (!open) return null;
-  
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full m-4 max-h-[90vh] overflow-y-auto">
-        {children}
-      </div>
-    </div>
-  );
-};
 
 const skillLevels = [
   { value: 'beginner', label: 'Principiante' },
@@ -175,23 +155,14 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
         ))}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">{isEditing ? 'Editar Habilidad' : 'Añadir Habilidad'}</h2>
-            <button 
-              onClick={() => setIsDialogOpen(false)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              ×
-            </button>
-          </div>
-          <p className="text-gray-600 mb-4">
-            {isEditing ? 'Actualiza los detalles de tu habilidad' : 'Añade una nueva habilidad técnica'}
-          </p>
-          
-          <form onSubmit={handleSubmit} className="mt-4">
-            <Column gap="4" className="py-4">
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={isEditing ? 'Editar Habilidad' : 'Añadir Habilidad'}
+      >
+        <Column fillWidth gap="16" marginTop="12">
+          <form onSubmit={handleSubmit}>
+            <Column gap="16">
               <Input
                 name="name"
                 label="Nombre de la habilidad"
@@ -242,7 +213,7 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
               </Button>
             </div>
           </form>
-        </div>
+        </Column>
       </Dialog>
     </div>
   );

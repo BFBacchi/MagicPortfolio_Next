@@ -3,7 +3,7 @@
 (function() {
   'use strict';
   
-  // Function to ensure dark theme with green tones
+  // Function to ensure dark theme with gray tones
   function ensureDarkTheme() {
     const root = document.documentElement;
     
@@ -12,33 +12,34 @@
       root.setAttribute('data-theme', 'dark');
     }
     
-    // Ensure green brand colors are applied
-    const greenBrandColors = {
-      'brand': 'yellow',
-      'accent': 'orange',
+    // Ensure gray brand colors are applied
+    const grayBrandColors = {
+      'brand': 'gray',
+      'accent': 'gray',
       'neutral': 'gray'
     };
     
-    Object.entries(greenBrandColors).forEach(([key, value]) => {
+    Object.entries(grayBrandColors).forEach(([key, value]) => {
       if (!root.getAttribute(`data-${key}`) || root.getAttribute(`data-${key}`) === 'cyan') {
         root.setAttribute(`data-${key}`, value);
       }
     });
   }
   
-  // Function to override any blue/cyan colors with dark green
+  // Function to override any blue/cyan colors with dark gray
   function overrideBlueColors() {
     const style = document.createElement('style');
     style.textContent = `
       [data-theme="dark"] {
-        --page-background: #000000 !important;
-        --surface-background: #000000 !important;
-        --scheme-brand-600: #008000 !important;
-        --scheme-brand-700: #009900 !important;
-        --scheme-brand-800: #00b300 !important;
-        --scheme-accent-600: #008040 !important;
-        --scheme-accent-700: #00994d !important;
-        --scheme-accent-800: #00b35a !important;
+        --page-background: #0a0a0a !important;
+        --surface-background: #0a0a0a !important;
+        --surface-background-strong: #1a1a1a !important;
+        --scheme-brand-600: #6a6a6a !important;
+        --scheme-brand-700: #8a8a8a !important;
+        --scheme-brand-800: #aaaaaa !important;
+        --scheme-accent-600: #4a4a4a !important;
+        --scheme-accent-700: #6a6a6a !important;
+        --scheme-accent-800: #8a8a8a !important;
       }
     `;
     document.head.appendChild(style);

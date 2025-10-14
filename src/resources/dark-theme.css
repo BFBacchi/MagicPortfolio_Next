@@ -46,15 +46,15 @@
   --neutral-on-background-strong: #ffffff !important;
   
   /* Border colors */
-  --neutral-alpha-weak: rgba(0,153,0,0.1) !important;
-  --neutral-alpha-medium: rgba(105, 180, 180, 0.3) !important;
-  --neutral-alpha-strong: rgba(0,153,0,0.5) !important;
+  --neutral-alpha-weak: rgba(106,106,106,0.1) !important;
+  --neutral-alpha-medium: rgba(106,106,106,0.3) !important;
+  --neutral-alpha-strong: rgba(106,106,106,0.5) !important;
 }
 
 /* Force dark theme on page load to prevent blue flash */
 html:not([data-theme]) {
   color-scheme: dark;
-  background-color: #001a00;
+  background-color: #0a0a0a;
 }
 
 /* Ensure smooth transitions */

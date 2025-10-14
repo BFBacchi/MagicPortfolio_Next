@@ -63,8 +63,8 @@ const fonts = {
 const style = {
   theme: "dark", // dark | light | system
   neutral: "gray", // sand | gray | slate | custom
-  brand: "emerald", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
-  accent: "orange", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
+  brand: "gray", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
+  accent: "gray", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
   solid: "contrast", // color | contrast
   solidStyle: "flat", // flat | plastic
   border: "playful", // rounded | playful | conservative
