@@ -15,7 +15,6 @@ export async function generateMetadata() {
 export default function WorkPage() {
   return (
     <Column maxWidth="m">
-      <Heading>{work.title}</Heading>
       <Schema
         as="webPage"
         baseURL={baseURL}
@@ -29,7 +28,7 @@ export default function WorkPage() {
           image: `${baseURL}${person.avatar}`,
         }}
       />
-      <Projects />
+      <Projects showManagementButtons={true} />
     </Column>
   );
 }

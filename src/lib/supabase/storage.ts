@@ -86,3 +86,50 @@ export const updateProfile = async (userId: string, updates: { name?: string; ro
 
   if (error) throw error;
 };
+
+// Función para subir imágenes de proyectos
+export const uploadProjectImage = async (file: File, projectSlug: string, imageIndex: number) => {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${projectSlug}-${imageIndex}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+  const filePath = `projects/${fileName}`;
+
+  console.log('Uploading project image to bucket magicportfolio:', filePath);
+
+  // Subir el archivo al bucket 'magicportfolio'
+  const { error: uploadError } = await supabase.storage
+    .from('magicportfolio')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: true
+    });
+
+  if (uploadError) {
+    console.error('Upload error:', uploadError);
+    throw uploadError;
+  }
+
+  console.log('Project image uploaded successfully');
+
+  // Obtener la URL pública
+  const { data: { publicUrl } } = supabase
+    .storage
+    .from('magicportfolio')
+    .getPublicUrl(filePath);
+
+  console.log('Project image public URL:', publicUrl);
+
+  return publicUrl;
+};
+
+// Función para obtener thumbnail de YouTube
+export const getYouTubeThumbnail = (url: string): string => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  const videoId = (match && match[2].length === 11) ? match[2] : null;
+  
+  if (!videoId) {
+    return '';
+  }
+  
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+};

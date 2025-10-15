@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, ReactNode, useCallback, use
 import { createPortal } from 'react-dom';
 import { Dialog, Button, Text } from "@once-ui-system/core";
 
-type ToastVariant = "success" | "danger";
+type ToastVariant = "success" | "error";
 
 interface Toast {
   id: string;

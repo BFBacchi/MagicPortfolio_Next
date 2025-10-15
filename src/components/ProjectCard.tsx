@@ -8,6 +8,8 @@ import {
   Heading,
   SmartLink,
   Text,
+  Button,
+  Icon,
 } from "@once-ui-system/core";
 
 interface ProjectCardProps {
@@ -19,6 +21,8 @@ interface ProjectCardProps {
   description: string;
   avatars: { src: string }[];
   link: string;
+  onEdit?: (project: any) => void;
+  showEditButton?: boolean;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -29,6 +33,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   description,
   avatars,
   link,
+  onEdit,
+  showEditButton = false,
 }) => {
   return (
     <Column fillWidth gap="m">
@@ -80,6 +86,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 >
                   <Text variant="body-default-s">View project</Text>
                 </SmartLink>
+              )}
+              {showEditButton && onEdit && (
+                <Button
+                  variant="secondary"
+                  size="s"
+                  onClick={() => onEdit({ title, content, description, images, link, href })}
+                >
+                  <Icon name="edit" size="s" />
+                  Editar
+                </Button>
               )}
             </Flex>
           </Column>
