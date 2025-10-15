@@ -3,9 +3,11 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Study } from "@/lib/supabase/queries";
-import { Button, Input, Textarea, Column, Dialog } from "@once-ui-system/core";
+import { Button, Input, Textarea, Column, Dialog, Text, Row } from "@once-ui-system/core";
 import { upsertStudy } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
+import { Section } from "../Section";
+import styles from "../about.module.scss";
 
 // Using 'danger' instead of 'error' to match the expected ToastVariant type
 type ToastVariant = 'success' | 'danger' | 'warning' | 'info';
@@ -86,42 +88,61 @@ addToast('Error al guardar el estudio', 'danger');
   };
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Estudios</h2>
-        {!loading && user && (
-          <Button variant="secondary" onClick={handleAddNew}>
-            Añadir Estudio
-          </Button>
-        )}
-      </div>
-
-      <div className="space-y-6">
-        {studies.map((study) => (
-          <div key={study.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-xl font-semibold">{study.degree}</h3>
-                <p className="text-gray-600">{study.institution}</p>
-                <p className="text-sm text-gray-500">
-                  {new Date(study.start_date).getFullYear()} - {study.end_date ? new Date(study.end_date).getFullYear() : 'Actual'}
-                </p>
-                {study.description && <p className="mt-2 text-gray-700">{study.description}</p>}
-              </div>
-              {!loading && user && (
-                <Button variant="secondary" size="s" onClick={() => handleEdit(study)}>
-                  Editar
-                </Button>
-              )}
+    <>
+      <Section
+        id="studies"
+        title="Estudios"
+        onEdit={!loading && !!user ? handleAddNew : undefined}
+      >
+        <div className={styles.studiesContainer}>
+          {studies.length === 0 ? (
+            <p className={styles.sectionText}>
+              Agrega tu formación académica y certificaciones...
+            </p>
+          ) : (
+            <div className={styles.studiesList}>
+              {studies.map((study) => (
+                <div key={study.id} className={styles.studyItem}>
+                  <div className={styles.studyContent}>
+                    <div className={styles.studyHeader}>
+                      <Text as="h3" variant="heading-strong-s" className={styles.studyTitle}>
+                        {study.degree}
+                      </Text>
+                      {!loading && user && (
+                        <Button 
+                          variant="tertiary" 
+                          size="s" 
+                          onClick={() => handleEdit(study)}
+                          className={styles.editButton}
+                        >
+                          Editar
+                        </Button>
+                      )}
+                    </div>
+                    <Text as="p" variant="body-default-m" className={styles.institutionName}>
+                      {study.institution}
+                    </Text>
+                    <Text as="p" variant="body-default-s" className={styles.dateRange}>
+                      {new Date(study.start_date).getFullYear()} - {study.end_date ? new Date(study.end_date).getFullYear() : 'Actual'}
+                    </Text>
+                    {study.description && (
+                      <Text as="p" variant="body-default-m" className={styles.studyDescription}>
+                        {study.description}
+                      </Text>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+        </div>
+      </Section>
 
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         title={isEditing ? 'Editar Estudio' : 'Añadir Estudio'}
+        description="Actualiza tu formación académica"
       >
         <Column fillWidth gap="16" marginTop="12">
           <form onSubmit={handleSubmit}>
@@ -169,9 +190,9 @@ addToast('Error al guardar el estudio', 'danger');
               />
             </Column>
             
-            <div className="flex justify-end gap-2 mt-6">
+            <Row fillWidth vertical="center" gap="8" style={{ justifyContent: "flex-end", marginTop: "24px" }}>
               <Button 
-                variant="secondary" 
+                variant="tertiary" 
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   setIsDialogOpen(false);
@@ -185,11 +206,11 @@ addToast('Error al guardar el estudio', 'danger');
               >
                 {isEditing ? 'Actualizar' : 'Guardar'}
               </Button>
-            </div>
+            </Row>
           </form>
         </Column>
       </Dialog>
-    </div>
+    </>
   );
 };
 

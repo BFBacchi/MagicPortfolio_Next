@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkExperience } from "@/lib/supabase/queries";
-import { Button, Input, Textarea, Column, Dialog } from "@once-ui-system/core";
+import { Button, Input, Textarea, Column, Dialog, Text, Row } from "@once-ui-system/core";
 import { upsertWorkExperience } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
+import { Section } from "../Section";
+import styles from "../about.module.scss";
 
 
 interface WorkExperienceSectionProps {
@@ -104,51 +106,70 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
   };
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Experiencia Laboral</h2>
-        {!loading && user && (
-          <Button variant="secondary" onClick={handleAddNew}>
-            Añadir Experiencia
-          </Button>
-        )}
-      </div>
-
-      <div className="space-y-6">
-        {workExperience.map((exp) => (
-          <div key={exp.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-xl font-semibold">{exp.position}</h3>
-                <p className="text-gray-600">{exp.company}</p>
-                <p className="text-sm text-gray-500">
-                  {new Date(exp.start_date).getFullYear()} - {exp.end_date ? new Date(exp.end_date).getFullYear() : 'Actual'}
-                </p>
-                {exp.description && <p className="mt-2 text-gray-700">{exp.description}</p>}
-                {exp.technologies && exp.technologies.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {exp.technologies.map((tech, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                        {tech}
-                      </span>
-                    ))}
+    <>
+      <Section
+        id="work-experience"
+        title="Experiencia Laboral"
+        onEdit={!loading && !!user ? handleAddNew : undefined}
+      >
+        <div className={styles.experienceContainer}>
+          {workExperience.length === 0 ? (
+            <p className={styles.sectionText}>
+              Agrega tu experiencia laboral para mostrar tu trayectoria profesional...
+            </p>
+          ) : (
+            <div className={styles.experienceList}>
+              {workExperience.map((exp) => (
+                <div key={exp.id} className={styles.experienceItem}>
+                  <div className={styles.experienceContent}>
+                    <div className={styles.experienceHeader}>
+                      <Text as="h3" variant="heading-strong-s" className={styles.experienceTitle}>
+                        {exp.position}
+                      </Text>
+                      {!loading && user && (
+                        <Button 
+                          variant="tertiary" 
+                          size="s" 
+                          onClick={() => handleEdit(exp)}
+                          className={styles.editButton}
+                        >
+                          Editar
+                        </Button>
+                      )}
+                    </div>
+                    <Text as="p" variant="body-default-m" className={styles.companyName}>
+                      {exp.company}
+                    </Text>
+                    <Text as="p" variant="body-default-s" className={styles.dateRange}>
+                      {new Date(exp.start_date).getFullYear()} - {exp.end_date ? new Date(exp.end_date).getFullYear() : 'Actual'}
+                    </Text>
+                    {exp.description && (
+                      <Text as="p" variant="body-default-m" className={styles.experienceDescription}>
+                        {exp.description}
+                      </Text>
+                    )}
+                    {exp.technologies && exp.technologies.length > 0 && (
+                      <div className={styles.technologiesContainer}>
+                        {exp.technologies.map((tech, idx) => (
+                          <span key={idx} className={styles.technologyTag}>
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              {!loading && user && (
-                <Button variant="secondary" size="s" onClick={() => handleEdit(exp)}>
-                  Editar
-                </Button>
-              )}
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+        </div>
+      </Section>
 
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         title={isEditing ? 'Editar Experiencia' : 'Añadir Experiencia'}
+        description="Actualiza tu experiencia laboral"
       >
         <Column fillWidth gap="16" marginTop="12">
           <form onSubmit={handleSubmit}>
@@ -204,9 +225,9 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
               />
             </Column>
             
-            <div className="flex justify-end gap-2 mt-6">
+            <Row fillWidth vertical="center" gap="8" style={{ justifyContent: "flex-end", marginTop: "24px" }}>
               <Button 
-                variant="secondary" 
+                variant="tertiary" 
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   setIsDialogOpen(false);
@@ -220,11 +241,11 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
               >
                 {isEditing ? 'Actualizar' : 'Guardar'}
               </Button>
-            </div>
+            </Row>
           </form>
         </Column>
       </Dialog>
-    </div>
+    </>
   );
 };
 

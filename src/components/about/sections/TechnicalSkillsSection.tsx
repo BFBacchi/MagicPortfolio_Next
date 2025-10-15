@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { TechnicalSkill } from "@/lib/supabase/queries";
-import { Button, Input, Column, Select, Dialog } from "@once-ui-system/core";
+import { Button, Input, Column, Select, Dialog, Text, Row } from "@once-ui-system/core";
 import { upsertTechnicalSkill } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
+import { Section } from "../Section";
+import styles from "../about.module.scss";
 
 
 const skillLevels = [
@@ -99,66 +101,77 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
   }, {} as Record<string, TechnicalSkill[]>);
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Habilidades Técnicas</h2>
-        {!loading && user && (
-          <Button variant="secondary" onClick={handleAddNew}>
-            Añadir Habilidad
-          </Button>
-        )}
-      </div>
-
-      <div className="space-y-6">
-        {Object.entries(skillsByCategory).map(([category, skills]) => (
-          <div key={category} className="mb-6">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">{category}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {skills.map((skill) => (
-                <div key={skill.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-medium">{skill.name}</h4>
-                      <div className="mt-1">
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              skill.level === 'beginner' ? 'bg-blue-400 w-1/4' :
-                              skill.level === 'intermediate' ? 'bg-blue-500 w-1/2' :
-                              skill.level === 'advanced' ? 'bg-blue-600 w-3/4' :
-                              'bg-blue-700 w-full'
-                            }`}
-                          ></div>
+    <>
+      <Section
+        id="technical-skills"
+        title="Habilidades Técnicas"
+        onEdit={!loading && !!user ? handleAddNew : undefined}
+      >
+        <div className={styles.skillsContainer}>
+          {technicalSkills.length === 0 ? (
+            <p className={styles.sectionText}>
+              Agrega tus habilidades técnicas y competencias...
+            </p>
+          ) : (
+            <div className={styles.skillsList}>
+              {Object.entries(skillsByCategory).map(([category, skills]) => (
+                <div key={category} className={styles.skillCategory}>
+                  <Text as="h3" variant="heading-strong-s" className={styles.categoryTitle}>
+                    {category}
+                  </Text>
+                  <div className={styles.skillsGrid}>
+                    {skills.map((skill) => (
+                      <div key={skill.id} className={styles.skillItem}>
+                        <div className={styles.skillContent}>
+                          <div className={styles.skillHeader}>
+                            <Text as="h4" variant="body-strong-m" className={styles.skillName}>
+                              {skill.name}
+                            </Text>
+                            {!loading && user && (
+                              <Button 
+                                variant="tertiary" 
+                                size="s" 
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                                  e.stopPropagation();
+                                  handleEdit(skill);
+                                }}
+                                className={styles.editButton}
+                              >
+                                Editar
+                              </Button>
+                            )}
+                          </div>
+                          <div className={styles.skillLevelContainer}>
+                            <div className={styles.skillLevelBar}>
+                              <div 
+                                className={`${styles.skillLevelFill} ${
+                                  skill.level === 'beginner' ? styles.beginner :
+                                  skill.level === 'intermediate' ? styles.intermediate :
+                                  skill.level === 'advanced' ? styles.advanced :
+                                  styles.expert
+                                }`}
+                              ></div>
+                            </div>
+                            <Text as="span" variant="body-default-xs" className={styles.skillLevelLabel}>
+                              {getSkillLevelLabel(skill.level)}
+                            </Text>
+                          </div>
                         </div>
-                        <span className="text-xs text-gray-500 mt-1 block">
-                          {getSkillLevelLabel(skill.level)}
-                        </span>
                       </div>
-                    </div>
-                    {!loading && user && (
-                      <Button 
-                        variant="secondary" 
-                        size="s" 
-                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                          e.stopPropagation();
-                          handleEdit(skill);
-                        }}
-                      >
-                        Editar
-                      </Button>
-                    )}
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+        </div>
+      </Section>
 
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         title={isEditing ? 'Editar Habilidad' : 'Añadir Habilidad'}
+        description="Actualiza tus habilidades técnicas"
       >
         <Column fillWidth gap="16" marginTop="12">
           <form onSubmit={handleSubmit}>
@@ -195,9 +208,9 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
               />
             </Column>
             
-            <div className="flex justify-end gap-2 mt-6">
+            <Row fillWidth vertical="center" gap="8" style={{ justifyContent: "flex-end", marginTop: "24px" }}>
               <Button 
-                variant="secondary" 
+                variant="tertiary" 
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   setIsDialogOpen(false);
@@ -211,11 +224,11 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
               >
                 {isEditing ? 'Actualizar' : 'Guardar'}
               </Button>
-            </div>
+            </Row>
           </form>
         </Column>
       </Dialog>
-    </div>
+    </>
   );
 };
 

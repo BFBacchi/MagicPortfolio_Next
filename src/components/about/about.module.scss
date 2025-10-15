@@ -29,6 +29,31 @@
   border: 1px solid var(--color-border-strong);
   box-shadow: var(--shadow-xl);
   margin-bottom: 2rem;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(106, 106, 106, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
 }
 
 .navLinks {
@@ -47,11 +72,45 @@
   color: var(--color-text-secondary);
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid var(--color-primary);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
 
   &.navLink:hover, .navLink.active {
     background: var(--color-bg-subtle);
@@ -61,11 +120,23 @@
   &:hover {
     background: var(--color-bg-subtle);
     color: var(--color-text-primary);
-    transform: translateX(4px);
+    transform: translateX(8px);
+    
+    &::before {
+      width: 4px;
+    }
+    
+    &::after {
+      right: 8px;
+    }
+    
+    span {
+      transform: translateX(4px);
+    }
   }
 
   &:active {
-    transform: translateX(4px) scale(0.98);
+    transform: translateX(8px) scale(0.98);
   }
 }
 
@@ -82,11 +153,29 @@
   border-radius: var(--radius-l);
   background: var(--color-surface-raised);
   box-shadow: var(--shadow-s);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transition: left 0.5s ease;
+  }
 
   &:hover {
     box-shadow: var(--shadow-m);
+    transform: translateY(-4px);
+    
+    &::before {
+      left: 0;
     }
+  }
 }
 
 .sectionContent {
@@ -145,6 +234,32 @@
   align-items: center;
   margin-bottom: 1.5rem;
   gap: 1rem;
+  position: relative;
+  
+  h1, h2, h3, h4, h5, h6 {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    &:hover {
+      transform: translateX(4px);
+      color: var(--color-primary);
+      
+      &::after {
+        width: 100%;
+      }
+    }
+  }
 }
 
 .sectionContent {
@@ -174,6 +289,33 @@
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: var(--color-text);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    
+    &:hover {
+      color: var(--color-primary);
+      transform: translateX(4px);
+    }
+    
+    // Efecto de pulso sutil en el label
+    &::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      background: var(--color-primary);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    &:hover::before {
+      width: 6px;
+      height: 6px;
+    }
   }
   
   .required {
@@ -190,22 +332,91 @@
     font-family: inherit;
     background-color: var(--color-background);
     color: var(--color-text);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    
+    // Efecto de línea animada en el borde inferior
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
+    }
+    
+    // Efecto de resplandor sutil
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, transparent, rgba(106, 106, 106, 0.05));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    
+    &:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      
+      &::before {
+        width: 100%;
+      }
+      
+      &::after {
+        opacity: 1;
+      }
+    }
     
     &:focus {
       outline: none;
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px var(--color-primary-weak);
+      box-shadow: 0 0 0 3px rgba(106, 106, 106, 0.2), 0 4px 16px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+      
+      &::before {
+        width: 100%;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+        box-shadow: 0 0 8px rgba(106, 106, 106, 0.4);
+      }
+      
+      &::after {
+        opacity: 1;
+        background: linear-gradient(135deg, transparent, rgba(106, 106, 106, 0.1));
+      }
     }
     
     &::placeholder {
       color: var(--color-text-weak);
+      transition: color 0.3s ease;
+    }
+    
+    &:hover::placeholder {
+      color: var(--color-text);
     }
   }
   
   textarea.formInput {
     min-height: 120px;
     resize: vertical;
+    line-height: 1.6;
+    
+    &:hover {
+      transform: translateY(-1px) scale(1.01);
+    }
+    
+    &:focus {
+      transform: translateY(-2px) scale(1.02);
+    }
   }
 }
 
@@ -223,24 +434,78 @@
       background-color: transparent;
       color: var(--color-text);
       border: 1px solid var(--color-border);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(106, 106, 106, 0.1), transparent);
+        transition: left 0.5s ease;
+      }
       
       &:hover {
         background-color: var(--color-surface-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        
+        &::before {
+          left: 100%;
+        }
+      }
+      
+      &:active {
+        transform: translateY(0);
       }
     }
     
     .submitButton {
-      background-color: var(--color-primary);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
       color: white;
       border: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
       
       &:hover {
-        background-color: var(--color-primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(106, 106, 106, 0.3);
+        background: linear-gradient(135deg, var(--color-primary-hover), var(--color-accent-hover));
+        
+        &::before {
+          left: 100%;
+        }
+      }
+      
+      &:active {
+        transform: translateY(0);
       }
       
       &:disabled {
-        background-color: var(--color-primary-weak);
+        background: var(--color-primary-weak);
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        
+        &::before {
+          display: none;
+        }
       }
     }
   }
@@ -301,6 +566,31 @@
   font-weight: 600;
   margin-bottom: 1.5rem;
   color: var(--color-text-default);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInFromTop 0.5s ease-out;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-accent));
+    border-radius: 2px;
+    transform: scaleY(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  &:hover {
+    transform: translateX(8px);
+    color: var(--color-primary);
+    
+    &::before {
+      transform: scaleY(1);
+    }
+  }
 }
 
 .modalForm {
@@ -490,4 +780,450 @@
     .blockAlign {
         align-self: center;
     }
+}
+
+// Animaciones keyframes
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+// Aplicar animaciones a elementos específicos
+.section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.formField {
+  animation: slideInFromLeft 0.5s ease-out;
+  
+  &:nth-child(even) {
+    animation: slideInFromRight 0.5s ease-out;
+  }
+}
+
+.modalContent {
+  animation: slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Efecto de carga para los inputs
+.formInput:focus {
+  animation: pulse 0.3s ease-in-out;
+}
+
+// Efecto de shimmer para botones
+.submitButton {
+  background-size: 200px 100%;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  
+  &:hover {
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+// Estilos para las secciones de experiencia, estudios y habilidades
+.sectionText {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  line-height: 1.6;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+// Estilos para experiencia laboral
+.experienceContainer {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.experienceList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.experienceItem {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-subtle);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--color-primary);
+    
+    &::before {
+      left: 0;
+    }
+  }
+}
+
+.experienceContent {
+  position: relative;
+  z-index: 1;
+}
+
+.experienceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.experienceTitle {
+  color: var(--color-text-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.companyName {
+  color: var(--color-text-secondary);
+  margin: 0.25rem 0;
+  font-weight: 500;
+}
+
+.dateRange {
+  color: var(--color-text-weak);
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.experienceDescription {
+  color: var(--color-text);
+  margin: 1rem 0 0 0;
+  line-height: 1.6;
+}
+
+.technologiesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.technologyTag {
+  padding: 0.25rem 0.75rem;
+  background: var(--color-primary-weak);
+  color: var(--color-primary);
+  border-radius: var(--radius-s);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: scale(1.05);
+  }
+}
+
+// Estilos para estudios
+.studiesContainer {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.studiesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.studyItem {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-subtle);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--color-primary);
+    
+    &::before {
+      left: 0;
+    }
+  }
+}
+
+.studyContent {
+  position: relative;
+  z-index: 1;
+}
+
+.studyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.studyTitle {
+  color: var(--color-text-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.institutionName {
+  color: var(--color-text-secondary);
+  margin: 0.25rem 0;
+  font-weight: 500;
+}
+
+.studyDescription {
+  color: var(--color-text);
+  margin: 1rem 0 0 0;
+  line-height: 1.6;
+}
+
+// Estilos para habilidades técnicas
+.skillsContainer {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.skillCategory {
+  animation: slideInFromLeft 0.5s ease-out;
+}
+
+.categoryTitle {
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-border);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transition: width 0.3s ease;
+  }
+  
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.skillItem {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-subtle);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--color-primary);
+    
+    &::before {
+      left: 0;
+    }
+  }
+}
+
+.skillContent {
+  position: relative;
+  z-index: 1;
+}
+
+.skillHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.skillName {
+  color: var(--color-text-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.skillLevelContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skillLevelBar {
+  width: 100%;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skillLevelFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  &.beginner {
+    width: 25%;
+    background: linear-gradient(90deg, #ef4444, #f87171);
+  }
+  
+  &.intermediate {
+    width: 50%;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  }
+  
+  &.advanced {
+    width: 75%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  }
+  
+  &.expert {
+    width: 100%;
+    background: linear-gradient(90deg, #10b981, #34d399);
+  }
+}
+
+.skillLevelLabel {
+  color: var(--color-text-weak);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Botón de editar común
+.editButton {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    transform: scale(1.05);
+  }
 }
