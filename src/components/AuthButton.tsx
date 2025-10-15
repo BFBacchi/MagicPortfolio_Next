@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Button, Flex, Text, Column, Input, Line } from '@once-ui-system/core';
+import { useState, useEffect, useRef } from 'react';
+import { Button, Flex, Text, Column, Input, Line, Icon } from '@once-ui-system/core';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/contexts/LanguageContext';
+import styles from './AuthButton.module.scss';
 
 interface AuthButtonProps {
   onLanguageChange?: (language: string) => void;
@@ -18,9 +19,11 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check for existing session
@@ -44,6 +47,23 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -72,6 +92,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
   const handleLogout = async () => {
     setLoading(true);
+    setShowUserMenu(false);
     try {
       await supabase.auth.signOut();
     } catch (err: any) {
@@ -113,19 +134,48 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
       {/* Auth Button */}
       {user ? (
-        <Flex gap="s" vertical="center">
-          <Text variant="body-default-s" onBackground="neutral-strong">
-            {user.email}
-          </Text>
+        <div ref={userMenuRef} className={styles.userMenuContainer}>
           <Button
             variant="secondary"
             size="s"
-            onClick={handleLogout}
+            onClick={() => setShowUserMenu(!showUserMenu)}
             disabled={loading}
+            className={styles.userButton}
           >
-            {loading ? '...' : t('logout')}
+            <Text variant="body-default-s" onBackground="neutral-strong">
+              {user.email}
+            </Text>
+            <Icon 
+              name={showUserMenu ? "chevron-up" : "chevron-down"} 
+              size="s" 
+              onBackground="neutral-strong" 
+            />
           </Button>
-        </Flex>
+          
+          {/* User Menu Dropdown */}
+          {showUserMenu && (
+            <Column
+              className={styles.dropdownMenu}
+              background="surface"
+              border="neutral-alpha-weak"
+              radius="m"
+              shadow="l"
+              padding="s"
+              gap="xs"
+            >
+              <Button
+                variant="tertiary"
+                size="s"
+                onClick={handleLogout}
+                disabled={loading}
+                className={styles.logoutButton}
+              >
+                <Icon name="logout" size="s" />
+                {loading ? '...' : t('logout')}
+              </Button>
+            </Column>
+          )}
+        </div>
       ) : (
         <Button
           variant="primary"
@@ -143,35 +193,11 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
         <>
           {/* Fondo semitransparente */}
           <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              background: 'rgba(0,0,0,0.4)',
-              zIndex: 1000,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className={styles.modalOverlay}
             onClick={() => setShowLogin(false)}
           />
           {/* Modal centrado */}
-          <Column
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              zIndex: 1001,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              pointerEvents: 'none',
-            }}
-          >
+          <Column className={styles.modalContainer}>
             <Column
               background="surface"
               border="neutral-alpha-weak"
@@ -181,7 +207,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
               gap="l"
               minWidth={0}
               maxWidth={216}
-              style={{ pointerEvents: 'auto', boxSizing: 'border-box', width: '54vw' }}
+              className={styles.modalContent}
               onClick={e => e.stopPropagation()}
             >
               <Text variant="body-default-m" onBackground="neutral-strong">

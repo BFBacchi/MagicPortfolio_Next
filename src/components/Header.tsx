@@ -9,6 +9,7 @@ import { routes, display, person, about, blog, work, gallery, dbTest } from "@/r
 import { ThemeToggle } from "./ThemeToggle";
 import { AuthButton } from "./AuthButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import styles from "./Header.module.scss";
 
 type TimeDisplayProps = {
@@ -47,6 +48,7 @@ export default TimeDisplay;
 export const Header = () => {
   const pathname = usePathname() ?? "";
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   return (
     <>
@@ -151,7 +153,7 @@ export const Header = () => {
                   />
                 </>
               )}
-              {routes["/db-test"] && (
+              {routes["/db-test"] && user && (
                 <>
                   <ToggleButton
                     className="s-flex-hide"
