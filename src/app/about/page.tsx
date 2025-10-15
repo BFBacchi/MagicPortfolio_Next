@@ -63,7 +63,7 @@ export default async function About() {
     {
       title: about.technical.title,
       display: about.technical.display,
-      items: technicalSkills.map((skill) => skill.title),
+      items: technicalSkills.map((skill) => skill.name),
     },
   ];
   return (

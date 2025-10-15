@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { TechnicalSkill } from "@/lib/supabase/queries";
-import { Button, Input, Column, Select, Dialog, Text, Row } from "@once-ui-system/core";
+import { Button, Input, Column, Dialog, Text, Row } from "@once-ui-system/core";
 import { upsertTechnicalSkill } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
 import { Section } from "../Section";
@@ -37,8 +37,8 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
   const handleEdit = (skill: TechnicalSkill) => {
     setEditingSkill(skill);
     setFormData({
-      name: skill.name,
-      level: skill.level,
+      name: skill.name || '',
+      level: skill.level || 'intermediate',
       category: skill.category || ''
     });
     setIsEditing(true);
@@ -61,15 +61,30 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
     try {
       if (!user) return;
 
-      const data = {
-        ...formData,
+      // Ensure all required fields are present
+      const data: Partial<TechnicalSkill> = {
+        name: formData.name || '',
+        level: formData.level || 'intermediate',
+        category: formData.category || '',
         user_id: user.id,
-        id: editingSkill?.id
+        ...(editingSkill?.id && { id: editingSkill.id })
       };
 
+      console.log('Saving technical skill:', data); // Debug log
+      
       await upsertTechnicalSkill(data as TechnicalSkill);
       addToast('Habilidad guardada correctamente', 'success');
+      
+      // Reset form and close modal
       setIsDialogOpen(false);
+      setEditingSkill(null);
+      setFormData({
+        name: '',
+        level: 'intermediate',
+        category: ''
+      });
+      setIsEditing(false);
+      
       onUpdate();
     } catch (error) {
       console.error('Error saving technical skill:', error);
@@ -105,8 +120,18 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
       <Section
         id="technical-skills"
         title="Habilidades Técnicas"
-        onEdit={!loading && !!user ? handleAddNew : undefined}
       >
+        <div className={styles.skillsHeader}>
+          {!loading && user && (
+            <Button 
+              variant="primary" 
+              onClick={handleAddNew}
+              className={styles.addSkillButton}
+            >
+              + Añadir Habilidad
+            </Button>
+          )}
+        </div>
         <div className={styles.skillsContainer}>
           {technicalSkills.length === 0 ? (
             <p className={styles.sectionText}>
@@ -169,7 +194,16 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
 
       <Dialog
         isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={() => {
+          setIsDialogOpen(false);
+          setEditingSkill(null);
+          setFormData({
+            name: '',
+            level: 'intermediate',
+            category: ''
+          });
+          setIsEditing(false);
+        }}
         title={isEditing ? 'Editar Habilidad' : 'Añadir Habilidad'}
         description="Actualiza tus habilidades técnicas"
       >
@@ -179,31 +213,31 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
               <Input
                 name="name"
                 label="Nombre de la habilidad"
-                value={formData.name}
+                value={formData.name || ''}
                 onChange={handleChange}
                 required
               />
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nivel</label>
-                <Select
+                <select
                   name="level"
-                  value={formData.level}
-                  onChange={(e) => setFormData(prev => ({ ...prev, level: e.target.value as any }))}
-                  className="w-full"
+                  value={formData.level || 'intermediate'}
+                  onChange={handleChange}
+                  className={styles.skillLevelSelect}
                 >
                   {skillLevels.map(level => (
                     <option key={level.value} value={level.value}>
                       {level.label}
                     </option>
                   ))}
-                </Select>
+                </select>
               </div>
               
               <Input
                 name="category"
                 label="Categoría (ej: Frontend, Backend, Herramientas, etc.)"
-                value={formData.category}
+                value={formData.category || ''}
                 onChange={handleChange}
               />
             </Column>
@@ -214,6 +248,13 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   setIsDialogOpen(false);
+                  setEditingSkill(null);
+                  setFormData({
+                    name: '',
+                    level: 'intermediate',
+                    category: ''
+                  });
+                  setIsEditing(false);
                 }}
               >
                 Cancelar

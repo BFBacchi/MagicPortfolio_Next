@@ -3,7 +3,7 @@
 import { AvatarPanel } from "./AvatarPanel";
 import { IntroductionSection } from "./sections/IntroductionSection";
 import { ImageGallery } from "./ImageGallery";
-import { Introduction, WorkExperience, Study, TechnicalSkill } from "@/lib/supabase/queries";
+import { Introduction, WorkExperience, Study, TechnicalSkill, getTechnicalSkills } from "@/lib/supabase/queries";
 import { Column, Text, Button, Dialog, Input, Row, Icon } from "@once-ui-system/core";
 import styles from "./about.module.scss";
 import { useState, useEffect } from "react";
@@ -34,11 +34,38 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
   const [showImageGallery, setShowImageGallery] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [currentTechnicalSkills, setCurrentTechnicalSkills] = useState<TechnicalSkill[]>(technicalSkills);
 
   // Function to trigger a refresh of the data
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setRefreshKey(prev => prev + 1);
+    
+    // Also refresh technical skills
+    if (user?.id) {
+      try {
+        const skills = await getTechnicalSkills(user.id);
+        setCurrentTechnicalSkills(skills);
+      } catch (error) {
+        console.error('Error refreshing technical skills:', error);
+      }
+    }
   };
+
+  // Load technical skills for the authenticated user
+  useEffect(() => {
+    const loadTechnicalSkills = async () => {
+      if (user?.id) {
+        try {
+          const skills = await getTechnicalSkills(user.id);
+          setCurrentTechnicalSkills(skills);
+        } catch (error) {
+          console.error('Error loading technical skills:', error);
+        }
+      }
+    };
+
+    loadTechnicalSkills();
+  }, [user?.id, refreshKey]);
 
   
 
@@ -314,7 +341,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
           />
 
           <TechnicalSkillsSection 
-            technicalSkills={technicalSkills} 
+            technicalSkills={currentTechnicalSkills} 
             onUpdate={handleRefresh} 
           />
         </div>

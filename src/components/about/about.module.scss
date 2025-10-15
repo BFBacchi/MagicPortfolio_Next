@@ -1066,6 +1066,50 @@
 }
 
 // Estilos para habilidades técnicas
+.skillsHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+  animation: slideInFromRight 0.5s ease-out;
+}
+
+.addSkillButton {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-s);
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 106, 106, 0.3);
+    background: linear-gradient(135deg, var(--color-primary-hover), var(--color-accent-hover));
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 .skillsContainer {
   animation: fadeInUp 0.6s ease-out;
 }
@@ -1222,8 +1266,61 @@
 // Botón de editar común
 .editButton {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(106, 106, 106, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
   
   &:hover {
     transform: scale(1.05);
+    background-color: var(--color-primary-weak);
+    color: var(--color-primary);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Estilos para select nativo en habilidades técnicas
+.skillLevelSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-s);
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(106, 106, 106, 0.2);
+  }
+  
+  &:hover {
+    border-color: var(--color-primary);
+  }
+  
+  option {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    padding: 0.5rem;
   }
 }

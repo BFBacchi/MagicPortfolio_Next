@@ -33,12 +33,12 @@ export interface Study {
 }
 
 export interface TechnicalSkill {
-  id: number
-  title: string
+  id?: number
+  name: string
   category: string
-  level: number
-  description: string
-  created_at: string
+  level: string
+  user_id: string
+  created_at?: string
 }
 
 // Función para obtener la introducción
@@ -87,17 +87,27 @@ export async function getStudies(): Promise<Study[]> {
 }
 
 // Función para obtener habilidades técnicas
-export async function getTechnicalSkills(): Promise<TechnicalSkill[]> {
-  const { data, error } = await supabase
+export async function getTechnicalSkills(userId?: string): Promise<TechnicalSkill[]> {
+  let query = supabase
     .from('technical_skills')
     .select('*')
     .order('category', { ascending: true })
-    .order('level', { ascending: false })
+    .order('name', { ascending: true })
+
+  if (userId) {
+    query = query.eq('user_id', userId)
+  } else {
+    // Si no se pasa userId, obtener todas las habilidades (para compatibilidad)
+    console.log('No userId provided, fetching all technical skills')
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching technical skills:', error)
     return []
   }
 
+  console.log('Fetched technical skills:', data?.length || 0, 'records')
   return data || []
 } 
