@@ -15,11 +15,13 @@ const person = {
 
 const newsletter = {
   display: true,
-  title: <>Subscribe to {person.firstName}'s Newsletter</>,
+  title: <>💬 ¡Hablemos de tu proyecto!</>,
   description: (
     <>
-      I occasionally write about design, technology, and share thoughts on the intersection of
-      creativity and engineering.
+      ¿Tienes una idea para un proyecto? ¿Necesitas un desarrollador fullstack? 
+      Envíame un mensaje y conversemos sobre cómo puedo ayudarte a hacer realidad tu visión.
+      <br />
+      <strong>Respuesta garantizada en menos de 24 horas.</strong>
     </>
   ),
 };

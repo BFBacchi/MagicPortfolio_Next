@@ -91,7 +91,7 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setIntroText(e.target.value)}
                 disabled={isSaving}
                 required
-                placeholder="Escribe tu introducción aquí..."
+                description="Escribe tu introducción aquí..."
                 style={{
                   resize: "vertical",
                   minHeight: "120px",

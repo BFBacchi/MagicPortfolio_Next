@@ -374,24 +374,24 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                 <div>
                   <Text variant="body-default-s" marginBottom="s">Enlaces Sociales</Text>
                   <Column gap="s">
-                    <Input
-                      id="edit-github"
-                      label="GitHub URL"
-                      placeholder="https://github.com/tu-usuario"
-                      value={tempData?.github_url || ''}
-                      onChange={(e) => setTempData({ ...tempData!, github_url: e.target.value })}
-                    />
+                      <Input
+                        id="edit-github"
+                        label="GitHub URL"
+                        description="https://github.com/tu-usuario"
+                        value={tempData?.github_url || ''}
+                        onChange={(e) => setTempData({ ...tempData!, github_url: e.target.value })}
+                      />
                     <Input
                       id="edit-linkedin"
                       label="LinkedIn URL"
-                      placeholder="https://www.linkedin.com/in/tu-perfil"
+                      description="https://www.linkedin.com/in/tu-perfil"
                       value={tempData?.linkedin_url || ''}
                       onChange={(e) => setTempData({ ...tempData!, linkedin_url: e.target.value })}
                     />
                     <Input
                       id="edit-discord"
                       label="Discord URL"
-                      placeholder="https://discord.gg/tu-servidor"
+                      description="https://discord.gg/tu-servidor"
                       value={tempData?.discord_url || ''}
                       onChange={(e) => setTempData({ ...tempData!, discord_url: e.target.value })}
                     />
@@ -399,7 +399,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                       id="edit-email"
                       label="Email"
                       type="email"
-                      placeholder="tu@email.com"
+                      description="tu@email.com"
                       value={tempData?.email_url || ''}
                       onChange={(e) => setTempData({ ...tempData!, email_url: e.target.value })}
                     />

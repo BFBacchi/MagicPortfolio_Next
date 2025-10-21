@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkExperience } from "@/lib/supabase/queries";
-import { Button, Input, Textarea, Column, Dialog, Text, Row } from "@once-ui-system/core";
+import { Button, Input, Textarea, Column, Dialog, Text, Row, TagInput, Kbd } from "@once-ui-system/core";
 import { upsertWorkExperience } from "@/lib/supabase/mutations";
 import { useToast } from "@/contexts/ToastContext";
 import { Section } from "../Section";
@@ -29,8 +29,6 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
     end_date: '',
     technologies: []
   });
-  
-  const [technologiesInput, setTechnologiesInput] = useState('');
 
   const handleEdit = (exp: WorkExperience) => {
     setEditingExp(exp);
@@ -42,24 +40,14 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
       end_date: exp.end_date || '',
       technologies: exp.technologies || []
     });
-    setTechnologiesInput(exp.technologies ? exp.technologies.join(', ') : '');
     setIsEditing(true);
     setIsDialogOpen(true);
   };
   
-  const handleTechnologiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setTechnologiesInput(value);
-    
-    // Split by comma and trim whitespace from each technology
-    const techArray = value
-      .split(',')
-      .map(tech => tech.trim())
-      .filter(tech => tech.length > 0);
-      
+  const handleTechnologiesChange = (newTechnologies: string[]) => {
     setFormData(prev => ({
       ...prev,
-      technologies: techArray
+      technologies: newTechnologies
     }));
   };
 
@@ -215,13 +203,13 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
                 onChange={handleChange}
                 rows={4}
               />
-              <Input
+              <TagInput
                 id="technologies"
-                name="technologies"
-                label="Tecnologías (separadas por comas)"
-                value={technologiesInput}
+                label="Tecnologías"
+                value={formData.technologies || []}
                 onChange={handleTechnologiesChange}
-                placeholder="Ej: React, Node.js, TypeScript"
+                placeholder="Escribe y presiona Enter"
+                hasSuffix={<Kbd position="absolute" top="12" right="12">Enter</Kbd>}
               />
             </Column>
             

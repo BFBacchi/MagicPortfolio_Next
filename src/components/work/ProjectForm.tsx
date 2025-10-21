@@ -168,59 +168,66 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       <Row gap="l">
         <Column flex={1} gap="m">
           <Input
+            id="project-title"
             label="Título"
             value={formData.title}
             onChange={(e) => handleTitleChange(e.target.value)}
-            placeholder="Título del proyecto"
+            description="Nombre del proyecto"
             required
           />
 
           <Input
+            id="project-slug"
             label="Slug (URL)"
             value={formData.slug}
             onChange={(e) => handleInputChange('slug', e.target.value)}
-            placeholder="url-del-proyecto"
+            description="url-del-proyecto"
             required
           />
 
           <Textarea
+            id="project-summary"
             label="Resumen"
             value={formData.summary}
             onChange={(e) => handleInputChange('summary', e.target.value)}
-            placeholder="Breve descripción del proyecto"
+            description="Breve descripción del proyecto"
             rows={3}
             required
           />
 
           <Textarea
+            id="project-content"
             label="Contenido (Markdown)"
             value={formData.content}
             onChange={(e) => handleInputChange('content', e.target.value)}
-            placeholder="Contenido completo del proyecto en Markdown"
+            description="Contenido completo del proyecto en Markdown"
             rows={8}
           />
 
           <Input
+            id="project-link"
             label="Enlace del proyecto"
             value={formData.link}
             onChange={(e) => handleInputChange('link', e.target.value)}
-            placeholder="https://ejemplo.com"
+            description="https://ejemplo.com"
           />
 
           <Input
+            id="project-video"
             label="URL del video de YouTube"
             value={formData.video_url}
             onChange={(e) => handleInputChange('video_url', e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
+            description="https://www.youtube.com/watch?v=..."
           />
         </Column>
 
         <Column flex={1} gap="m">
           <Input
+            id="project-tag"
             label="Etiqueta"
             value={formData.tag}
             onChange={(e) => handleInputChange('tag', e.target.value)}
-            placeholder="web-development"
+            description="web-development"
           />
 
           <div>
@@ -242,9 +249,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             </Flex>
             <Flex gap="s" marginTop="s">
               <Input
+                id="new-technology"
                 value={newTechnology}
                 onChange={(e) => setNewTechnology(e.target.value)}
-                placeholder="Agregar tecnología"
+                placeholder="Escribe y presiona Enter"
                 onKeyPress={(e) => e.key === 'Enter' && handleAddTechnology()}
               />
               <Button
