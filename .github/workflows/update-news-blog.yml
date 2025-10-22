@@ -69,15 +69,15 @@ jobs:
       - name: 💾 Commit y push de cambios
         if: steps.verify-changes.outputs.changes == 'true'
         run: |
-          git add src/app/blog/posts/*.mdx
+          git add src/app/noticias/posts/*.mdx
           git add scripts/processed_news.json
           
           # Crear mensaje de commit descriptivo
           COMMIT_MSG="📰 Agregar noticias de desarrollo automáticas
 
-          - Posts generados automáticamente desde feeds RSS
-          - Fuentes: Dev.to, CSS-Tricks, Smashing Magazine, Hacker News
-          - Filtrado por relevancia para desarrollo web
+          - Posts generados automáticamente desde feeds RSS en español
+          - Fuentes: Dev.to Español, FreeCodeCamp Español, Platzi, Código Facilito
+          - Filtrado por relevancia para desarrollo web y contenido en español
           
           Ejecutado por GitHub Actions el $(date '+%Y-%m-%d %H:%M:%S UTC')"
           
@@ -106,5 +106,5 @@ jobs:
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🔗 Enlaces útiles:" >> $GITHUB_STEP_SUMMARY
-          echo "- [Ver blog](/blog)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Ver noticias](/noticias)" >> $GITHUB_STEP_SUMMARY
           echo "- [Configurar scraper](../../scripts/news-scraper.py)" >> $GITHUB_STEP_SUMMARY
