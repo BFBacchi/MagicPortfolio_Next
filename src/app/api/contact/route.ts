@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,19 +22,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Configurar transporter (usando Gmail SMTP)
-    const transporter = nodemailer.createTransporter({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER, // bfbacchi@gmail.com
-        pass: process.env.EMAIL_PASSWORD, // App password de Gmail
-      },
-    });
+    // Validar que la API key de Resend esté configurada
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json(
+        { error: 'API key de Resend no configurada' },
+        { status: 500 }
+      );
+    }
 
-    // Configurar el email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: 'bfbacchi@gmail.com',
+    // Configurar Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    // Enviar email a Bruno
+    await resend.emails.send({
+      from: 'Portfolio Contact <onboarding@resend.dev>', // Usa tu dominio verificado en Resend
+      to: ['bfbacchi@gmail.com'],
       subject: `[Portfolio Contact] ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -58,20 +60,17 @@ export async function POST(request: NextRequest) {
             <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES', { 
               timeZone: 'America/Argentina/Buenos_Aires' 
             })}</p>
-            <p><strong>IP:</strong> ${request.ip || 'No disponible'}</p>
+            <p><strong>IP:</strong> ${request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'No disponible'}</p>
           </div>
         </div>
       `,
-      replyTo: email, // Para que puedas responder directamente
-    };
-
-    // Enviar email
-    await transporter.sendMail(mailOptions);
+      replyTo: email,
+    });
 
     // Enviar confirmación al usuario
-    const confirmationMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
+    await resend.emails.send({
+      from: 'Portfolio Contact <onboarding@resend.dev>',
+      to: [email],
       subject: 'Gracias por contactarme - Bruno Bacchi',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -100,9 +99,7 @@ export async function POST(request: NextRequest) {
           </p>
         </div>
       `,
-    };
-
-    await transporter.sendMail(confirmationMailOptions);
+    });
 
     return NextResponse.json(
       { message: 'Mensaje enviado correctamente' },

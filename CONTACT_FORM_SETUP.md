@@ -1,13 +1,34 @@
 # 📧 Configuración del Formulario de Contacto
 
+## ✨ Migración a Resend
+
+El formulario de contacto ahora usa [Resend](https://resend.com) en lugar de nodemailer. Resend es más confiable, fácil de configurar y está diseñado para aplicaciones modernas.
+
+### Ventajas de Resend:
+- ✅ **Configuración simple**: Solo necesitas una API key
+- ✅ **Alta deliverabilidad**: Los emails llegan a la bandeja de entrada
+- ✅ **3,000 emails/mes gratis**
+- ✅ **Sin configuración SMTP compleja**
+
+### Configuración rápida:
+1. Crea cuenta en [resend.com](https://resend.com)
+2. Obtén tu API key
+3. Agrega `RESEND_API_KEY` a tu `.env.local`
+4. ¡Listo!
+
+Para más detalles, consulta [RESEND_SETUP.md](./RESEND_SETUP.md)
+
 ## 🚀 Configuración de Variables de Entorno
 
 Crea un archivo `.env.local` en la raíz del proyecto con las siguientes variables:
 
 ```env
-# Email Configuration
-EMAIL_USER=bfbacchi@gmail.com
-EMAIL_PASSWORD=tu_app_password_de_gmail
+# Resend API Key (Recomendado - más fácil y confiable)
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Configuración anterior con Gmail (ya no necesaria)
+# EMAIL_USER=bfbacchi@gmail.com
+# EMAIL_PASSWORD=tu_app_password_de_gmail
 ```
 
 ## 📋 Pasos para Configurar Gmail
