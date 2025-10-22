@@ -1,0 +1,110 @@
+name: 📰 Actualizar Blog con Noticias de Desarrollo
+
+on:
+  # Ejecutar diariamente a las 6:00 AM UTC (3:00 AM Argentina)
+  schedule:
+    - cron: '0 6 * * *'
+  
+  # Permitir ejecución manual
+  workflow_dispatch:
+    inputs:
+      max_posts:
+        description: 'Máximo número de posts a crear'
+        required: false
+        default: '3'
+        type: string
+
+  # Ejecutar en push a main (opcional, para testing)
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/news-scraper.py'
+      - '.github/workflows/update-news-blog.yml'
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout del repositorio
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests feedparser beautifulsoup4 lxml
+
+      - name: 🔧 Configurar Git
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+
+      - name: 📰 Ejecutar scraper de noticias
+        run: |
+          cd scripts
+          python news-scraper.py
+        env:
+          MAX_POSTS: ${{ github.event.inputs.max_posts || '3' }}
+
+      - name: 📊 Verificar cambios
+        id: verify-changes
+        run: |
+          if git diff --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "📭 No hay cambios para commitear"
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "📝 Se encontraron cambios"
+            git status
+          fi
+
+      - name: 💾 Commit y push de cambios
+        if: steps.verify-changes.outputs.changes == 'true'
+        run: |
+          git add src/app/blog/posts/*.mdx
+          git add scripts/processed_news.json
+          
+          # Crear mensaje de commit descriptivo
+          COMMIT_MSG="📰 Agregar noticias de desarrollo automáticas
+
+          - Posts generados automáticamente desde feeds RSS
+          - Fuentes: Dev.to, CSS-Tricks, Smashing Magazine, Hacker News
+          - Filtrado por relevancia para desarrollo web
+          
+          Ejecutado por GitHub Actions el $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          git commit -m "$COMMIT_MSG"
+          git push
+
+      - name: 🎉 Resumen de la ejecución
+        if: always()
+        run: |
+          echo "## 📊 Resumen de la Ejecución" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Fecha:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Estado:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.verify-changes.outputs.changes }}" == "true" ]; then
+            echo "✅ **Resultado:** Se agregaron nuevos posts al blog" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 📝 Archivos modificados:" >> $GITHUB_STEP_SUMMARY
+            git diff --name-only HEAD~1 HEAD | grep -E '\.mdx$' | while read file; do
+              echo "- \`$file\`" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "ℹ️ **Resultado:** No se encontraron noticias nuevas para agregar" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Enlaces útiles:" >> $GITHUB_STEP_SUMMARY
+          echo "- [Ver blog](/blog)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Configurar scraper](../../scripts/news-scraper.py)" >> $GITHUB_STEP_SUMMARY

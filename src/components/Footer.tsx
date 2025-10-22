@@ -31,7 +31,7 @@ export const Footer = () => {
           <Text paddingX="4">{person.name}</Text>
           <Text onBackground="neutral-weak">
             {/* Usage of this template requires attribution. Please don't remove the link to Once UI. */}
-            / {t('home')} / {t('about')} / {t('work')} / {t('blog')} / {t('gallery')}
+            / {t('home')} / {t('about')} / {t('work')} / {t('noticias')} / {t('gallery')}
             {" "}
             <SmartLink
               href="https://once-ui.com/products/magic-portfolio"

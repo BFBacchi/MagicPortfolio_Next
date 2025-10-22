@@ -3,7 +3,6 @@ import React, { ReactNode } from "react";
 
 import { 
   Heading,
-  HeadingLink,
   Text,
   InlineCode,
   CodeBlock,
@@ -84,10 +83,10 @@ function slugify(str: string): string {
 }
 
 function createHeading(as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
-  const CustomHeading = ({ children, ...props }: Omit<React.ComponentProps<typeof HeadingLink>, 'as' | 'id'>) => {
+  const CustomHeading = ({ children, ...props }: any) => {
     const slug = slugify(children as string);
     return (
-      <HeadingLink
+      <Heading
         marginTop="24"
         marginBottom="12"
         as={as}
@@ -95,7 +94,7 @@ function createHeading(as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
         {...props}
       >
         {children}
-      </HeadingLink>
+      </Heading>
     );
   };
 

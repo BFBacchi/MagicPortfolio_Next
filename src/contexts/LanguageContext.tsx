@@ -28,7 +28,7 @@ const translations = {
     'home': 'Inicio',
     'about': 'Acerca de',
     'work': 'Trabajo',
-    'blog': 'Blog',
+    'noticias': 'Noticias',
     'gallery': 'Galería',
     'db_test': 'Prueba DB',
   },
@@ -46,7 +46,7 @@ const translations = {
     'home': 'Home',
     'about': 'About',
     'work': 'Work',
-    'blog': 'Blog',
+    'noticias': 'Noticias',
     'gallery': 'Gallery',
     'db_test': 'DB Test',
   }

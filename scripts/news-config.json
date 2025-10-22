@@ -1,0 +1,91 @@
+{
+  "settings": {
+    "max_posts_per_run": 3,
+    "max_posts_per_source": 2,
+    "min_content_length": 100,
+    "rate_limit_delay": 0.5,
+    "enable_auto_commit": true
+  },
+  "rss_feeds": [
+    {
+      "name": "Dev.to Español",
+      "url": "https://dev.to/feed/tag/spanish",
+      "category": "Desarrollo Web",
+      "enabled": true,
+      "priority": 1
+    },
+    {
+      "name": "FreeCodeCamp Español",
+      "url": "https://www.freecodecamp.org/espanol/news/rss.xml",
+      "category": "Programación",
+      "enabled": true,
+      "priority": 2
+    },
+    {
+      "name": "Platzi Blog",
+      "url": "https://platzi.com/blog/feed/",
+      "category": "Educación Tech",
+      "enabled": true,
+      "priority": 3
+    },
+    {
+      "name": "Código Facilito",
+      "url": "https://codigofacilito.com/articulos.rss",
+      "category": "Tutoriales",
+      "enabled": true,
+      "priority": 4
+    },
+    {
+      "name": "OpenWebinars",
+      "url": "https://openwebinars.net/blog/feed/",
+      "category": "Tecnología",
+      "enabled": true,
+      "priority": 5
+    },
+    {
+      "name": "Genbeta",
+      "url": "https://www.genbeta.com/feed",
+      "category": "Tecnología",
+      "enabled": true,
+      "priority": 6
+    },
+    {
+      "name": "Xataka",
+      "url": "https://www.xataka.com/feed",
+      "category": "Tecnología",
+      "enabled": true,
+      "priority": 7
+    }
+  ],
+  "keywords": {
+    "required": [
+      "javascript", "react", "vue", "angular", "node.js", "python", "typescript",
+      "css", "html", "desarrollo web", "frontend", "backend", "api", "base de datos",
+      "programación", "código", "desarrollo de software", "tutorial", "curso", "aprender"
+    ],
+    "optional": [
+      "git", "github", "docker", "kubernetes", "aws", "azure", "next.js", "nuxt",
+      "svelte", "tailwind", "bootstrap", "webpack", "vite", "npm", "yarn",
+      "devops", "aprendizaje automático", "inteligencia artificial", "blockchain",
+      "tecnología", "programador", "desarrollador", "aplicación", "web", "móvil"
+    ],
+    "exclude": [
+      "trabajo", "empleo", "carrera", "salario", "entrevista", "curriculum", "cv",
+      "job", "hiring", "career", "salary", "interview", "resume"
+    ]
+  },
+  "content_filters": {
+    "min_title_length": 10,
+    "max_title_length": 100,
+    "min_summary_length": 50,
+    "max_summary_length": 200,
+    "min_content_length": 100,
+    "max_content_length": 1000
+  },
+  "templates": {
+    "mdx_template": "news-template.mdx",
+    "custom_components": true,
+    "include_source_attribution": true,
+    "include_original_links": true
+  }
+}

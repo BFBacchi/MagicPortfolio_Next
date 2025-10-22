@@ -1,70 +1,173 @@
-# Scripts para datos de Bruno Bacchi
+# 📰 Scripts de Automatización de Noticias
 
-Este directorio contiene scripts para insertar datos de ejemplo para Bruno Bacchi, un desarrollador Full Stack.
+Este directorio contiene todos los scripts necesarios para automatizar la adición de noticias de desarrollo al blog.
 
-## Archivos
+## 📁 Archivos
 
-### 1. `bruno-bacchi-data.sql`
-Script SQL para insertar datos directamente en Supabase SQL Editor.
+| Archivo | Descripción |
+|---------|-------------|
+| `news-scraper.py` | Script principal que extrae noticias y genera posts MDX |
+| `news-config.json` | Configuración personalizable del scraper |
+| `news-template.mdx` | Template para generar posts MDX |
+| `test-news-scraper.py` | Script de pruebas para verificar funcionamiento |
+| `setup-news-automation.sh` | Script de configuración inicial (Linux/Mac) |
+| `processed_news.json` | Tracking de noticias ya procesadas (generado automáticamente) |
 
-**Cómo usar:**
-1. Ve a tu proyecto de Supabase
-2. Abre el SQL Editor
-3. Copia y pega el contenido del archivo
-4. Ejecuta el script
+## 🚀 Uso Rápido
 
-### 2. `insert-bruno-data.js`
-Script de Node.js para insertar datos usando la API de Supabase.
+### 1. Instalar dependencias
 
-**Cómo usar:**
-1. Asegúrate de tener las variables de entorno configuradas en `.env`:
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima
-   ```
+```bash
+pip install requests feedparser beautifulsoup4 lxml
+```
 
-2. Instala las dependencias si no las tienes:
-   ```bash
-   npm install dotenv
-   ```
+### 2. Ejecutar pruebas
 
-3. Ejecuta el script:
-   ```bash
-   node scripts/insert-bruno-data.js
-   ```
+```bash
+python scripts/test-news-scraper.py
+```
 
-## Datos incluidos
+### 3. Ejecutar scraper manualmente
 
-### Introducción
-- **Nombre:** Bruno Bacchi
-- **Rol:** Full Stack Developer
-- **Descripción:** Desarrollador apasionado por crear soluciones innovadoras
+```bash
+python scripts/news-scraper.py
+```
 
-### Experiencia Laboral
-1. **TechCorp Solutions** - Senior Full Stack Developer (2022-Presente)
-2. **InnovateSoft** - Full Stack Developer (2020-2021)
-3. **StartUpHub** - Frontend Developer (2019-2020)
-4. **DigitalCraft** - Backend Developer (2018-2019)
+### 4. Configurar GitHub Actions
 
-### Estudios
-1. **Universidad Tecnológica Nacional** - Ingeniería en Sistemas de Información
-2. **Platzi** - Certificación Full Stack
-3. **Coursera** - Certificación en Machine Learning
+El workflow en `.github/workflows/update-news-blog.yml` se ejecutará automáticamente.
 
-### Habilidades Técnicas
-- **Frontend:** React, Angular, Next.js, TypeScript, HTML5/CSS3, SASS/SCSS
-- **Backend:** Java, Spring Boot, Node.js, Python, Flask
-- **Base de Datos:** PostgreSQL, MySQL, MongoDB
-- **DevOps:** Git, GitHub, Docker, AWS, Jenkins
-- **Metodologías:** Agile/Scrum, TDD, Clean Code
+## ⚙️ Configuración
 
-## Notas importantes
+### Personalizar fuentes RSS
 
-- Los datos se insertan con niveles de habilidad del 1 al 10
-- Las fechas están en formato ISO (YYYY-MM-DD)
-- Las tecnologías se almacenan como arrays en PostgreSQL
-- Todos los datos incluyen timestamps automáticos
+Edita `news-config.json`:
 
-## Personalización
+```json
+{
+  "rss_feeds": [
+    {
+      "name": "Dev.to",
+      "url": "https://dev.to/feed",
+      "category": "Desarrollo Web",
+      "enabled": true,
+      "priority": 1
+    }
+  ]
+}
+```
 
-Puedes modificar los datos en cualquiera de los scripts para adaptarlos a tus necesidades específicas. Los scripts están diseñados para ser fáciles de editar y personalizar. 
+### Ajustar filtros de contenido
+
+```json
+{
+  "keywords": {
+    "required": ["javascript", "react", "python"],
+    "optional": ["css", "html", "api"],
+    "exclude": ["job", "hiring", "career"]
+  }
+}
+```
+
+### Modificar límites
+
+```json
+{
+  "settings": {
+    "max_posts_per_run": 3,
+    "max_posts_per_source": 2,
+    "rate_limit_delay": 0.5
+  }
+}
+```
+
+## 🧪 Testing
+
+### Ejecutar todas las pruebas
+
+```bash
+python scripts/test-news-scraper.py
+```
+
+### Probar una fuente específica
+
+Modifica temporalmente `news-config.json` para incluir solo una fuente y ejecuta:
+
+```bash
+python scripts/news-scraper.py
+```
+
+## 🔧 Troubleshooting
+
+### Error: "No module named 'requests'"
+
+```bash
+pip install requests feedparser beautifulsoup4 lxml
+```
+
+### Error: "Permission denied"
+
+```bash
+# Linux/Mac
+chmod +x scripts/news-scraper.py
+
+# Windows - no es necesario
+```
+
+### Posts no se generan
+
+1. Verifica que las fuentes RSS estén activas
+2. Revisa los logs de GitHub Actions
+3. Confirma que `processed_news.json` no esté bloqueando contenido
+
+### Contenido no relevante
+
+1. Ajusta palabras clave en `news-config.json`
+2. Modifica filtros de contenido
+3. Desactiva fuentes problemáticas temporalmente
+
+## 📊 Monitoreo
+
+### Logs del scraper
+
+El script imprime logs detallados durante la ejecución:
+
+```
+🚀 Iniciando scraper de noticias de desarrollo...
+📡 Obteniendo noticias de Dev.to...
+✅ Creado: nueva-noticia-20240115.mdx
+🎉 Proceso completado. Se crearon 2 nuevos posts.
+```
+
+### Archivo de tracking
+
+`processed_news.json` mantiene un registro de todas las noticias procesadas para evitar duplicados.
+
+## 🔄 Flujo de Trabajo
+
+1. **GitHub Action se ejecuta** (diariamente)
+2. **Scraper obtiene noticias** de feeds RSS
+3. **Filtra contenido relevante** usando palabras clave
+4. **Verifica duplicados** usando sistema de tracking
+5. **Genera archivos MDX** usando template
+6. **Commit y push** automático
+
+## 📚 Documentación Completa
+
+Para documentación detallada, consulta:
+- [NEWS_AUTOMATION_SETUP.md](../NEWS_AUTOMATION_SETUP.md) - Guía completa de configuración
+- [GitHub Action](../.github/workflows/update-news-blog.yml) - Workflow de automatización
+
+## 🤝 Contribuir
+
+Para agregar nuevas fuentes o mejorar el scraper:
+
+1. Edita `news-config.json` para agregar fuentes
+2. Modifica `news-template.mdx` para personalizar formato
+3. Ajusta `news-scraper.py` para nuevas funcionalidades
+4. Ejecuta `test-news-scraper.py` para verificar cambios
+5. Haz commit y push de los cambios
+
+---
+
+**¿Necesitas ayuda?** Abre un issue en el repositorio.

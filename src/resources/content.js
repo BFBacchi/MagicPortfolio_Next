@@ -199,12 +199,12 @@ const about = {
 };
 
 const blog = {
-  path: "/blog",
-  label: "Blog",
-  title: "Writing about design and tech...",
-  description: `Read what ${person.name} has been up to recently`,
+  path: "/noticias",
+  label: "Noticias",
+  title: "Noticias de Desarrollo y Tecnología",
+  description: `Mantente actualizado con las últimas noticias del mundo del desarrollo y la tecnología`,
   // Create new blog posts by adding a new .mdx file to app/blog/posts
-  // All posts will be listed on the /blog route
+  // All posts will be listed on the /noticias route
 };
 
 const work = {
