@@ -7,10 +7,15 @@ import { getPosts } from "@/utils/utils";
 import { Metadata } from 'next';
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const posts = getPosts(["src", "app", "noticias", "posts"]);
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  try {
+    const posts = getPosts(["src", "app", "noticias", "posts"]);
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params for noticias:", error);
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -18,34 +23,54 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string | string[] }>;
 }): Promise<Metadata> {
-  const routeParams = await params;
-  const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
+  try {
+    const routeParams = await params;
+    const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-  const posts = getPosts(["src", "app", "blog", "posts"])
-  let post = posts.find((post) => post.slug === slugPath);
+    const posts = getPosts(["src", "app", "noticias", "posts"])
+    console.log("Metadata - Available slugs:", posts.map(p => p.slug));
+    console.log("Metadata - Looking for slug:", slugPath);
+    
+    let post = posts.find((post) => post.slug === slugPath);
 
-  if (!post) return {};
+    if (!post) {
+      console.error(`Post not found for slug in metadata: ${slugPath}`);
+      console.error("Metadata - Available slugs:", posts.map(p => p.slug));
+      return {};
+    }
 
-  return Meta.generate({
-    title: post.metadata.title,
-    description: post.metadata.summary,
-    baseURL: baseURL,
-    image: post.metadata.image || `/api/og/generate?title=${post.metadata.title}`,
-    path: `${blog.path}/${post.slug}`,
-  });
+    return Meta.generate({
+      title: post.metadata.title,
+      description: post.metadata.summary,
+      baseURL: baseURL,
+      image: post.metadata.image || `/api/og/generate?title=${post.metadata.title}`,
+      path: `${blog.path}/${post.slug}`,
+    });
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {};
+  }
 }
 
 export default async function Blog({
   params
 }: { params: Promise<{ slug: string | string[] }> }) {
-  const routeParams = await params;
-  const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
+  try {
+    const routeParams = await params;
+    const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-  let post = getPosts(["src", "app", "noticias", "posts"]).find((post) => post.slug === slugPath);
+    // Debug: mostrar todos los slugs disponibles
+    const allPosts = getPosts(["src", "app", "noticias", "posts"]);
+    console.log("Available slugs:", allPosts.map(p => p.slug));
+    console.log("Looking for slug:", slugPath);
+    
+    let post = allPosts.find((post) => post.slug === slugPath);
 
-  if (!post) {
-    notFound();
-  }
+    if (!post) {
+      console.error(`Post not found for slug: ${slugPath}`);
+      console.error("Available slugs:", allPosts.map(p => p.slug));
+      notFound();
+    }
 
   const avatars =
     post.metadata.team?.map((person) => ({
@@ -103,4 +128,8 @@ export default async function Blog({
     </Column>
     </Row>
   );
+  } catch (error) {
+    console.error("Error in Blog component:", error);
+    notFound();
+  }
 }
