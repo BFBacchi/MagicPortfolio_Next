@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'es' | 'en';
 
@@ -46,7 +46,7 @@ const translations = {
     'home': 'Home',
     'about': 'About',
     'work': 'Work',
-    'noticias': 'Noticias',
+    'noticias': 'News',
     'gallery': 'Gallery',
     'db_test': 'DB Test',
   }
@@ -61,14 +61,45 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children, 
   defaultLanguage = 'es' 
 }) => {
+  // Inicializar con el idioma por defecto para SSR
   const [language, setLanguage] = useState<Language>(defaultLanguage);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Cargar idioma desde localStorage después del montaje (solo en cliente)
+  useEffect(() => {
+    setIsMounted(true);
+    // Verificar que estamos en el cliente antes de acceder a localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const savedLanguage = localStorage.getItem('language') as Language;
+        if (savedLanguage && (savedLanguage === 'es' || savedLanguage === 'en')) {
+          setLanguage(savedLanguage);
+        }
+      } catch (error) {
+        console.error('Error loading language from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Guardar idioma en localStorage cuando cambie
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    // Verificar que estamos en el cliente antes de acceder a localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('language', lang);
+      } catch (error) {
+        console.error('Error saving language to localStorage:', error);
+      }
+    }
+  };
 
   const t = (key: string): string => {
     return translations[language][key as keyof typeof translations[typeof language]] || key;
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
