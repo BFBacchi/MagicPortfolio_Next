@@ -44,7 +44,7 @@ export default function DBTestPage() {
     } catch (error: any) {
       setStatus({
         status: 'error',
-        message: 'Error al conectar con la API',
+        message: t("db.api_error"),
         error: {
           code: 'FETCH_ERROR',
           message: error.message,
@@ -69,40 +69,40 @@ export default function DBTestPage() {
       <Button 
         onClick={testConnection} 
         disabled={isLoading}
-        variant="solid"
+        variant="primary"
       >
-        {isLoading ? 'Probando conexión...' : 'Probar Conexión'}
+        {isLoading ? t("db.testing") : t("db.test_connection")}
       </Button>
 
       {status.status === 'loading' && (
-        <Column gap="s" padding="l" background="surface-weak">
-          <Text variant="body-default-s">🔄 Probando conexión...</Text>
+        <Column gap="s" padding="l" background="neutral-alpha-weak">
+          <Text variant="body-default-s">🔄 {t("db.testing")}</Text>
         </Column>
       )}
 
       {status.status === 'connected' && (
-        <Column gap="s" padding="l" background="success-background-weak">
+        <Column gap="s" padding="l" background="success-weak">
           <Text variant="body-default-s" onBackground="success-strong">
-            ✅ Conexión exitosa
+            ✅ {t("db.ok")}
           </Text>
           <Text variant="body-default-s">
-            <strong>Mensaje:</strong> {status.message}
+            <strong>{t("db.message")}:</strong> {status.message}
           </Text>
           {status.timestamp && (
             <Text variant="body-default-s">
-              <strong>Timestamp:</strong> {status.timestamp}
+              <strong>{t("db.timestamp")}:</strong> {status.timestamp}
             </Text>
           )}
           {status.connectionInfo && (
             <Column gap="xs">
               <Text variant="body-default-s">
-                <strong>Host:</strong> {status.connectionInfo.host}
+                <strong>{t("db.host")}:</strong> {status.connectionInfo.host}
               </Text>
               <Text variant="body-default-s">
-                <strong>Base de datos:</strong> {status.connectionInfo.database}
+                <strong>{t("db.database")}:</strong> {status.connectionInfo.database}
               </Text>
               <Text variant="body-default-s">
-                <strong>SSL:</strong> {status.connectionInfo.ssl}
+                <strong>{t("db.ssl")}:</strong> {status.connectionInfo.ssl}
               </Text>
             </Column>
           )}
@@ -110,30 +110,30 @@ export default function DBTestPage() {
       )}
 
       {status.status === 'error' && (
-        <Column gap="s" padding="l" background="error-background-weak">
-          <Text variant="body-default-s" onBackground="error-strong">
-            ❌ Error de conexión
+        <Column gap="s" padding="l" background="danger-weak">
+          <Text variant="body-default-s" onBackground="danger-strong">
+            ❌ {t("db.error")}
           </Text>
           <Text variant="body-default-s">
-            <strong>Mensaje:</strong> {status.message}
+            <strong>{t("db.message")}:</strong> {status.message}
           </Text>
           
           {status.error && (
             <Column gap="xs">
               <Text variant="body-default-s">
-                <strong>Código:</strong> {status.error.code}
+                <strong>{t("db.code")}:</strong> {status.error.code}
               </Text>
               <Text variant="body-default-s">
-                <strong>Error:</strong> {status.error.message}
+                <strong>{t("db.error_detail")}:</strong> {status.error.message}
               </Text>
               <Text variant="body-default-s">
-                <strong>Syscall:</strong> {status.error.syscall}
+                <strong>{t("db.syscall")}:</strong> {status.error.syscall}
               </Text>
               <Text variant="body-default-s">
-                <strong>Dirección:</strong> {status.error.address}
+                <strong>{t("db.address")}:</strong> {status.error.address}
               </Text>
               <Text variant="body-default-s">
-                <strong>Puerto:</strong> {status.error.port}
+                <strong>{t("db.port")}:</strong> {status.error.port}
               </Text>
             </Column>
           )}
@@ -141,7 +141,7 @@ export default function DBTestPage() {
           {status.suggestions && (
             <Column gap="xs">
               <Text variant="body-default-s" onBackground="neutral-strong">
-                <strong>Sugerencias:</strong>
+                <strong>{t("db.suggestions")}:</strong>
               </Text>
               {status.suggestions.map((suggestion, index) => (
                 <Text key={index} variant="body-default-s">

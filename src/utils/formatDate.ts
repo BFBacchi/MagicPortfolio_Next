@@ -1,28 +1,36 @@
-export function formatDate(date: string, includeRelative = false) {
-  const currentDate = new Date();
+import { messages, interpolate, type AppLanguage } from "@/i18n/messages";
 
-  if (!date.includes("T")) {
-    date = `${date}T00:00:00`;
+export function formatDate(
+  date: string,
+  includeRelative = false,
+  lang: AppLanguage = "es"
+) {
+  const currentDate = new Date();
+  let dateStr = date;
+  if (!dateStr.includes("T")) {
+    dateStr = `${dateStr}T00:00:00`;
   }
 
-  const targetDate = new Date(date);
+  const targetDate = new Date(dateStr);
   const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
   const monthsAgo = currentDate.getMonth() - targetDate.getMonth();
   const daysAgo = currentDate.getDate() - targetDate.getDate();
 
-  let formattedDate = "";
+  const m = messages[lang];
+  let relativePart = "";
 
   if (yearsAgo > 0) {
-    formattedDate = `${yearsAgo}y ago`;
+    relativePart = interpolate(m["date.years_ago"], { n: yearsAgo });
   } else if (monthsAgo > 0) {
-    formattedDate = `${monthsAgo}mo ago`;
+    relativePart = interpolate(m["date.months_ago"], { n: monthsAgo });
   } else if (daysAgo > 0) {
-    formattedDate = `${daysAgo}d ago`;
+    relativePart = interpolate(m["date.days_ago"], { n: daysAgo });
   } else {
-    formattedDate = "Today";
+    relativePart = m["date.today"];
   }
 
-  const fullDate = targetDate.toLocaleString("en-us", {
+  const locale = lang === "es" ? "es-AR" : "en-US";
+  const fullDate = targetDate.toLocaleString(locale, {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -32,5 +40,5 @@ export function formatDate(date: string, includeRelative = false) {
     return fullDate;
   }
 
-  return `${fullDate} (${formattedDate})`;
+  return `${fullDate} (${relativePart})`;
 }

@@ -11,6 +11,7 @@ import { uploadAvatar, getProfile } from "@/lib/supabase/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase/client";
 import { useToast } from "@/contexts/ToastContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { WorkExperienceSection } from "./sections/WorkExperienceSection";
 import { StudiesSection } from "./sections/StudiesSection";
 import { TechnicalSkillsSection } from "./sections/TechnicalSkillsSection";
@@ -27,6 +28,7 @@ interface AboutClientProps {
 export const AboutClient = ({ introduction, workExperience, studies, technicalSkills }: AboutClientProps) => {
   const { user, loading } = useAuth();
   const { addToast } = useToast();
+  const { t } = useLanguage();
   
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [profileData, setProfileData] = useState<Partial<Introduction> | null>(null);
@@ -229,7 +231,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
       addToast('Imagen de perfil actualizada correctamente', 'success');
     } catch (error) {
       console.error('Error uploading avatar:', error);
-      addToast('Error al subir la imagen', 'danger');
+      addToast('Error al subir la imagen', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -252,7 +254,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
 
       if (profileError) {
         console.error('Error updating profile:', profileError);
-        addToast('Error al actualizar el perfil', 'danger');
+        addToast('Error al actualizar el perfil', 'error');
         return;
       }
 
@@ -283,7 +285,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
       
     } catch (error) {
       console.error('Error selecting image:', error);
-      addToast('Error al seleccionar la imagen', 'danger');
+      addToast('Error al seleccionar la imagen', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -309,19 +311,19 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
         <nav className={styles.navLinks}>
           <button onClick={() => scrollToSection('introduction')} className={styles.navLink}>
             <Icon name="introduction" size="s" />
-            Introducción
+            {t("about.nav_intro")}
           </button>
           <button onClick={() => scrollToSection('work')} className={styles.navLink}>
             <Icon name="experience" size="s" />
-            Experiencia
+            {t("about.nav_work")}
           </button>
           <button onClick={() => scrollToSection('studies')} className={styles.navLink}>
             <Icon name="studies" size="s" />
-            Estudios
+            {t("about.nav_studies")}
           </button>
           <button onClick={() => scrollToSection('skills')} className={styles.navLink}>
             <Icon name="skills" size="s" />
-            Habilidades
+            {t("about.nav_skills")}
           </button>
         </nav>
       </aside>
@@ -350,56 +352,55 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
         <Dialog
           isOpen={isProfileDialogOpen}
           onClose={() => !isLoading && setIsProfileDialogOpen(false)}
-          title="Editar Perfil"
+          title={t("about.edit_profile")}
         >
           <Column fillWidth gap="16" marginTop="12">
             <form onSubmit={handleSave}>
               <Column gap="16">
                 <Input
                   id="edit-name"
-                  label="Nombre"
+                  label={t("about.field_name")}
                   value={tempData?.name || ''}
                   onChange={(e) => setTempData({ ...tempData!, name: e.target.value })}
                   required
                 />
                 <Input
                   id="edit-role"
-                  label="Rol"
+                  label={t("about.field_role")}
                   value={tempData?.role || ''}
                   onChange={(e) => setTempData({ ...tempData!, role: e.target.value })}
                   required
                 />
                 
-                {/* Enlaces Sociales */}
                 <div>
-                  <Text variant="body-default-s" marginBottom="s">Enlaces Sociales</Text>
+                  <Text variant="body-default-s" marginBottom="s">{t("about.social_links")}</Text>
                   <Column gap="s">
                       <Input
                         id="edit-github"
                         label="GitHub URL"
-                        description="https://github.com/tu-usuario"
+                        description={t("about.github_hint")}
                         value={tempData?.github_url || ''}
                         onChange={(e) => setTempData({ ...tempData!, github_url: e.target.value })}
                       />
                     <Input
                       id="edit-linkedin"
                       label="LinkedIn URL"
-                      description="https://www.linkedin.com/in/tu-perfil"
+                      description={t("about.linkedin_hint")}
                       value={tempData?.linkedin_url || ''}
                       onChange={(e) => setTempData({ ...tempData!, linkedin_url: e.target.value })}
                     />
                     <Input
                       id="edit-discord"
                       label="Discord URL"
-                      description="https://discord.gg/tu-servidor"
+                      description={t("about.discord_hint")}
                       value={tempData?.discord_url || ''}
                       onChange={(e) => setTempData({ ...tempData!, discord_url: e.target.value })}
                     />
                     <Input
                       id="edit-email"
-                      label="Email"
+                      label={t("email")}
                       type="email"
-                      description="tu@email.com"
+                      description="you@email.com"
                       value={tempData?.email_url || ''}
                       onChange={(e) => setTempData({ ...tempData!, email_url: e.target.value })}
                     />
@@ -407,9 +408,8 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                 </div>
                 
                 <div>
-                  <Text variant="body-default-s" marginBottom="s">Imagen de perfil</Text>
+                  <Text variant="body-default-s" marginBottom="s">{t("about.profile_image")}</Text>
                   
-                  {/* Botones para gestionar imágenes */}
                   <Row gap="s" marginBottom="m">
                     <label htmlFor="avatar-upload" className={styles.fileUploadButton}>
                       <Button 
@@ -418,7 +418,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                         variant="secondary"
                         disabled={isLoading}
                       >
-                        {isLoading ? 'Subiendo...' : 'Subir nueva imagen'}
+                        {isLoading ? t("about.uploading") : t("about.upload_new")}
                       </Button>
                     </label>
                     <input
@@ -428,7 +428,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                       onChange={handleFileChange}
                       disabled={isLoading}
                       className={styles.hiddenFileInput}
-                      title="Seleccionar imagen de perfil"
+                      title={t("about.pick_avatar")}
                     />
                     
                     <Button 
@@ -441,7 +441,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                       }}
                       disabled={isLoading}
                     >
-                      {showImageGallery ? 'Ocultar galería' : 'Ver imágenes subidas'}
+                      {showImageGallery ? t("about.hide_gallery") : t("about.show_gallery")}
                     </Button>
                   </Row>
                   
@@ -460,14 +460,14 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
                     onClick={() => setIsProfileDialogOpen(false)}
                     disabled={isLoading}
                   >
-                    Cancelar
+                    {t("cancel")}
                   </Button>
                   <Button 
                     variant="primary" 
                     type="submit"
                     disabled={isLoading}
                   >
-                    {isLoading ? 'Guardando...' : 'Guardar'}
+                    {isLoading ? t("about.saving") : t("about.save")}
                   </Button>
                 </Row>
               </Column>

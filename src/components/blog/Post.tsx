@@ -1,8 +1,9 @@
 "use client";
 
 import { Column, Flex, Heading, Media, SmartLink, Tag, Text } from '@once-ui-system/core';
-import styles from './Posts.module.scss';
-import { formatDate } from '@/utils/formatDate';
+import styles from "./Posts.module.scss";
+import { formatDate } from "@/utils/formatDate";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PostProps {
     post: any;
@@ -11,6 +12,7 @@ interface PostProps {
 }
 
 export default function Post({ post, thumbnail, direction }: PostProps) {
+    const { language, t } = useLanguage();
     return (
         <SmartLink
             fillWidth
@@ -35,7 +37,9 @@ export default function Post({ post, thumbnail, direction }: PostProps) {
                         cursor="interactive"
                         radius="l"
                         src={post.metadata.image}
-                        alt={'Thumbnail of ' + post.metadata.title}
+                        alt={t("post.thumbnail_alt", {
+                          title: post.metadata.title,
+                        })}
                         aspectRatio="16 / 9"
                     />
                 )}
@@ -53,7 +57,7 @@ export default function Post({ post, thumbnail, direction }: PostProps) {
                     <Text
                         variant="label-default-s"
                         onBackground="neutral-weak">
-                        {formatDate(post.metadata.publishedAt, false)}
+                        {formatDate(post.metadata.publishedAt, false, language)}
                     </Text>
                     { post.metadata.tag &&
                         <Tag

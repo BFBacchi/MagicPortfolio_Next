@@ -1,55 +1,49 @@
 "use client";
 
-import { mailchimp } from "@/resources";
-import { Button, Flex, Heading, Input, Text, Background, Column, Textarea } from "@once-ui-system/core";
+import { mailchimp, newsletter as newsletterDefaults } from "@/resources";
+import {
+  Button,
+  Flex,
+  Heading,
+  Input,
+  Text,
+  Background,
+  Column,
+  Textarea,
+} from "@once-ui-system/core";
 import { opacity, SpacingToken } from "@once-ui-system/core";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
-  let timeout: ReturnType<typeof setTimeout>;
-  return ((...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), delay);
-  }) as T;
-}
-
-type NewsletterProps = {
-  display: boolean;
-  title: string | JSX.Element;
-  description: string | JSX.Element;
+type MailchimpProps = {
+  /** Si no se pasa, se usa `newsletter.display` de resources */
+  display?: boolean;
 };
 
-export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
+export const Mailchimp = ({
+  display = newsletterDefaults.display,
+}: MailchimpProps) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
   });
   const [error, setError] = useState<string>("");
   const [touched, setTouched] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-
   const validateEmail = (email: string): boolean => {
-    if (email === "") {
-      return true;
-    }
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+    if (email === "") return true;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-
-    // Validar email en tiempo real
-    if (field === 'email' && value && !validateEmail(value)) {
-      setError("Por favor ingresa un email válido.");
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "email" && value && !validateEmail(value)) {
+      setError(t("mailchimp.email_invalid"));
     } else {
       setError("");
     }
@@ -58,21 +52,25 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
   const handleBlur = () => {
     setTouched(true);
     if (!validateEmail(formData.email)) {
-      setError("Por favor ingresa un email válido.");
+      setError(t("mailchimp.email_invalid"));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validar todos los campos
-    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
-      setError("Todos los campos son requeridos.");
+
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.subject.trim() ||
+      !formData.message.trim()
+    ) {
+      setError(t("mailchimp.fields_required"));
       return;
     }
 
     if (!validateEmail(formData.email)) {
-      setError("Por favor ingresa un email válido.");
+      setError(t("mailchimp.email_invalid"));
       return;
     }
 
@@ -80,33 +78,30 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
     setError("");
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Error al enviar el mensaje');
+        throw new Error(result.error || t("mailchimp.send_error"));
       }
 
       setIsSuccess(true);
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: ""
-      });
+      setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al enviar el mensaje. Intenta nuevamente.");
+      setError(
+        err instanceof Error ? err.message : t("mailchimp.send_error")
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (!display) return null;
 
   return (
     <Column
@@ -127,7 +122,7 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
           x: mailchimp.effects.mask.x,
           y: mailchimp.effects.mask.y,
           radius: mailchimp.effects.mask.radius,
-          cursor: mailchimp.effects.mask.cursor
+          cursor: mailchimp.effects.mask.cursor,
         }}
         gradient={{
           display: mailchimp.effects.gradient.display,
@@ -162,19 +157,24 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
           color: mailchimp.effects.lines.color,
         }}
       />
-      <Heading style={{ position: "relative" }} marginBottom="s" variant="display-strong-xs">
-        {newsletter.title}
+      <Heading
+        style={{ position: "relative" }}
+        marginBottom="s"
+        variant="display-strong-xs"
+      >
+        {t("mailchimp.title")}
       </Heading>
       <Text
         style={{
           position: "relative",
           maxWidth: "var(--responsive-width-xs)",
+          whiteSpace: "pre-line",
         }}
         wrap="balance"
         marginBottom="l"
         onBackground="neutral-medium"
       >
-        {newsletter.description}
+        {t("mailchimp.description")}
       </Text>
       {isSuccess ? (
         <Column
@@ -182,16 +182,16 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
           maxWidth={24}
           gap="m"
           padding="l"
-          background="success-subtle"
+          background="success-weak"
           border="success-medium"
           radius="m"
           align="center"
         >
           <Text variant="body-strong-m" onBackground="success-strong">
-            ✅ ¡Mensaje enviado correctamente!
+            ✅ {t("mailchimp.success_title")}
           </Text>
           <Text variant="body-default-s" onBackground="success-medium">
-            Gracias por contactarme. Te responderé en menos de 24 horas.
+            {t("mailchimp.success_body")}
           </Text>
           <Button
             variant="tertiary"
@@ -202,13 +202,13 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
                 name: "",
                 email: "",
                 subject: "",
-                message: ""
+                message: "",
               });
               setError("");
               setTouched(false);
             }}
           >
-            Enviar otro mensaje
+            {t("mailchimp.send_another")}
           </Button>
         </Column>
       ) : (
@@ -220,70 +220,79 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
           }}
           onSubmit={handleSubmit}
         >
-        <Column fillWidth maxWidth={24} gap="m">
-          <Flex fillWidth gap="s" mobileDirection="column">
+          <Column fillWidth maxWidth={24} gap="m">
+            <Flex fillWidth gap="s" mobileDirection="column">
+              <Input
+                id="contact-name"
+                name="name"
+                type="text"
+                label={t("mailchimp.name")}
+                description={t("mailchimp.name_hint")}
+                value={formData.name}
+                required
+                disabled={isSubmitting}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+              />
+              <Input
+                id="contact-email"
+                name="email"
+                type="email"
+                label={t("email")}
+                description="tu@email.com"
+                value={formData.email}
+                required
+                disabled={isSubmitting}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                onBlur={handleBlur}
+                errorMessage={touched || formData.email ? error : undefined}
+              />
+            </Flex>
+
             <Input
-              id="contact-name"
-              name="name"
+              id="contact-subject"
+              name="subject"
               type="text"
-              label="Nombre"
-              description="Tu nombre completo"
-              value={formData.name}
+              label={t("mailchimp.subject")}
+              description={t("mailchimp.subject_hint")}
+              value={formData.subject}
               required
               disabled={isSubmitting}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={(e) => handleInputChange("subject", e.target.value)}
             />
-            <Input
-              id="contact-email"
-              name="email"
-              type="email"
-              label="Email"
-              description="tu@email.com"
-              value={formData.email}
+
+            <Textarea
+              id="contact-message"
+              name="message"
+              label={t("mailchimp.message")}
+              description={t("mailchimp.message_hint")}
+              value={formData.message}
               required
               disabled={isSubmitting}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              onBlur={handleBlur}
-              errorMessage={error}
+              onChange={(e) => handleInputChange("message", e.target.value)}
+              rows={5}
             />
-          </Flex>
-          
-          <Input
-            id="contact-subject"
-            name="subject"
-            type="text"
-            label="Asunto"
-            description="¿En qué puedo ayudarte?"
-            value={formData.subject}
-            required
-            disabled={isSubmitting}
-            onChange={(e) => handleInputChange('subject', e.target.value)}
-          />
-          
-          <Textarea
-            id="contact-message"
-            name="message"
-            label="Mensaje"
-            description="Cuéntame sobre tu proyecto, idea o consulta..."
-            value={formData.message}
-            required
-            disabled={isSubmitting}
-            onChange={(e) => handleInputChange('message', e.target.value)}
-            rows={5}
-          />
-          <Flex height="48" vertical="center">
-            <Button 
-              type="submit"
-              variant="primary"
-              size="m" 
-              fillWidth
-              disabled={!!error || !formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim() || isSubmitting}
-            >
-              {isSubmitting ? "Enviando..." : "📧 Enviar mensaje"}
-            </Button>
-          </Flex>
-        </Column>
-      </form>
+            <Flex height="48" vertical="center">
+              <Button
+                type="submit"
+                variant="primary"
+                size="m"
+                fillWidth
+                disabled={
+                  !!error ||
+                  !formData.name.trim() ||
+                  !formData.email.trim() ||
+                  !formData.subject.trim() ||
+                  !formData.message.trim() ||
+                  isSubmitting
+                }
+              >
+                {isSubmitting
+                  ? t("mailchimp.submitting")
+                  : t("mailchimp.submit")}
+              </Button>
+            </Flex>
+          </Column>
+        </form>
       )}
     </Column>
   );

@@ -47,7 +47,8 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const timeLocale = language === "es" ? "es-AR" : "en-US";
   const { user } = useAuth();
 
   return (
@@ -187,7 +188,11 @@ export const Header = () => {
             textVariant="body-default-s"
             gap="20"
           >
-            <Flex hide="s">{display.time && <TimeDisplay timeZone={person.location} />}</Flex>
+            <Flex hide="s">
+              {display.time && (
+                <TimeDisplay timeZone={person.location} locale={timeLocale} />
+              )}
+            </Flex>
           </Flex>
         </Flex>
       </Flex>

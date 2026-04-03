@@ -41,16 +41,19 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
   const [isFormValid, setIsFormValid] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Validación de formulario
   useEffect(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailRegex.test(email);
     const isPasswordValid = password.length >= 6;
-    
-    setEmailError(isEmailValid || email === '' ? null : 'Email inválido');
-    setPasswordError(isPasswordValid || password === '' ? null : 'Mínimo 6 caracteres');
+
+    setEmailError(
+      isEmailValid || email === "" ? null : t("auth.email_invalid")
+    );
+    setPasswordError(
+      isPasswordValid || password === "" ? null : t("auth.password_min")
+    );
     setIsFormValid(isEmailValid && isPasswordValid);
-  }, [email, password]);
+  }, [email, password, language, t]);
 
   useEffect(() => {
     // Check for existing session
@@ -65,10 +68,10 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
-        if (event === 'SIGNED_IN') {
+        if (event === "SIGNED_IN") {
           setShowLogin(false);
           setError(null);
-          setSuccess('¡Bienvenido!');
+          setSuccess(t("auth.welcome"));
           // Limpiar formulario
           setEmail('');
           setPassword('');
@@ -79,7 +82,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [t]);
 
   // Close user menu when clicking outside
   useEffect(() => {
@@ -100,7 +103,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
   const handleLogin = async () => {
     if (!isFormValid) {
-      setError('Por favor corrige los errores del formulario');
+      setError(t("auth.fix_form"));
       return;
     }
 
@@ -116,16 +119,16 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
       if (error) {
         // Mejorar mensajes de error
-        if (error.message.includes('Invalid login credentials')) {
-          setError('Email o contraseña incorrectos');
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('Por favor confirma tu email antes de iniciar sesión');
+        if (error.message.includes("Invalid login credentials")) {
+          setError(t("auth.invalid_credentials"));
+        } else if (error.message.includes("Email not confirmed")) {
+          setError(t("auth.confirm_email"));
         } else {
           setError(error.message);
         }
       }
-    } catch (err: any) {
-      setError('Error de conexión. Intenta nuevamente.');
+    } catch {
+      setError(t("auth.connection_error"));
     } finally {
       setLoading(false);
     }
@@ -142,9 +145,9 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
     setShowUserMenu(false);
     try {
       await supabase.auth.signOut();
-      setSuccess('Sesión cerrada correctamente');
-    } catch (err: any) {
-      setError('Error al cerrar sesión');
+      setSuccess(t("logout_success"));
+    } catch {
+      setError(t("auth.logout_error"));
     } finally {
       setLoading(false);
     }
@@ -252,20 +255,20 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
       {/* Login Modal */}
       <Dialog
         isOpen={showLogin}
-        onClose={() => setShowLogin(false)}
-        title="Iniciar Sesión"
-        description="Ingresa tus credenciales para acceder a tu cuenta"
+        onClose={handleCloseModal}
+        title={t("auth.dialog_title")}
+        description={t("auth.dialog_desc")}
       >
         <Column gap="l" padding="l">
           {/* Mensajes de estado */}
           {error && (
-            <Feedback variant="danger" title="Error">
+            <Feedback variant="danger" title={t("auth.error_title")}>
               {error}
             </Feedback>
           )}
-          
+
           {success && (
-            <Feedback variant="success" title="Éxito">
+            <Feedback variant="success" title={t("auth.success_title")}>
               {success}
             </Feedback>
           )}
@@ -274,9 +277,9 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
           <Column gap="m">
             <Input
               id="email"
-              label="Email"
+              label={t("email")}
               type="email"
-              description="tu@email.com"
+              description="you@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -287,9 +290,9 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             
             <Input
               id="password"
-              label="Contraseña"
+              label={t("password")}
               type="password"
-              description="Mínimo 6 caracteres"
+              description={t("auth.password_desc")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -310,33 +313,33 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
               {loading ? (
                 <Flex gap="xs" vertical="center">
                   <Icon name="loader" size="s" />
-                  Iniciando...
+                  {t("auth.signing_in")}
                 </Flex>
               ) : (
                 <Flex gap="xs" vertical="center">
                   <Icon name="login" size="s" />
-                  Iniciar Sesión
+                  {t("auth.sign_in")}
                 </Flex>
               )}
             </Button>
-            
+
             <Button
               variant="secondary"
               onClick={handleCloseModal}
               disabled={loading}
             >
-              Cancelar
+              {t("cancel")}
             </Button>
           </Flex>
 
           {/* Atajos de teclado */}
           <Flex gap="xs" vertical="center" horizontal="center">
             <Text variant="body-default-xs" onBackground="neutral-medium">
-              Presiona
+              {t("auth.press")}
             </Text>
             <Kbd>Enter</Kbd>
             <Text variant="body-default-xs" onBackground="neutral-medium">
-              para iniciar sesión
+              {t("auth.enter_hint")}
             </Text>
           </Flex>
         </Column>

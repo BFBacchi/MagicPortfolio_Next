@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { 
   Column, 
   Row, 
@@ -12,11 +12,13 @@ import {
   Flex,
   Tag
 } from '@once-ui-system/core';
+import { MediaUpload } from '@once-ui-system/core/modules';
 import { Project } from '@/lib/supabase';
 import { uploadProjectImage, getYouTubeThumbnail } from '@/lib/supabase/storage';
 import { createProject, updateProject } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProjectFormProps {
   project?: Project;
@@ -33,6 +35,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 }) => {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     title: project?.title || '',
@@ -51,8 +54,6 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   const [newTechnology, setNewTechnology] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploadingImages, setUploadingImages] = useState<boolean[]>([]);
-  
-  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
@@ -64,7 +65,6 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   const handleImageUpload = async (file: File, index: number) => {
     if (!user) return;
 
-    setIsLoading(true);
     setUploadingImages(prev => {
       const newState = [...prev];
       newState[index] = true;
@@ -78,17 +78,16 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         newImages[index] = imageUrl;
         return newImages;
       });
-      addToast('Imagen subida exitosamente', 'success');
+      addToast(t("projectForm.image_ok"), "success");
     } catch (error) {
-      console.error('Error uploading image:', error);
-      addToast('Error al subir la imagen', 'error');
+      console.error("Error uploading image:", error);
+      addToast(t("projectForm.image_err"), "error");
     } finally {
       setUploadingImages(prev => {
         const newState = [...prev];
         newState[index] = false;
         return newState;
       });
-      setIsLoading(false);
     }
   };
 
@@ -131,7 +130,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user) {
+      addToast(t("projectForm.auth_required"), "error");
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -142,21 +144,50 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         video_thumbnail: formData.video_url ? getYouTubeThumbnail(formData.video_url) : undefined
       };
 
+      console.log('Submitting project data:', {
+        isEditing,
+        projectId: project?.id,
+        projectData
+      });
+
       let savedProject: Project;
       if (isEditing && project) {
+        console.log('Updating project with ID:', project.id);
         savedProject = await updateProject(project.id, projectData);
       } else {
+        console.log('Creating new project');
         savedProject = await createProject(projectData);
       }
 
       addToast(
-        isEditing ? 'Proyecto actualizado exitosamente' : 'Proyecto creado exitosamente',
-        'success'
+        isEditing ? t("projectForm.saved_update") : t("projectForm.saved_create"),
+        "success"
       );
       onSave(savedProject);
     } catch (error) {
       console.error('Error saving project:', error);
-      addToast('Error al guardar el proyecto', 'error');
+      
+      // Mensaje de error más descriptivo
+      let errorMessage = t("projectForm.save_error");
+      if (error instanceof Error) {
+        errorMessage = error.message || errorMessage;
+
+        if (errorMessage.includes("permission") || errorMessage.includes("policy")) {
+          errorMessage = t("projectForm.err_rls");
+        } else if (
+          errorMessage.includes("authentication") ||
+          errorMessage.includes("auth")
+        ) {
+          errorMessage = t("projectForm.err_auth");
+        } else if (
+          errorMessage.includes("duplicate") ||
+          errorMessage.includes("unique")
+        ) {
+          errorMessage = t("projectForm.err_slug");
+        }
+      }
+      
+      addToast(errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }
@@ -169,70 +200,70 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         <Column flex={1} gap="m">
           <Input
             id="project-title"
-            label="Título"
+            label={t("projectForm.title")}
             value={formData.title}
             onChange={(e) => handleTitleChange(e.target.value)}
-            description="Nombre del proyecto"
+            description={t("projectForm.title_hint")}
             required
           />
 
           <Input
             id="project-slug"
-            label="Slug (URL)"
+            label={t("projectForm.slug")}
             value={formData.slug}
-            onChange={(e) => handleInputChange('slug', e.target.value)}
-            description="url-del-proyecto"
+            onChange={(e) => handleInputChange("slug", e.target.value)}
+            description={t("projectForm.slug_hint")}
             required
           />
 
           <Textarea
             id="project-summary"
-            label="Resumen"
+            label={t("projectForm.summary")}
             value={formData.summary}
-            onChange={(e) => handleInputChange('summary', e.target.value)}
-            description="Breve descripción del proyecto"
+            onChange={(e) => handleInputChange("summary", e.target.value)}
+            description={t("projectForm.summary_hint")}
             rows={3}
             required
           />
 
           <Textarea
             id="project-content"
-            label="Contenido (Markdown)"
+            label={t("projectForm.content")}
             value={formData.content}
-            onChange={(e) => handleInputChange('content', e.target.value)}
-            description="Contenido completo del proyecto en Markdown"
+            onChange={(e) => handleInputChange("content", e.target.value)}
+            description={t("projectForm.content_hint")}
             rows={8}
           />
 
           <Input
             id="project-link"
-            label="Enlace del proyecto"
+            label={t("projectForm.link")}
             value={formData.link}
-            onChange={(e) => handleInputChange('link', e.target.value)}
-            description="https://ejemplo.com"
+            onChange={(e) => handleInputChange("link", e.target.value)}
+            description="https://example.com"
           />
 
           <Input
             id="project-video"
-            label="URL del video de YouTube"
+            label={t("projectForm.video")}
             value={formData.video_url}
-            onChange={(e) => handleInputChange('video_url', e.target.value)}
-            description="https://www.youtube.com/watch?v=..."
+            onChange={(e) => handleInputChange("video_url", e.target.value)}
+            description={t("projectForm.video_hint")}
           />
         </Column>
 
         <Column flex={1} gap="m">
           <Input
             id="project-tag"
-            label="Etiqueta"
+            label={t("projectForm.tag")}
             value={formData.tag}
-            onChange={(e) => handleInputChange('tag', e.target.value)}
-            description="web-development"
+            onChange={(e) => handleInputChange("tag", e.target.value)}
+            description={t("projectForm.tag_hint")}
           />
 
           <div>
             <Text variant="body-default-s" onBackground="neutral-strong">
-              Tecnologías
+              {t("projectForm.tech_heading")}
             </Text>
             <Flex gap="s" wrap marginTop="s">
               {formData.technologies.map((tech) => (
@@ -252,8 +283,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 id="new-technology"
                 value={newTechnology}
                 onChange={(e) => setNewTechnology(e.target.value)}
-                placeholder="Escribe y presiona Enter"
-                onKeyPress={(e) => e.key === 'Enter' && handleAddTechnology()}
+                placeholder={t("projectForm.tech_placeholder")}
+                onKeyPress={(e) => e.key === "Enter" && handleAddTechnology()}
               />
               <Button
                 variant="secondary"
@@ -261,25 +292,28 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 onClick={handleAddTechnology}
                 disabled={!newTechnology.trim()}
               >
-                Agregar
+                {t("projectForm.add")}
               </Button>
             </Flex>
           </div>
 
           <div>
             <Text variant="body-default-s" onBackground="neutral-strong">
-              Estado
+              {t("projectForm.status_heading")}
             </Text>
             <Flex gap="s" marginTop="s">
-              {(['draft', 'published', 'archived'] as const).map((status) => (
+              {(["draft", "published", "archived"] as const).map((status) => (
                 <Button
                   key={status}
-                  variant={formData.status === status ? 'primary' : 'secondary'}
+                  variant={formData.status === status ? "primary" : "secondary"}
                   size="s"
-                  onClick={() => handleInputChange('status', status)}
+                  onClick={() => handleInputChange("status", status)}
                 >
-                  {status === 'draft' ? 'Borrador' : 
-                   status === 'published' ? 'Publicado' : 'Archivado'}
+                  {status === "draft"
+                    ? t("projectForm.status_draft")
+                    : status === "published"
+                      ? t("projectForm.status_published")
+                      : t("projectForm.status_archived")}
                 </Button>
               ))}
             </Flex>
@@ -287,16 +321,16 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
           <div>
             <Text variant="body-default-s" onBackground="neutral-strong">
-              Opciones
+              {t("projectForm.options")}
             </Text>
             <Flex gap="s" marginTop="s">
               <Button
-                variant={formData.featured ? 'primary' : 'secondary'}
+                variant={formData.featured ? "primary" : "secondary"}
                 size="s"
-                onClick={() => handleInputChange('featured', !formData.featured)}
+                onClick={() => handleInputChange("featured", !formData.featured)}
               >
                 <Icon name="star" size="s" />
-                Destacado
+                {t("projectForm.featured")}
               </Button>
             </Flex>
           </div>
@@ -304,102 +338,57 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       </Row>
 
       {/* Sección de imágenes */}
-      <div>
+      <Column gap="m">
         <Text variant="body-default-s" onBackground="neutral-strong">
-          Imágenes del proyecto (máximo 2)
+          {t("projectForm.images_heading")}
         </Text>
-        <Row gap="m" marginTop="s">
+        <Row gap="m">
           {[0, 1].map((index) => (
             <Column key={index} flex={1} gap="s">
               <Text variant="body-default-xs" onBackground="neutral-weak">
-                Imagen {index + 1}
+                {t("projectForm.image_n", { n: index + 1 })}
               </Text>
-              {images[index] ? (
-                <div className="relative">
-                  <img
-                    src={images[index]}
-                    alt={`Imagen ${index + 1}`}
-                    className="w-full h-32 object-cover rounded border"
-                  />
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    <input
-                      ref={(el) => fileInputRefs.current[index] = el}
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleImageUpload(file, index);
-                      }}
-                      className="hidden"
-                      aria-label={`Cambiar imagen ${index + 1} del proyecto`}
-                      title={`Cambiar imagen ${index + 1} del proyecto`}
-                    />
-                    <Button
-                      variant="secondary"
-                      size="xs"
-                      onClick={() => fileInputRefs.current[index]?.click()}
-                      disabled={uploadingImages[index]}
-                      title="Cambiar imagen"
-                    >
-                      <Icon name="edit" size="xs" />
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="xs"
-                      onClick={() => handleRemoveImage(index)}
-                      title="Eliminar imagen"
-                    >
-                      <Icon name="trash" size="xs" />
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="border-2 border-dashed border-gray-300 rounded p-4 text-center">
-                  <input
-                    ref={(el) => fileInputRefs.current[index] = el}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleImageUpload(file, index);
-                    }}
-                    className="hidden"
-                    aria-label={`Subir imagen ${index + 1} para el proyecto`}
-                    title={`Subir imagen ${index + 1} para el proyecto`}
-                  />
+              <MediaUpload
+                initialPreviewImage={images[index] || null}
+                onFileUpload={async (file) => {
+                  await handleImageUpload(file, index);
+                }}
+                loading={uploadingImages[index]}
+                accept="image/*"
+                aspectRatio="16/9"
+                emptyState={
+                  <Column gap="8" fill center align="center" padding="l">
+                    <Icon name="image" size="m" onBackground="neutral-weak" />
+                    <Text variant="label-default-s" onBackground="neutral-weak">
+                      {uploadingImages[index]
+                        ? t("projectForm.uploading")
+                        : t("projectForm.upload_image")}
+                    </Text>
+                  </Column>
+                }
+              />
+              {images[index] && (
+                <Flex gap="s" marginTop="s">
                   <Button
-                    variant="secondary"
+                    variant="danger"
                     size="s"
-                    onClick={() => fileInputRefs.current[index]?.click()}
+                    onClick={() => handleRemoveImage(index)}
                     disabled={uploadingImages[index]}
                   >
-                    {uploadingImages[index] ? (
-                      <>
-                        <Icon name="loading" size="s" />
-                        Subiendo...
-                      </>
-                    ) : (
-                      <>
-                        <Icon name="upload" size="s" />
-                        Subir imagen
-                      </>
-                    )}
+                    <Icon name="trash" size="s" />
+                    {t("projectForm.remove")}
                   </Button>
-                </div>
+                </Flex>
               )}
             </Column>
           ))}
         </Row>
-      </div>
+      </Column>
 
       {/* Botones de acción */}
-      <Flex gap="m" justify="end">
-        <Button
-          variant="secondary"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
-          Cancelar
+      <Flex gap="m" horizontal="end">
+        <Button variant="secondary" onClick={onCancel} disabled={isLoading}>
+          {t("cancel")}
         </Button>
         <Button
           variant="primary"
@@ -409,10 +398,12 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           {isLoading ? (
             <>
               <Icon name="loading" size="s" />
-              Guardando...
+              {t("projectForm.saving")}
             </>
+          ) : isEditing ? (
+            t("projectForm.update")
           ) : (
-            isEditing ? 'Actualizar' : 'Crear'
+            t("projectForm.create")
           )}
         </Button>
       </Flex>

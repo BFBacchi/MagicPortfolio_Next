@@ -57,7 +57,7 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
       onUpdate?.();
     } catch (error) {
       console.error("Error saving introduction:", error);
-      addToast("Error al guardar la introducción", "danger");
+      addToast("Error al guardar la introducción", "error");
     } finally {
       setIsSaving(false);
     }

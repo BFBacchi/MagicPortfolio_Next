@@ -7,10 +7,15 @@ import { Metadata } from "next";
 import { getProjectsFromDB, getProjectBySlug } from "@/lib/projects";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const projects = await getProjectsFromDB();
-  return projects.map((project) => ({
-    slug: project.slug,
-  }));
+  try {
+    const projects = await getProjectsFromDB();
+    return projects.map((project) => ({
+      slug: project.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params for projects:', error);
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -18,33 +23,43 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string | string[] }>;
 }): Promise<Metadata> {
-  const routeParams = await params;
-  const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
+  try {
+    const routeParams = await params;
+    const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-  const project = await getProjectBySlug(slugPath);
+    const project = await getProjectBySlug(slugPath);
 
-  if (!project) return {};
+    if (!project) {
+      console.error(`Project not found for slug: ${slugPath}`);
+      return {};
+    }
 
-  return Meta.generate({
-    title: project.title,
-    description: project.summary,
-    baseURL: baseURL,
-    image: project.images[0] || `/api/og/generate?title=${project.title}`,
-    path: `${work.path}/${project.slug}`,
-  });
+    return Meta.generate({
+      title: project.title,
+      description: project.summary,
+      baseURL: baseURL,
+      image: project.images[0] || `/api/og/generate?title=${project.title}`,
+      path: `${work.path}/${project.slug}`,
+    });
+  } catch (error) {
+    console.error('Error generating metadata for project:', error);
+    return {};
+  }
 }
 
 export default async function Project({
   params
 }: { params: Promise<{ slug: string | string[] }> }) {
-  const routeParams = await params;
-  const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
+  try {
+    const routeParams = await params;
+    const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-  const project = await getProjectBySlug(slugPath);
+    const project = await getProjectBySlug(slugPath);
 
-  if (!project) {
-    notFound();
-  }
+    if (!project) {
+      console.error(`Project not found for slug: ${slugPath}`);
+      notFound();
+    }
 
   return (
     <Column as="section" maxWidth="m" horizontal="center" gap="l">
@@ -89,4 +104,8 @@ export default async function Project({
       <ScrollToHash />
     </Column>
   );
+  } catch (error) {
+    console.error('Error in Project component:', error);
+    notFound();
+  }
 }

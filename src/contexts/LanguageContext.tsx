@@ -1,105 +1,86 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-type Language = 'es' | 'en';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
+import {
+  messages,
+  interpolate,
+  type AppLanguage,
+} from "@/i18n/messages";
 
 interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  language: AppLanguage;
+  setLanguage: (lang: AppLanguage) => void;
+  t: (key: string, vars?: Record<string, string | number>) => string;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-// Translations
-const translations = {
-  es: {
-    'login': 'Iniciar Sesión',
-    'logout': 'Cerrar Sesión',
-    'email': 'Email',
-    'password': 'Contraseña',
-    'cancel': 'Cancelar',
-    'loading': 'Cargando...',
-    'login_success': 'Sesión iniciada correctamente',
-    'login_error': 'Error al iniciar sesión',
-    'logout_success': 'Sesión cerrada correctamente',
-    'complete_fields': 'Por favor completa todos los campos',
-    'home': 'Inicio',
-    'about': 'Acerca de',
-    'work': 'Trabajo',
-    'noticias': 'Noticias',
-    'gallery': 'Galería',
-    'db_test': 'Prueba DB',
-  },
-  en: {
-    'login': 'Login',
-    'logout': 'Logout',
-    'email': 'Email',
-    'password': 'Password',
-    'cancel': 'Cancel',
-    'loading': 'Loading...',
-    'login_success': 'Successfully logged in',
-    'login_error': 'Login error',
-    'logout_success': 'Successfully logged out',
-    'complete_fields': 'Please complete all fields',
-    'home': 'Home',
-    'about': 'About',
-    'work': 'Work',
-    'noticias': 'News',
-    'gallery': 'Gallery',
-    'db_test': 'DB Test',
-  }
-};
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined
+);
 
 interface LanguageProviderProps {
   children: ReactNode;
-  defaultLanguage?: Language;
+  defaultLanguage?: AppLanguage;
 }
 
-export const LanguageProvider: React.FC<LanguageProviderProps> = ({ 
-  children, 
-  defaultLanguage = 'es' 
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({
+  children,
+  defaultLanguage = "es",
 }) => {
-  // Inicializar con el idioma por defecto para SSR
-  const [language, setLanguage] = useState<Language>(defaultLanguage);
-  const [isMounted, setIsMounted] = useState(false);
+  const [language, setLanguageState] = useState<AppLanguage>(defaultLanguage);
 
-  // Cargar idioma desde localStorage después del montaje (solo en cliente)
   useEffect(() => {
-    setIsMounted(true);
-    // Verificar que estamos en el cliente antes de acceder a localStorage
-    if (typeof window !== 'undefined') {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem("language") as AppLanguage | null;
+      if (saved === "es" || saved === "en") {
+        setLanguageState(saved);
+      }
+    } catch (e) {
+      console.error("Error loading language from localStorage:", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.lang = language === "es" ? "es" : "en";
+  }, [language]);
+
+  const handleSetLanguage = useCallback((lang: AppLanguage) => {
+    setLanguageState(lang);
+    if (typeof window !== "undefined") {
       try {
-        const savedLanguage = localStorage.getItem('language') as Language;
-        if (savedLanguage && (savedLanguage === 'es' || savedLanguage === 'en')) {
-          setLanguage(savedLanguage);
-        }
-      } catch (error) {
-        console.error('Error loading language from localStorage:', error);
+        localStorage.setItem("language", lang);
+      } catch (e) {
+        console.error("Error saving language to localStorage:", e);
       }
     }
   }, []);
 
-  // Guardar idioma en localStorage cuando cambie
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    // Verificar que estamos en el cliente antes de acceder a localStorage
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('language', lang);
-      } catch (error) {
-        console.error('Error saving language to localStorage:', error);
+  const t = useCallback(
+    (key: string, vars?: Record<string, string | number>) => {
+      const raw = messages[language][key];
+      if (raw === undefined) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[i18n] Missing key "${key}" for ${language}`);
+        }
+        return key;
       }
-    }
-  };
-
-  const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
-  };
+      return interpolate(raw, vars);
+    },
+    [language]
+  );
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+    <LanguageContext.Provider
+      value={{ language, setLanguage: handleSetLanguage, t }}
+    >
       {children}
     </LanguageContext.Provider>
   );
@@ -108,7 +89,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 export const useLanguage = (): LanguageContextType => {
   const context = useContext(LanguageContext);
   if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;
-}; 
+};

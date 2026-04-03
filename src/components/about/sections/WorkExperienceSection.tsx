@@ -81,7 +81,7 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
       onUpdate();
     } catch (error) {
       console.error('Error saving work experience:', error);
-      addToast('Error al guardar la experiencia', 'danger');
+      addToast('Error al guardar la experiencia', 'error');
     }
   };
 

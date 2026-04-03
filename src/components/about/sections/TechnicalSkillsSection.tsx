@@ -88,7 +88,7 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
       onUpdate();
     } catch (error) {
       console.error('Error saving technical skill:', error);
-      addToast('Error al guardar la habilidad', 'danger');
+      addToast('Error al guardar la habilidad', 'error');
     }
   };
 
@@ -211,6 +211,7 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
           <form onSubmit={handleSubmit}>
             <Column gap="16">
               <Input
+                id="skill-form-name"
                 name="name"
                 label="Nombre de la habilidad"
                 value={formData.name || ''}
@@ -235,6 +236,7 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
               </div>
               
               <Input
+                id="skill-form-category"
                 name="category"
                 label="Categoría (ej: Frontend, Backend, Herramientas, etc.)"
                 value={formData.category || ''}

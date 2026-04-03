@@ -7,6 +7,8 @@ import { Project, getProjectsFromDB, deleteProject } from "@/lib/supabase";
 import { ProjectForm } from "./ProjectForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { person } from "@/resources";
 
 interface ProjectsProps {
   range?: [number, number?];
@@ -16,6 +18,7 @@ interface ProjectsProps {
 export function Projects({ range, showManagementButtons = false }: ProjectsProps) {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const { t } = useLanguage();
   
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +36,7 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
       setProjects(allProjects);
     } catch (error) {
       console.error('Error loading projects:', error);
-      addToast('Error al cargar los proyectos', 'error');
+      addToast(t("work.load_error"), "error");
     } finally {
       setLoading(false);
     }
@@ -52,14 +55,16 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
   const handleDeleteProject = async (project: Project) => {
     if (!user) return;
     
-    if (confirm(`¿Estás seguro de que quieres eliminar el proyecto "${project.title}"?`)) {
+    if (
+      confirm(t("work.delete_confirm", { title: project.title }))
+    ) {
       try {
         await deleteProject(project.id);
         setProjects(prev => prev.filter(p => p.id !== project.id));
-        addToast('Proyecto eliminado exitosamente', 'success');
+        addToast(t("work.deleted_ok"), "success");
       } catch (error) {
-        console.error('Error deleting project:', error);
-        addToast('Error al eliminar el proyecto', 'error');
+        console.error("Error deleting project:", error);
+        addToast(t("work.delete_error"), "error");
       }
     }
   };
@@ -98,7 +103,7 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
             gap="16"
           >
             <Heading variant="display-strong-xs" wrap="balance">
-              Projects - Bruno Bacchi
+              {t("work.page_heading", { name: person.name })}
             </Heading>
             <Button
               variant="primary"
@@ -110,7 +115,7 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
             >
               <Flex gap="8" vertical="center">
                 <Icon name="plus" size="s" />
-                Añadir Proyecto
+                {t("work.add_project")}
               </Flex>
             </Button>
           </Row>
@@ -122,13 +127,13 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
         <RevealFx fillWidth horizontal="center" paddingY="xl">
           <Column align="center" gap="m">
             <Text variant="body-default-m" onBackground="neutral-weak">
-              No hay proyectos disponibles
+              {t("work.no_projects")}
             </Text>
             {showManagementButtons && user && (
               <Button variant="secondary" onClick={handleAddProject}>
                 <Flex gap="8" vertical="center">
                   <Icon name="plus" size="s" />
-                  Crear primer proyecto
+                  {t("work.create_first")}
                 </Flex>
               </Button>
             )}
@@ -148,6 +153,7 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
               link={project.link || ""}
               onEdit={user && showManagementButtons ? handleEditProject : undefined}
               showEditButton={!!(user && showManagementButtons)}
+              project={project}
             />
           </RevealFx>
         ))
@@ -158,7 +164,9 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
         <Dialog
           isOpen={showAddForm || editingProject !== null}
           onClose={handleCancel}
-          title={editingProject ? "Editar Proyecto" : "Nuevo Proyecto"}
+          title={
+            editingProject ? t("work.dialog_edit") : t("work.dialog_new")
+          }
           maxWidth={80}
         >
           <ProjectForm

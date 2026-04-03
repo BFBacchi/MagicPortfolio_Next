@@ -9,8 +9,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { Section } from "../Section";
 import styles from "../about.module.scss";
 
-// Using 'danger' instead of 'error' to match the expected ToastVariant type
-type ToastVariant = 'success' | 'danger' | 'warning' | 'info';
+// Using 'error' instead of 'error' to match the expected ToastVariant type
+type ToastVariant = 'success' | 'error' | 'warning' | 'info';
 
 
 interface StudiesSectionProps {
@@ -75,7 +75,7 @@ export const StudiesSection = ({ studies, onUpdate }: StudiesSectionProps) => {
       onUpdate();
     } catch (error) {
       console.error('Error saving study:', error);
-addToast('Error al guardar el estudio', 'danger');
+addToast('Error al guardar el estudio', 'error');
     }
   };
 

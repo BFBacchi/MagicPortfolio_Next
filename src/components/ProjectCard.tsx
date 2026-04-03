@@ -11,6 +11,7 @@ import {
   Button,
   Icon,
 } from "@once-ui-system/core";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ProjectCardProps {
   href: string;
@@ -23,6 +24,7 @@ interface ProjectCardProps {
   link: string;
   onEdit?: (project: any) => void;
   showEditButton?: boolean;
+  project?: any; // Proyecto completo para pasar al onEdit
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -35,7 +37,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   link,
   onEdit,
   showEditButton = false,
+  project,
 }) => {
+  const { t } = useLanguage();
   return (
     <Column fillWidth gap="m">
       <Carousel
@@ -75,7 +79,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   style={{ margin: "0", width: "fit-content" }}
                   href={href}
                 >
-                  <Text variant="body-default-s">Read case study</Text>
+                  <Text variant="body-default-s">{t("project.read_case")}</Text>
                 </SmartLink>
               )}
               {link && (
@@ -84,17 +88,17 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   style={{ margin: "0", width: "fit-content" }}
                   href={link}
                 >
-                  <Text variant="body-default-s">View project</Text>
+                  <Text variant="body-default-s">{t("project.view_external")}</Text>
                 </SmartLink>
               )}
               {showEditButton && onEdit && (
                 <Button
                   variant="secondary"
                   size="s"
-                  onClick={() => onEdit({ title, content, description, images, link, href })}
+                  onClick={() => onEdit(project || { title, content, description, images, link, href })}
                 >
                   <Icon name="edit" size="s" />
-                  Editar
+                  {t("project.edit")}
                 </Button>
               )}
             </Flex>

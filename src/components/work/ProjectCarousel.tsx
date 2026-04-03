@@ -227,12 +227,12 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
 
           {/* Indicadores */}
           <RevealFx delay={0.3} horizontal="center">
-            <Flex justify="center" gap="s" marginTop="m">
+            <Flex horizontal="center" gap="s" marginTop="m">
               {carouselItems.map((item, index) => (
                 <RevealFx key={index} delay={0.1 * index} horizontal="center">
                   <Button
                     variant="tertiary"
-                    size="xs"
+                    size="s"
                     onClick={() => handleItemClick(index)}
                     className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-125 ${
                       index === currentIndex 
@@ -249,14 +249,14 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
 
           {/* Información del elemento actual */}
           <RevealFx delay={0.4} horizontal="center">
-            <Flex justify="center" marginTop="s">
+            <Flex horizontal="center" marginTop="s">
               <Text variant="body-default-s" onBackground="neutral-weak">
                 {currentItem.type === 'image' 
                   ? `Imagen ${currentItem.index + 1} de ${images.length}`
                   : 'Video de YouTube'
                 }
                 {isAutoPlaying && (
-                  <Text variant="body-default-s" onBackground="primary" marginLeft="xs">
+                  <Text variant="body-default-s" onBackground="brand-strong" marginLeft="xs">
                     • Auto scroll activo
                   </Text>
                 )}
