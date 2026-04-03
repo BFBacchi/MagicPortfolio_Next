@@ -24,13 +24,17 @@ on:
 jobs:
   update-news:
     runs-on: ubuntu-latest
-    
+    # Permite que el token por defecto del workflow haga push al mismo repo (sin PAT personal).
+    permissions:
+      contents: write
+
     steps:
       - name: 📥 Checkout del repositorio
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PAT_PUSH }}
           fetch-depth: 0
+          # Token del propio workflow (no uses PAT aquí: si el secret falla, el fetch muere sin credenciales).
+          token: ${{ github.token }}
 
       - name: 🐍 Configurar Python
         uses: actions/setup-python@v4
