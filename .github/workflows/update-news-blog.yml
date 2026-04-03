@@ -57,6 +57,8 @@ jobs:
           python news-scraper.py
         env:
           MAX_POSTS: ${{ github.event.inputs.max_posts || '3' }}
+          # Más entradas por feed = más probabilidad de encontrar artículos aún no listados en processed_news.json
+          MAX_ENTRIES_PER_FEED: "25"
 
       - name: 📊 Verificar cambios
         id: verify-changes

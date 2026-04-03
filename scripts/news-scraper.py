@@ -18,7 +18,12 @@ class NewsScraper:
         self.base_dir = Path(__file__).parent.parent
         self.posts_dir = self.base_dir / "src" / "app" / "noticias" / "posts"
         self.processed_file = self.base_dir / "scripts" / "processed_news.json"
-        self.max_posts_per_run = 3  # Máximo 3 posts por ejecución
+        # Workflow pasa MAX_POSTS; por defecto 3. Más entradas por feed = más posibilidad de hallar ítems aún no procesados.
+        self.max_posts_per_run = max(1, int(os.environ.get("MAX_POSTS", "3")))
+        self.max_entries_per_feed = max(5, int(os.environ.get("MAX_ENTRIES_PER_FEED", "25")))
+        self._rss_headers = {
+            "User-Agent": "MagicPortfolioNewsBot/1.0 (+https://github.com/BFBacchi/MagicPortfolio_Next)"
+        }
         
         # Fuentes RSS en español
         self.rss_feeds = [
@@ -128,8 +133,8 @@ class NewsScraper:
         text_lower = text.lower()
         spanish_count = sum(1 for word in spanish_words if word in text_lower)
         
-        # Si tiene al menos 3 palabras en español, considerarlo español
-        return spanish_count >= 3
+        # Al menos 2 términos típicos de español (antes 3 descartaba mucho contenido válido)
+        return spanish_count >= 2
     
     def generate_slug(self, title):
         """Generar slug único para el archivo"""
@@ -172,46 +177,77 @@ class NewsScraper:
     def fetch_rss_news(self):
         """Obtener noticias de feeds RSS"""
         all_news = []
-        
+        stats = {"entries_seen": 0, "passed_relevance": 0, "passed_spanish": 0}
+
         for feed_config in self.rss_feeds:
             try:
                 print(f"📡 Obteniendo noticias de {feed_config['name']}...")
-                
-                # Parsear RSS feed
-                feed = feedparser.parse(feed_config['url'])
-                
-                for entry in feed.entries[:5]:  # Solo las 5 más recientes
-                    # Extraer información
-                    title = self.clean_text(entry.title)
-                    summary = self.clean_text(entry.get('summary', ''))[:200] + "..."
-                    content = self.clean_text(entry.get('content', [{}])[0].get('value', ''))[:500] + "..."
-                    
-                    # Verificar si es contenido relevante Y en español
-                    if not self.is_relevant_content(title, summary, content):
+                url = feed_config["url"]
+                try:
+                    r = requests.get(url, headers=self._rss_headers, timeout=45)
+                    r.raise_for_status()
+                    feed = feedparser.parse(r.content)
+                except Exception as http_err:
+                    print(f"⚠️  requests falló ({http_err}), reintento con feedparser directo...")
+                    feed = feedparser.parse(url)
+
+                if getattr(feed, "bozo", False) and feed.bozo_exception:
+                    print(f"⚠️  Feed con avisos ({feed_config['name']}): {feed.bozo_exception}")
+
+                limit = self.max_entries_per_feed
+                for entry in feed.entries[:limit]:
+                    try:
+                        stats["entries_seen"] += 1
+                        title = self.clean_text(getattr(entry, "title", "") or "")
+                        summary = self.clean_text(getattr(entry, "summary", "") or "")[:200] + "..."
+                        body = ""
+                        if getattr(entry, "content", None):
+                            try:
+                                first = entry.content[0]
+                                body = first.get("value", "") if hasattr(first, "get") else getattr(first, "value", "")
+                            except (IndexError, AttributeError, TypeError):
+                                body = ""
+                        content = self.clean_text(body)[:500] + "..."
+
+                        # Verificar si es contenido relevante Y en español
+                        if not self.is_relevant_content(title, summary, content):
+                            continue
+                        stats["passed_relevance"] += 1
+
+                        if not self.is_spanish_content(f"{title} {summary} {content}"):
+                            print(f"⚠️  Saltando contenido no en español: {title[:50]}...")
+                            continue
+                        stats["passed_spanish"] += 1
+
+                        link = getattr(entry, "link", None) or ""
+                        if not link:
+                            continue
+
+                        news_item = {
+                            "title": title,
+                            "summary": summary,
+                            "url": link,
+                            "published": getattr(entry, "published_parsed", None),
+                            "source": feed_config["name"],
+                            "category": feed_config["category"],
+                            "content": content,
+                        }
+
+                        all_news.append(news_item)
+                        time.sleep(0.5)  # Rate limiting
+                    except Exception as entry_err:
+                        print(f"⚠️  Entrada omitida en {feed_config['name']}: {entry_err}")
                         continue
-                    
-                    # Verificar que el contenido esté en español
-                    if not self.is_spanish_content(f"{title} {summary} {content}"):
-                        print(f"⚠️  Saltando contenido no en español: {title[:50]}...")
-                        continue
-                    
-                    news_item = {
-                        'title': title,
-                        'summary': summary,
-                        'url': entry.link,
-                        'published': entry.get('published_parsed', None),
-                        'source': feed_config['name'],
-                        'category': feed_config['category'],
-                        'content': content
-                    }
-                    
-                    all_news.append(news_item)
-                    time.sleep(0.5)  # Rate limiting
-                    
+
             except Exception as e:
                 print(f"❌ Error obteniendo {feed_config['name']}: {e}")
                 continue
-        
+
+        print(
+            f"📈 Resumen fetch: entradas revisadas={stats['entries_seen']}, "
+            f"pasan relevancia={stats['passed_relevance']}, pasan español={stats['passed_spanish']}, "
+            f"ítems en cola={len(all_news)}"
+        )
         return all_news
     
     def generate_mdx_content(self, news_item):
@@ -322,9 +358,12 @@ autoGenerated: true
             if news_hash not in processed:
                 new_news.append((item, news_hash))
         
-        print(f"📊 Encontradas {len(new_news)} noticias nuevas")
-        
-        # Procesar máximo 3 noticias por ejecución
+        print(
+            f"📊 Encontradas {len(new_news)} noticias nuevas (no estaban en processed_news.json; "
+            f"{len(processed)} hashes ya procesados)"
+        )
+
+        # Procesar hasta max_posts_per_run noticias por ejecución
         created_count = 0
         for item, news_hash in new_news[:self.max_posts_per_run]:
             try:
