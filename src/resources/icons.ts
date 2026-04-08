@@ -16,6 +16,11 @@ import {
   HiOutlineBriefcase,
   HiOutlineAcademicCap,
   HiOutlineCog6Tooth,
+  HiOutlineArrowRightOnRectangle,
+  HiOutlineArrowLeftOnRectangle,
+  HiChevronUp,
+  HiChevronDown,
+  HiArrowPath,
 } from "react-icons/hi2";
 
 import {
@@ -53,7 +58,12 @@ export const iconLibrary: Record<string, IconType> = {
   introduction: HiOutlineUser,
   experience: HiOutlineBriefcase,
   studies: HiOutlineAcademicCap,
-  skills: HiOutlineCog6Tooth
+  skills: HiOutlineCog6Tooth,
+  login: HiOutlineArrowRightOnRectangle,
+  logout: HiOutlineArrowLeftOnRectangle,
+  chevronUp: HiChevronUp,
+  chevronDown: HiChevronDown,
+  loader: HiArrowPath,
 };
 
 export type IconLibrary = typeof iconLibrary;

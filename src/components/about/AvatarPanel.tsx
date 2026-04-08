@@ -1,9 +1,19 @@
 "use client";
 
-import { Avatar, Button, Column, Flex, Text, Tag, Icon, Heading, IconButton } from "@once-ui-system/core";
+import { useEffect, useState } from "react";
+import { Button, Column, Flex, Text, Tag, Icon, IconButton } from "@once-ui-system/core";
 import { useAuth } from "@/contexts/AuthContext";
-import { social } from "@/resources";
 import styles from "./about.module.scss";
+
+const FALLBACK_AVATAR = "/images/avatar.jpg";
+
+function resolveAvatarSrc(url?: string): string {
+  const u = (url ?? "").trim();
+  if (!u) return FALLBACK_AVATAR;
+  if (u.startsWith("/")) return u;
+  if (u.startsWith("http://") || u.startsWith("https://")) return u;
+  return FALLBACK_AVATAR;
+}
 
 interface AvatarPanelProps {
   name: string;
@@ -31,21 +41,29 @@ export const AvatarPanel = ({
 }: AvatarPanelProps) => {
   const { user, loading } = useAuth();
 
-  // Debug: Log the user object to check if it's being retrieved correctly
-  console.log('AvatarPanel - user:', user);
-  console.log('AvatarPanel - loading:', loading);
-  console.log('AvatarPanel - should show edit button:', !loading && user && onEdit);
-  console.log('AvatarPanel - avatarUrl:', avatarUrl);
-  console.log('AvatarPanel - avatarUrl type:', typeof avatarUrl);
-  console.log('AvatarPanel - avatarUrl valid:', avatarUrl && avatarUrl.startsWith('http'));
+  const [displaySrc, setDisplaySrc] = useState(() =>
+    resolveAvatarSrc(avatarUrl)
+  );
+
+  useEffect(() => {
+    setDisplaySrc(resolveAvatarSrc(avatarUrl));
+  }, [avatarUrl]);
 
   return (
     <div className={styles.avatarContainer}>
       <Column gap="m" horizontal="center">
         <div className={styles.avatarWrapper}>
-          <Avatar 
-            src={avatarUrl && avatarUrl.startsWith('http') ? avatarUrl : "/images/avatar.jpg"} 
-            size="xl"
+          {/* Once UI Avatar usa next/image; con URLs de Storage a veces queda capa negra sin imagen visible. */}
+          <img
+            src={displaySrc}
+            alt=""
+            className={styles.avatarImg}
+            width={120}
+            height={120}
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            onError={() => setDisplaySrc(FALLBACK_AVATAR)}
           />
         </div>
         <Text as="h2" variant="display-strong-s">{name}</Text>

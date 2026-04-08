@@ -6,20 +6,39 @@ import '@/resources/background-effect.css';
 
 
 import classNames from "classnames";
+import type { Metadata } from "next";
 
 import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
 import { Footer, Header, RouteGuard } from '@/components';
 import { Providers } from '@/providers';
+import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
 import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
 
-export async function generateMetadata() {
-  return Meta.generate({
+/** Favicon / metadata leen `introduction`: no congelar en build tras cambiar avatar en Supabase. */
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { imgSrc } = await getPortfolioAvatarForSite();
+  const base = Meta.generate({
     title: home.title,
     description: home.description,
     baseURL: baseURL,
     path: home.path,
     image: home.image,
-  });
+  }) as Metadata;
+
+  const prevIcons =
+    base.icons && typeof base.icons === "object" ? base.icons : {};
+
+  return {
+    ...base,
+    icons: {
+      ...prevIcons,
+      icon: [{ url: imgSrc }],
+      apple: [{ url: imgSrc }],
+      shortcut: [{ url: imgSrc }],
+    },
+  };
 }
 
 export default async function RootLayout({

@@ -5,8 +5,11 @@ import { Projects } from "@/components/work/Projects";
 import Posts from "@/components/blog/Posts";
 import { HomeIntro } from "@/components/home/HomeIntro";
 import { HomeLatestBlogHeading } from "@/components/home/HomeLatestBlogHeading";
+import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
 
-export default function Home() {
+export default async function Home() {
+  const { imgSrc, absoluteForSeo } = await getPortfolioAvatarForSite();
+
   return (
     <Column maxWidth="m" gap="xl" horizontal="center">
       <Schema
@@ -19,10 +22,10 @@ export default function Home() {
         author={{
           name: person.name,
           url: `${baseURL}${about.path}`,
-          image: `${baseURL}${person.avatar}`,
+          image: absoluteForSeo,
         }}
       />
-      <HomeIntro />
+      <HomeIntro aboutCtaAvatarSrc={imgSrc} />
       <RevealFx translateY="16" delay={0.6}>
         <Projects range={[1, 1]} />
       </RevealFx>

@@ -7,6 +7,7 @@ import { Introduction, WorkExperience, Study, TechnicalSkill, getTechnicalSkills
 import { Column, Text, Button, Dialog, Input, Row, Icon } from "@once-ui-system/core";
 import styles from "./about.module.scss";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { uploadAvatar, getProfile } from "@/lib/supabase/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase/client";
@@ -26,9 +27,18 @@ interface AboutClientProps {
 //
 
 export const AboutClient = ({ introduction, workExperience, studies, technicalSkills }: AboutClientProps) => {
+  const router = useRouter();
   const { user, loading } = useAuth();
   const { addToast } = useToast();
   const { t } = useLanguage();
+
+  const introAvatar =
+    (introduction as { avatar_url?: string } | null)?.avatar_url || "";
+  const [avatarDisplayUrl, setAvatarDisplayUrl] = useState(introAvatar);
+
+  useEffect(() => {
+    setAvatarDisplayUrl(introAvatar);
+  }, [introAvatar]);
   
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [profileData, setProfileData] = useState<Partial<Introduction> | null>(null);
@@ -217,18 +227,14 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
     try {
       setIsLoading(true);
       const avatarUrl = await uploadAvatar(file, user.id);
-      setTempData(prev => ({ ...prev, avatar_url: avatarUrl }));
-      
-      // Actualizar también el introduction para que se refleje inmediatamente
+      setTempData((prev) => ({ ...prev, avatar_url: avatarUrl }));
+      setAvatarDisplayUrl(avatarUrl);
       if (introduction) {
-        introduction.avatar_url = avatarUrl;
+        (introduction as { avatar_url?: string }).avatar_url = avatarUrl;
       }
-      
-      // Recargar la página para obtener los datos actualizados
-      window.location.reload();
-      
-      // Mostrar mensaje de éxito
-      addToast('Imagen de perfil actualizada correctamente', 'success');
+
+      addToast("Imagen de perfil actualizada correctamente", "success");
+      router.refresh();
     } catch (error) {
       console.error('Error uploading avatar:', error);
       addToast('Error al subir la imagen', 'error');
@@ -278,10 +284,9 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
       }
       
       setShowImageGallery(false);
-      addToast('Imagen de perfil actualizada correctamente', 'success');
-      
-      // Recargar la página para mostrar los cambios
-      window.location.reload();
+      setAvatarDisplayUrl(imageUrl);
+      addToast("Imagen de perfil actualizada correctamente", "success");
+      router.refresh();
       
     } catch (error) {
       console.error('Error selecting image:', error);
@@ -294,12 +299,16 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
   return (
     <div className={styles.aboutContainer}>
       <aside className={styles.sidebar}>
-        <AvatarPanel 
-          name={introduction?.name || 'Tu Nombre'} 
-          role={introduction?.role || 'Tu Rol'}
+        <AvatarPanel
+          name={introduction?.name || "Tu Nombre"}
+          role={introduction?.role || "Tu Rol"}
           location=""
           languages={[]}
-          avatarUrl={introduction?.avatar_url || "/images/avatar.jpg"}
+          avatarUrl={
+            avatarDisplayUrl?.trim() ||
+            introAvatar?.trim() ||
+            "/images/avatar.jpg"
+          }
           socialLinks={{
             github_url: (introduction as any)?.github_url,
             linkedin_url: (introduction as any)?.linkedin_url,

@@ -5,7 +5,6 @@ import {
   Flex,
   Text,
   Button,
-  Avatar,
   RevealFx,
   Column,
   Badge,
@@ -13,9 +12,17 @@ import {
 } from "@once-ui-system/core";
 import { home, about, person } from "@/resources";
 import { useLanguage } from "@/contexts/LanguageContext";
+import styles from "./homeIntro.module.scss";
 
-export function HomeIntro() {
+type HomeIntroProps = {
+  /** Desde Supabase (`introduction.avatar_url`) o ruta estática; si no viene, usa `person.avatar`. */
+  aboutCtaAvatarSrc?: string;
+};
+
+export function HomeIntro({ aboutCtaAvatarSrc }: HomeIntroProps) {
   const { t } = useLanguage();
+  const ctaAvatarSrc =
+    aboutCtaAvatarSrc?.trim() || person.avatar || "/favicon.ico";
 
   return (
     <Column maxWidth="s">
@@ -80,11 +87,15 @@ export function HomeIntro() {
         >
           <Flex gap="8" vertical="center" paddingRight="4">
             {about.avatar.display && (
-              <Avatar
-                marginRight="8"
-                style={{ marginLeft: "-0.75rem" }}
-                src={person.avatar}
-                size="m"
+              <img
+                src={ctaAvatarSrc}
+                alt=""
+                className={styles.aboutCtaAvatar}
+                width={36}
+                height={36}
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
               />
             )}
             {t("home.about_cta", { name: person.name })}

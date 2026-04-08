@@ -44,6 +44,7 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
         } as Partial<Introduction> as Introduction);
       } else {
         await upsertIntroduction({
+          id: 1,
           name: "Tu Nombre",
           role: "Tu Rol",
           description: introText,

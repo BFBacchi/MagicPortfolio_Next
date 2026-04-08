@@ -1,64 +1,104 @@
-import { supabase } from './client';
+import { supabase } from "./client";
+
+/** Nombre del bucket en Supabase Storage (debe coincidir con scripts/setup-avatar-storage.sql). */
+export const SUPABASE_STORAGE_BUCKET =
+  process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET ?? "magicportfolio";
+
+function storageErrorMessage(err: unknown, fallback: string): string {
+  if (err && typeof err === "object") {
+    const o = err as Record<string, unknown>;
+    const msg = o.message ?? o.error_description ?? o.error;
+    if (typeof msg === "string" && msg.trim()) return msg;
+    try {
+      return JSON.stringify(err);
+    } catch {
+      return fallback;
+    }
+  }
+  if (typeof err === "string") return err;
+  return fallback;
+}
 
 export const uploadAvatar = async (file: File, userId: string) => {
-  const fileExt = file.name.split('.').pop();
+  const fileExt = file.name.split(".").pop() || "jpg";
   const fileName = `${userId}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
   const filePath = `profileimage/${fileName}`;
 
-  console.log('Uploading file to bucket magicportfolio:', filePath);
-
-  // Subir el archivo al bucket 'magicportfolio'
   const { error: uploadError } = await supabase.storage
-    .from('magicportfolio')
+    .from(SUPABASE_STORAGE_BUCKET)
     .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: true
+      cacheControl: "3600",
+      upsert: true,
     });
 
   if (uploadError) {
-    console.error('Upload error:', uploadError);
-    throw uploadError;
+    const detail = storageErrorMessage(
+      uploadError,
+      "Error desconocido al subir a Storage"
+    );
+    console.error("Storage upload failed:", detail, uploadError);
+    throw new Error(
+      `${detail}. Crea el bucket "${SUPABASE_STORAGE_BUCKET}" y las políticas (ver scripts/setup-avatar-storage.sql). Debes estar logueado.`
+    );
   }
 
-  console.log('File uploaded successfully');
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(SUPABASE_STORAGE_BUCKET).getPublicUrl(filePath);
 
-  // Obtener la URL pública
-  const { data: { publicUrl } } = supabase
-    .storage
-    .from('magicportfolio')
-    .getPublicUrl(filePath);
-
-  console.log('Public URL:', publicUrl);
-
-  // Actualizar el perfil con la nueva URL del avatar
-  const { error: updateError } = await supabase
-    .from('profiles')
-    .update({ 
+  // Persistir URL en introduction (fila id=1). Si no hay fila, el UPDATE no devuelve error pero 0 filas.
+  const { data: updatedRows, error: introUpdateError } = await supabase
+    .from("introduction")
+    .update({
       avatar_url: publicUrl,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     })
-    .eq('id', userId);
-
-  if (updateError) {
-    console.error('Update profile error:', updateError);
-    throw updateError;
-  }
-
-  console.log('Profile updated successfully');
-
-  // También actualizar la tabla introduction
-  const { error: introUpdateError } = await supabase
-    .from('introduction')
-    .update({ 
-      avatar_url: publicUrl
-    })
-    .eq('id', 1); // Asumiendo que solo hay una introducción
+    .eq("id", 1)
+    .select("id");
 
   if (introUpdateError) {
-    console.error('Update introduction error:', introUpdateError);
-    // No lanzamos error aquí porque la subida del archivo ya fue exitosa
-  } else {
-    console.log('Introduction updated successfully');
+    const detail = storageErrorMessage(introUpdateError, "Error al actualizar introduction");
+    console.error("Update introduction (avatar):", detail, introUpdateError);
+    throw new Error(
+      `${detail}. Ejecuta scripts/create-about-tables.sql y revisa políticas RLS de introduction.`
+    );
+  }
+
+  if (!updatedRows?.length) {
+    const { error: insertError } = await supabase.from("introduction").insert({
+      id: 1,
+      name: "",
+      role: "",
+      description: "",
+      avatar_url: publicUrl,
+    });
+
+    if (insertError) {
+      const detail = storageErrorMessage(
+        insertError,
+        "No existe fila introduction id=1 y no se pudo crear"
+      );
+      console.error("Insert introduction (avatar):", detail, insertError);
+      throw new Error(
+        `${detail}. Ejecuta scripts/create-about-tables.sql (incluye fila inicial id=1).`
+      );
+    }
+  }
+
+  const { error: profileUpdateError } = await supabase
+    .from("profiles")
+    .update({
+      avatar_url: publicUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId);
+
+  if (profileUpdateError) {
+    console.warn(
+      "Avatar subido e introduction actualizado; profiles no actualizado (tabla o RLS):",
+      storageErrorMessage(profileUpdateError, "unknown"),
+      profileUpdateError
+    );
   }
 
   return publicUrl;
@@ -93,30 +133,24 @@ export const uploadProjectImage = async (file: File, projectSlug: string, imageI
   const fileName = `${projectSlug}-${imageIndex}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
   const filePath = `projects/${fileName}`;
 
-  console.log('Uploading project image to bucket magicportfolio:', filePath);
-
-  // Subir el archivo al bucket 'magicportfolio'
   const { error: uploadError } = await supabase.storage
-    .from('magicportfolio')
+    .from(SUPABASE_STORAGE_BUCKET)
     .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: true
+      cacheControl: "3600",
+      upsert: true,
     });
 
   if (uploadError) {
-    console.error('Upload error:', uploadError);
-    throw uploadError;
+    const detail = storageErrorMessage(uploadError, "Error al subir imagen");
+    console.error("Project image upload:", detail, uploadError);
+    throw new Error(
+      `${detail}. Bucket "${SUPABASE_STORAGE_BUCKET}" y políticas: scripts/setup-avatar-storage.sql`
+    );
   }
 
-  console.log('Project image uploaded successfully');
-
-  // Obtener la URL pública
-  const { data: { publicUrl } } = supabase
-    .storage
-    .from('magicportfolio')
-    .getPublicUrl(filePath);
-
-  console.log('Project image public URL:', publicUrl);
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(SUPABASE_STORAGE_BUCKET).getPublicUrl(filePath);
 
   return publicUrl;
 };

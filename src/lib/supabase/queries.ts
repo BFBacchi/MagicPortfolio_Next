@@ -1,4 +1,4 @@
-import { supabase } from '../supabase'
+import { supabase } from "../supabase";
 
 // Tipos para los datos del About
 export interface Introduction {
@@ -41,19 +41,18 @@ export interface TechnicalSkill {
   created_at?: string
 }
 
-// Función para obtener la introducción
 export async function getIntroduction(): Promise<Introduction | null> {
   const { data, error } = await supabase
-    .from('introduction')
-    .select('*')
-    .single()
+    .from("introduction")
+    .select("*")
+    .maybeSingle();
 
   if (error) {
-    console.error('Error fetching introduction:', error)
-    return null
+    console.error("Error fetching introduction:", error);
+    return null;
   }
 
-  return data
+  return data;
 }
 
 // Función para obtener experiencia laboral

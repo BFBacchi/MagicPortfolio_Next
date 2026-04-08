@@ -5,6 +5,19 @@ const withMDX = mdx({
   options: {},
 });
 
+/** Host de imágenes públicas de Storage (mismo proyecto que NEXT_PUBLIC_SUPABASE_URL). */
+function supabaseStorageImageHostname() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (url) {
+    try {
+      return new URL(url).hostname;
+    } catch {
+      /* ignore */
+    }
+  }
+  return "ykmzwzvxrdbtsbxsysky.supabase.co";
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
@@ -16,10 +29,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'ykmzwzvxrdbtsbxsysky.supabase.co',
-        port: '',
-        pathname: '/storage/v1/object/public/**',
+        protocol: "https",
+        hostname: supabaseStorageImageHostname(),
+        port: "",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },

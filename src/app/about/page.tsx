@@ -17,12 +17,16 @@ import TableOfContents from "@/components/about/TableOfContents";
 import { AboutClient } from "@/components/about/AboutClient";
 import styles from "@/components/about/about.module.scss";
 import React from "react";
-import { 
-  getIntroduction, 
-  getWorkExperience, 
-  getStudies, 
-  getTechnicalSkills 
+import {
+  getIntroduction,
+  getWorkExperience,
+  getStudies,
+  getTechnicalSkills,
 } from "@/lib/supabase/queries";
+
+/** Datos desde Supabase: sin esto, Next puede cachear HTML con avatar antiguo tras subir imagen. */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata() {
   return Meta.generate({
