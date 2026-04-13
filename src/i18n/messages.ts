@@ -45,7 +45,7 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "work.deleted_ok": "Proyecto eliminado correctamente",
     "work.delete_error": "Error al eliminar el proyecto",
 
-    "project.read_case": "Ver caso de estudio",
+    "project.read_case": "URL Slug",
     "project.view_external": "Ver proyecto",
     "project.edit": "Editar",
 
@@ -217,7 +217,7 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "work.deleted_ok": "Project deleted",
     "work.delete_error": "Could not delete project",
 
-    "project.read_case": "Read case study",
+    "project.read_case": "URL Slug",
     "project.view_external": "View project",
     "project.edit": "Edit",
 

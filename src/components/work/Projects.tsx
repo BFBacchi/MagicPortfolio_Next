@@ -3,19 +3,31 @@
 import { useState, useEffect } from 'react';
 import { Column, Row, Heading, Button, Icon, RevealFx, Flex, Text, Dialog } from "@once-ui-system/core";
 import { ProjectCard } from "@/components";
-import { Project, getProjectsFromDB, deleteProject } from "@/lib/supabase";
+import {
+  Project,
+  getProjectsFromDB,
+  deleteProject,
+  type ProjectsOrderBy,
+} from "@/lib/supabase";
 import { ProjectForm } from "./ProjectForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { person } from "@/resources";
+import { isSafeProjectSlug } from "@/lib/projects";
 
 interface ProjectsProps {
   range?: [number, number?];
   showManagementButtons?: boolean;
+  /** En inicio suele usarse `created_at` para mostrar el último proyecto creado primero. */
+  orderBy?: ProjectsOrderBy;
 }
 
-export function Projects({ range, showManagementButtons = false }: ProjectsProps) {
+export function Projects({
+  range,
+  showManagementButtons = false,
+  orderBy,
+}: ProjectsProps) {
   const { user } = useAuth();
   const { addToast } = useToast();
   const { t } = useLanguage();
@@ -27,12 +39,14 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
 
   useEffect(() => {
     loadProjects();
-  }, []);
+  }, [orderBy]);
 
   const loadProjects = async () => {
     try {
       setLoading(true);
-      const allProjects = await getProjectsFromDB();
+      const allProjects = await getProjectsFromDB(
+        orderBy ? { orderBy } : undefined
+      );
       setProjects(allProjects);
     } catch (error) {
       console.error('Error loading projects:', error);
@@ -144,7 +158,11 @@ export function Projects({ range, showManagementButtons = false }: ProjectsProps
           <RevealFx key={project.slug} delay={0.1 * index} horizontal="start">
             <ProjectCard
               priority={index < 2}
-              href={`work/${project.slug}`}
+              href={
+                isSafeProjectSlug(project.slug)
+                  ? `/work/${project.slug}`
+                  : undefined
+              }
               images={project.images}
               title={project.title}
               description={project.summary}

@@ -27,7 +27,7 @@ export default async function Home() {
       />
       <HomeIntro aboutCtaAvatarSrc={imgSrc} />
       <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
+        <Projects range={[1, 1]} orderBy="created_at" />
       </RevealFx>
       {routes["/noticias"] && (
         <Flex fillWidth gap="24" mobileDirection="column">
@@ -37,7 +37,7 @@ export default async function Home() {
           </Flex>
         </Flex>
       )}
-      <Projects range={[2]} />
+      <Projects range={[2]} orderBy="created_at" />
       {newsletter.display && <Mailchimp />}
     </Column>
   );

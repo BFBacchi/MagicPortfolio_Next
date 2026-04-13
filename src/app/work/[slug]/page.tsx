@@ -4,14 +4,16 @@ import { baseURL, about, person, work } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
 import { ScrollToHash, CustomMDX } from "@/components";
 import { Metadata } from "next";
-import { getProjectsFromDB, getProjectBySlug } from "@/lib/projects";
+import { getProjectsFromDB, getProjectBySlug, isSafeProjectSlug } from "@/lib/projects";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const projects = await getProjectsFromDB();
-    return projects.map((project) => ({
-      slug: project.slug,
-    }));
+    return projects
+      .filter((project) => isSafeProjectSlug(project.slug))
+      .map((project) => ({
+        slug: project.slug,
+      }));
   } catch (error) {
     console.error('Error generating static params for projects:', error);
     return [];

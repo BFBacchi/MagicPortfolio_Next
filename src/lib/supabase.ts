@@ -34,12 +34,17 @@ export interface Project {
   video_thumbnail?: string
 }
 
+export type ProjectsOrderBy = 'created_at' | 'published_at'
+
 // Función para obtener todos los proyectos
-export async function getProjectsFromDB(): Promise<Project[]> {
+export async function getProjectsFromDB(options?: {
+  orderBy?: ProjectsOrderBy
+}): Promise<Project[]> {
+  const column = options?.orderBy ?? 'published_at'
   const { data, error } = await supabase
     .from('projects')
     .select('*')
-    .order('published_at', { ascending: false })
+    .order(column, { ascending: false })
 
   if (error) {
     console.error('Error fetching projects:', error)

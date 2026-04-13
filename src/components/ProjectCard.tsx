@@ -12,9 +12,11 @@ import {
   Icon,
 } from "@once-ui-system/core";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ensureExternalHref } from "@/lib/ensureExternalHref";
 
 interface ProjectCardProps {
-  href: string;
+  /** Ruta interna del detalle, p. ej. `/work/mi-proyecto`. Si falta, no se muestra el enlace al caso. */
+  href?: string;
   priority?: boolean;
   images: string[];
   title: string;
@@ -40,6 +42,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
 }) => {
   const { t } = useLanguage();
+  const externalProjectUrl = ensureExternalHref(link);
+
   return (
     <Column fillWidth gap="m">
       <Carousel
@@ -73,7 +77,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               </Text>
             )}
             <Flex gap="24" wrap>
-              {content?.trim() && (
+              {content?.trim() && href?.trim() && (
                 <SmartLink
                   suffixIcon="arrowRight"
                   style={{ margin: "0", width: "fit-content" }}
@@ -82,11 +86,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   <Text variant="body-default-s">{t("project.read_case")}</Text>
                 </SmartLink>
               )}
-              {link && (
+              {externalProjectUrl && (
                 <SmartLink
                   suffixIcon="arrowUpRightFromSquare"
                   style={{ margin: "0", width: "fit-content" }}
-                  href={link}
+                  href={externalProjectUrl}
                 >
                   <Text variant="body-default-s">{t("project.view_external")}</Text>
                 </SmartLink>
