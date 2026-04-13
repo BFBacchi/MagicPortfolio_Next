@@ -756,33 +756,63 @@
   .aboutContainer {
     flex-direction: column;
     padding: 1rem;
-    gap: 2rem;
-    }
+    gap: 1rem;
+  }
 
-    .avatarContainer {
-        position: relative;
-        top: 0;
-        width: 100%;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-    }
+  .sidebar {
+    width: 100%;
+    position: static;
+    top: auto;
+    align-self: stretch;
+    z-index: 1;
+  }
 
-    .contentContainer {
-        padding-right: 0;
-    }
+  .mainContent {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: 1rem;
+  }
 
-    .section {
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
+  .sections {
+    width: 100%;
+  }
 
-    .textAlign {
-        text-align: center;
-    }
+  .avatarContainer {
+    position: relative;
+    top: 0;
+    width: 100%;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
 
-    .blockAlign {
-        align-self: center;
-    }
+  .navLinks {
+    gap: 0.5rem;
+  }
+
+  .navLink {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .section {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .sectionHeader {
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .textAlign {
+    text-align: center;
+  }
+
+  .blockAlign {
+    align-self: center;
+  }
 }
 
 // Animaciones keyframes

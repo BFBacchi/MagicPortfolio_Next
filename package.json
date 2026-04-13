@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
-    "@next/mdx": "^15.3.1",
+    "@next/mdx": "^16.2.3",
     "@once-ui-system/core": "^1.2.4",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.52.0",
@@ -20,7 +20,7 @@
     "cookie": "^1.0.2",
     "dotenv": "^16.5.0",
     "gray-matter": "^4.0.3",
-    "next": "15.3.8",
+    "next": "^16.2.3",
     "next-mdx-remote": "^5.0.0",
     "nodemailer": "^7.0.9",
     "pg": "^8.16.2",

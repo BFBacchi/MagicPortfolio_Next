@@ -47,7 +47,7 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const timeLocale = language === "es" ? "es-AR" : "en-US";
   const { user } = useAuth();
 
@@ -68,7 +68,7 @@ export const Header = () => {
       >
         <Flex paddingLeft="12" fillWidth vertical="center" textVariant="body-default-s">
           {display.location && <Flex>
-            <AuthButton />
+            <AuthButton showLanguageSelector={false} />
           </Flex>}
         </Flex>
         <Flex fillWidth horizontal="center">
@@ -177,6 +177,19 @@ export const Header = () => {
                   <ThemeToggle />
                 </>
               )}
+              <Line background="neutral-alpha-medium" vert maxHeight="24" />
+              <Flex gap="4" vertical="center">
+                <ToggleButton
+                  label="ES"
+                  selected={language === "es"}
+                  onClick={() => setLanguage("es")}
+                />
+                <ToggleButton
+                  label="EN"
+                  selected={language === "en"}
+                  onClick={() => setLanguage("en")}
+                />
+              </Flex>
             </Flex>
           </Flex>
         </Flex>

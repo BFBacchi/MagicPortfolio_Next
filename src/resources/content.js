@@ -221,47 +221,47 @@ const gallery = {
   label: "Gallery",
   title: `Photo gallery – ${person.name}`,
   description: `A photo collection by ${person.name}`,
-  // Images by https://lorant.one
-  // These are placeholder images, replace with your own
+  // Placeholders vía Picsum (no requieren archivos en public/). Sustituye por
+  // "/images/gallery/tu-foto.jpg" cuando copies imágenes a public/images/gallery/.
   images: [
     {
-      src: "/images/gallery/horizontal-1.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1018/1600/900",
+      alt: "Gallery",
       orientation: "horizontal",
     },
     {
-      src: "/images/gallery/horizontal-2.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1015/1600/900",
+      alt: "Gallery",
       orientation: "horizontal",
     },
     {
-      src: "/images/gallery/horizontal-3.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1019/1600/900",
+      alt: "Gallery",
       orientation: "horizontal",
     },
     {
-      src: "/images/gallery/horizontal-4.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1022/1600/900",
+      alt: "Gallery",
       orientation: "horizontal",
     },
     {
-      src: "/images/gallery/vertical-1.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1003/900/1200",
+      alt: "Gallery",
       orientation: "vertical",
     },
     {
-      src: "/images/gallery/vertical-2.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1011/900/1200",
+      alt: "Gallery",
       orientation: "vertical",
     },
     {
-      src: "/images/gallery/vertical-3.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1025/900/1200",
+      alt: "Gallery",
       orientation: "vertical",
     },
     {
-      src: "/images/gallery/vertical-4.jpg",
-      alt: "image",
+      src: "https://picsum.photos/id/1035/900/1200",
+      alt: "Gallery",
       orientation: "vertical",
     },
   ],

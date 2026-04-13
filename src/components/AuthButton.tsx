@@ -19,13 +19,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import styles from './AuthButton.module.scss';
 
 interface AuthButtonProps {
-  onLanguageChange?: (language: string) => void;
-  currentLanguage?: string;
+  showLanguageSelector?: boolean;
 }
 
-export const AuthButton: React.FC<AuthButtonProps> = ({ 
-  onLanguageChange, 
-  currentLanguage = 'es' 
+export const AuthButton: React.FC<AuthButtonProps> = ({
+  showLanguageSelector = true,
 }) => {
   const { language, setLanguage, t } = useLanguage();
   const [user, setUser] = useState<any>(null);
@@ -163,35 +161,35 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
     setPasswordError(null);
   };
 
-  const handleLanguageChange = (language: string) => {
-    onLanguageChange?.(language);
-  };
-
   return (
     <Flex gap="s" vertical="center">
-      {/* Language Selector */}
-      <Flex gap="xs" vertical="center">
-        <Button
-          variant={language === 'es' ? 'primary' : 'secondary'}
-          size="s"
-          onClick={() => setLanguage('es')}
-          disabled={loading}
-          className="auth-button"
-        >
-          ES
-        </Button>
-        <Button
-          variant={language === 'en' ? 'primary' : 'secondary'}
-          size="s"
-          onClick={() => setLanguage('en')}
-          disabled={loading}
-          className="auth-button"
-        >
-          EN
-        </Button>
-      </Flex>
+      {showLanguageSelector && (
+        <>
+          {/* Language Selector */}
+          <Flex gap="xs" vertical="center">
+            <Button
+              variant={language === 'es' ? 'primary' : 'secondary'}
+              size="s"
+              onClick={() => setLanguage('es')}
+              disabled={loading}
+              className="auth-button"
+            >
+              ES
+            </Button>
+            <Button
+              variant={language === 'en' ? 'primary' : 'secondary'}
+              size="s"
+              onClick={() => setLanguage('en')}
+              disabled={loading}
+              className="auth-button"
+            >
+              EN
+            </Button>
+          </Flex>
 
-      <Line background="neutral-alpha-medium" vert maxHeight="24" />
+          <Line background="neutral-alpha-medium" vert maxHeight="24" />
+        </>
+      )}
 
       {/* Auth Button */}
       {user ? (

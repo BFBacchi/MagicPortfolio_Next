@@ -28,16 +28,25 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
       setIsPasswordRequired(false);
       setIsAuthenticated(false);
 
-      const checkRouteEnabled = () => {
-        if (!pathname) return false;
+      const normalizePath = (path: string | null): string | null => {
+        if (!path) return null;
+        if (path !== "/" && path.endsWith("/")) {
+          return path.replace(/\/+$/, "") || "/";
+        }
+        return path;
+      };
 
-        if (pathname in routes) {
-          return routes[pathname as keyof typeof routes];
+      const checkRouteEnabled = () => {
+        const path = normalizePath(pathname);
+        if (!path) return false;
+
+        if (path in routes) {
+          return routes[path as keyof typeof routes];
         }
 
         const dynamicRoutes = ["/noticias", "/work"] as const;
         for (const route of dynamicRoutes) {
-          if (pathname?.startsWith(route) && routes[route]) {
+          if (path.startsWith(route) && routes[route]) {
             return true;
           }
         }
@@ -48,7 +57,8 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
       const routeEnabled = checkRouteEnabled();
       setIsRouteEnabled(routeEnabled);
 
-      if (protectedRoutes[pathname as keyof typeof protectedRoutes]) {
+      const pathForProtection = normalizePath(pathname) ?? pathname;
+      if (protectedRoutes[pathForProtection as keyof typeof protectedRoutes]) {
         setIsPasswordRequired(true);
 
         const response = await fetch("/api/check-auth");
