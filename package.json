@@ -21,7 +21,7 @@
     "dotenv": "^16.5.0",
     "gray-matter": "^4.0.3",
     "next": "^16.2.3",
-    "next-mdx-remote": "^5.0.0",
+    "next-mdx-remote": "^6.0.0",
     "nodemailer": "^7.0.9",
     "pg": "^8.16.2",
     "react": "19.0.0",
