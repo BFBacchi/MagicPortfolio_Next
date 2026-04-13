@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, Column, Flex, Text, Tag, Icon, IconButton } from "@once-ui-system/core";
 import { useAuth } from "@/contexts/AuthContext";
+import { ensureExternalHref } from "@/lib/ensureExternalHref";
 import styles from "./about.module.scss";
 
 const FALLBACK_AVATAR = "/images/avatar.jpg";
@@ -49,6 +50,10 @@ export const AvatarPanel = ({
     setDisplaySrc(resolveAvatarSrc(avatarUrl));
   }, [avatarUrl]);
 
+  const githubHref = ensureExternalHref(socialLinks?.github_url);
+  const linkedinHref = ensureExternalHref(socialLinks?.linkedin_url);
+  const discordHref = ensureExternalHref(socialLinks?.discord_url);
+
   return (
     <div className={styles.avatarContainer}>
       <Column gap="m" horizontal="center">
@@ -89,27 +94,27 @@ export const AvatarPanel = ({
 
         {/* Social Links */}
         <Flex gap="s" wrap>
-          {socialLinks?.github_url && (
+          {githubHref && (
             <IconButton
-              href={socialLinks.github_url}
+              href={githubHref}
               icon="github"
               tooltip="GitHub"
               size="s"
               variant="ghost"
             />
           )}
-          {socialLinks?.linkedin_url && (
+          {linkedinHref && (
             <IconButton
-              href={socialLinks.linkedin_url}
+              href={linkedinHref}
               icon="linkedin"
               tooltip="LinkedIn"
               size="s"
               variant="ghost"
             />
           )}
-          {socialLinks?.discord_url && (
+          {discordHref && (
             <IconButton
-              href={socialLinks.discord_url}
+              href={discordHref}
               icon="discord"
               tooltip="Discord"
               size="s"
