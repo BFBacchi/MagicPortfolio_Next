@@ -14,7 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { person } from "@/resources";
-import { isSafeProjectSlug } from "@/lib/projects";
+import { hrefForWorkProject } from "@/lib/projects";
 
 interface ProjectsProps {
   range?: [number, number?];
@@ -158,11 +158,7 @@ export function Projects({
           <RevealFx key={project.slug} delay={0.1 * index} horizontal="start">
             <ProjectCard
               priority={index < 2}
-              href={
-                isSafeProjectSlug(project.slug)
-                  ? `/work/${project.slug}`
-                  : undefined
-              }
+              href={hrefForWorkProject(project.slug)}
               images={project.images}
               title={project.title}
               description={project.summary}

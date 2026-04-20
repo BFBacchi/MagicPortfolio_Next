@@ -61,7 +61,7 @@ const home = {
   featured: {
     display: true,
     title: <>Proyectos recientes: <strong className="ml-4">Creator Hub</strong></>,
-    href: "/work/building-once-ui-a-customizable-design-system",
+    href: "https://escribania-alcira-portfolio-react-xp.ew1trr.easypanel.host/",
   },
   subline: (
     <>

@@ -42,6 +42,10 @@ export function HomeIntro({ aboutCtaAvatarSrc }: HomeIntroProps) {
             textVariant="label-default-s"
             arrow={false}
             href={home.featured.href}
+            onClick={(e) => {
+              e.preventDefault();
+              window.open(home.featured.href, "_blank", "noopener,noreferrer");
+            }}
           >
             <Row paddingY="2" gap="4" vertical="center">
               <Text as="span" variant="label-default-s">

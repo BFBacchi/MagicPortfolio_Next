@@ -54,7 +54,7 @@ export async function getProjectsFromDB(options?: {
   return data || []
 }
 
-// Función para obtener un proyecto por slug
+// Proyecto por slug (tabla `projects`). No confundir con `work_experience` del About.
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
     const { data, error } = await supabase

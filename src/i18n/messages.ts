@@ -22,11 +22,11 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     db_test_description:
       "Comprueba la conexión directa a Postgres (POSTGRES_URL). Útil para diagnóstico en servidor.",
 
-    "home.headline": "Construyendo software combinando diseño y código",
+    "home.headline": "Full stack moderno con IA y automatizaciones",
     "home.subline":
-      "Hola, soy Bruno, desarrollador fullstack que combina diseño y código para crear soluciones innovadoras.\n\nDesarrollo software desde 2018, con experiencia en frontend y backend, siempre aprendiendo nuevas tecnologías.",
-    "home.featured_prefix": "Proyectos recientes:",
-    "home.featured_highlight": "Creator Hub",
+      "Diseño e implemento automatizaciones con IA para optimizar procesos, reducir tiempos y mejorar resultados de negocio.\n\nDesarrollo soluciones full stack end-to-end (frontend, backend e integraciones) con foco en performance, escalabilidad y experiencia de usuario.",
+    "home.featured_prefix": "Portfolio anterior:",
+    "home.featured_highlight": "Mi portfolio anterior",
     "home.latest_blog": "Último en el blog",
     "home.about_cta": "Acerca de – {name}",
 
@@ -45,14 +45,14 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "work.deleted_ok": "Proyecto eliminado correctamente",
     "work.delete_error": "Error al eliminar el proyecto",
 
-    "project.read_case": "URL Slug",
+    "project.read_case": "Slug",
     "project.view_external": "Ver proyecto",
     "project.edit": "Editar",
 
     "projectForm.title": "Título",
     "projectForm.title_hint": "Nombre del proyecto",
-    "projectForm.slug": "Slug (URL)",
-    "projectForm.slug_hint": "url-del-proyecto",
+    "projectForm.slug": "Slug",
+    "projectForm.slug_hint": "URL en /work/… (tabla projects; no es experiencia laboral del About). Ej.: url-del-proyecto",
     "projectForm.summary": "Resumen",
     "projectForm.summary_hint": "Breve descripción del proyecto",
     "projectForm.content": "Contenido (Markdown)",
@@ -195,11 +195,11 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     db_test_description:
       "Tests the direct Postgres connection (POSTGRES_URL). Useful for server-side diagnostics.",
 
-    "home.headline": "Building software at the intersection of design and code",
+    "home.headline": "Modern full-stack development with AI automation",
     "home.subline":
-      "Hi, I'm Bruno, a fullstack developer blending design and code to ship solid products.\n\nI've been building software since 2018 across frontend and backend, always learning new tools.",
-    "home.featured_prefix": "Recent projects:",
-    "home.featured_highlight": "Creator Hub",
+      "I design and implement AI automations to streamline operations, cut delivery times, and improve business outcomes.\n\nI build end-to-end full-stack solutions (frontend, backend, and integrations) focused on performance, scalability, and user experience.",
+    "home.featured_prefix": "Previous portfolio:",
+    "home.featured_highlight": "My previous portfolio",
     "home.latest_blog": "Latest from the blog",
     "home.about_cta": "About – {name}",
 
@@ -217,14 +217,14 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "work.deleted_ok": "Project deleted",
     "work.delete_error": "Could not delete project",
 
-    "project.read_case": "URL Slug",
+    "project.read_case": "Slug",
     "project.view_external": "View project",
     "project.edit": "Edit",
 
     "projectForm.title": "Title",
     "projectForm.title_hint": "Project name",
-    "projectForm.slug": "Slug (URL)",
-    "projectForm.slug_hint": "project-url-slug",
+    "projectForm.slug": "Slug",
+    "projectForm.slug_hint": "Path under /work/… (projects table, not About work experience). E.g. project-url-slug",
     "projectForm.summary": "Summary",
     "projectForm.summary_hint": "Short description",
     "projectForm.content": "Content (Markdown)",
