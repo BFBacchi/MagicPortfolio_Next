@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { Fade, Flex, Line, ToggleButton } from "@once-ui-system/core";
 
-import { routes, display, person, about, blog, work, gallery, dbTest } from "@/resources";
+import { routes, display, person, about, blog, work, gallery, admin } from "@/resources";
 import { ThemeToggle } from "./ThemeToggle";
 import { AuthButton } from "./AuthButton";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -154,20 +154,20 @@ export const Header = () => {
                   />
                 </>
               )}
-              {routes["/db-test"] && user && (
+              {routes["/admin"] && user && (
                 <>
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="document"
-                    href="/db-test"
-                    label={t('db_test')}
-                    selected={pathname === "/db-test"}
+                    href={admin.path}
+                    label={t('admin')}
+                    selected={pathname === admin.path}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="document"
-                    href="/db-test"
-                    selected={pathname === "/db-test"}
+                    href={admin.path}
+                    selected={pathname === admin.path}
                   />
                 </>
               )}

@@ -10,7 +10,7 @@ const routes = {
   "/blog": true,
   "/noticias": true,
   "/gallery": true,
-  "/db-test": true,
+  "/admin": true,
 };
 
 const display = {

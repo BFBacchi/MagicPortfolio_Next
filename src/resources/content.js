@@ -267,11 +267,11 @@ const gallery = {
   ],
 };
 
-const dbTest = {
-  path: "/db-test",
-  label: "DB Test",
-  title: `Database Test – ${person.name}`,
-  description: `Database connection diagnostic tool`,
+const admin = {
+  path: "/admin",
+  label: "Admin",
+  title: `Admin – ${person.name}`,
+  description: `Portfolio analytics dashboard`,
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery, dbTest };
+export { person, social, newsletter, home, about, blog, work, gallery, admin };

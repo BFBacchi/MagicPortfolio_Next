@@ -9,7 +9,7 @@ import classNames from "classnames";
 import type { Metadata } from "next";
 
 import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
-import { Footer, Header, RouteGuard } from '@/components';
+import { Footer, Header, RouteGuard, TrackingReporter } from '@/components';
 import { Providers } from '@/providers';
 import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
 import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
@@ -195,6 +195,7 @@ export default async function RootLayout({
             />
             <Flex fillWidth minHeight="16" hide="s"/>
             <Header />
+            <TrackingReporter />
             <Flex
               zIndex={0}
               fillWidth
