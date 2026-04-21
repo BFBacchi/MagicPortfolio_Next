@@ -29,6 +29,7 @@ export interface Study {
   start_date: string
   end_date: string | null
   description: string
+  certificate_url?: string | null
   created_at: string
 }
 

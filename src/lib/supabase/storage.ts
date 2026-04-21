@@ -3,6 +3,8 @@ import { supabase } from "./client";
 /** Nombre del bucket en Supabase Storage (debe coincidir con scripts/setup-avatar-storage.sql). */
 export const SUPABASE_STORAGE_BUCKET =
   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET ?? "magicportfolio";
+export const SUPABASE_STUDIES_BUCKET =
+  process.env.NEXT_PUBLIC_SUPABASE_STUDIES_BUCKET ?? "estudios";
 
 function storageErrorMessage(err: unknown, fallback: string): string {
   if (err && typeof err === "object") {
@@ -151,6 +153,33 @@ export const uploadProjectImage = async (file: File, projectSlug: string, imageI
   const {
     data: { publicUrl },
   } = supabase.storage.from(SUPABASE_STORAGE_BUCKET).getPublicUrl(filePath);
+
+  return publicUrl;
+};
+
+export const uploadStudyCertificateImage = async (file: File, userId: string) => {
+  const fileExt = file.name.split('.').pop() || "jpg";
+  const fileName = `${userId}-${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
+  const filePath = `certificados/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(SUPABASE_STUDIES_BUCKET)
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+
+  if (uploadError) {
+    const detail = storageErrorMessage(uploadError, "Error al subir certificado");
+    console.error("Study certificate upload:", detail, uploadError);
+    throw new Error(
+      `${detail}. Crea el bucket "${SUPABASE_STUDIES_BUCKET}" y configura sus políticas de lectura/escritura.`
+    );
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(SUPABASE_STUDIES_BUCKET).getPublicUrl(filePath);
 
   return publicUrl;
 };

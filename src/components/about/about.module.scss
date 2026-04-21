@@ -1098,6 +1098,13 @@
   line-height: 1.6;
 }
 
+.certificatePreview {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
 // Estilos para habilidades técnicas
 .skillsHeader {
   display: flex;

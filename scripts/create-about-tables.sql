@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS public.studies (
   start_date DATE NOT NULL,
   end_date DATE,
   description TEXT DEFAULT '',
+  certificate_url TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
