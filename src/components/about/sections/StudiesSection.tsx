@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useMemo, useState, FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Study } from "@/lib/supabase/queries";
 import { Button, Input, Textarea, Column, Dialog, Text, Row } from "@once-ui-system/core";
@@ -28,6 +28,8 @@ export const StudiesSection = ({ studies, onUpdate }: StudiesSectionProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isUploadingCertificate, setIsUploadingCertificate] = useState(false);
+  const [isCertificateDialogOpen, setIsCertificateDialogOpen] = useState(false);
+  const [selectedCertificateUrl, setSelectedCertificateUrl] = useState<string | null>(null);
   const [editingStudy, setEditingStudy] = useState<Study | null>(null);
   const [formData, setFormData] = useState<StudyFormData>({
     degree: '',
@@ -65,6 +67,12 @@ export const StudiesSection = ({ studies, onUpdate }: StudiesSectionProps) => {
     setIsEditing(false);
     setIsDialogOpen(true);
   };
+
+  const certificatePreviewUrl = useMemo(() => {
+    if (formData.certificate_url) return formData.certificate_url;
+    if (isEditing && editingStudy?.certificate_url) return editingStudy.certificate_url;
+    return "";
+  }, [formData.certificate_url, isEditing, editingStudy]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -127,6 +135,11 @@ addToast('Error al guardar el estudio', 'error');
     }
   };
 
+  const handleOpenCertificateModal = (url: string) => {
+    setSelectedCertificateUrl(url);
+    setIsCertificateDialogOpen(true);
+  };
+
   return (
     <>
       <Section
@@ -172,9 +185,13 @@ addToast('Error al guardar el estudio', 'error');
                     )}
                     {study.certificate_url && (
                       <Text as="p" variant="body-default-s">
-                        <a href={study.certificate_url} target="_blank" rel="noopener noreferrer">
-                          Ver certificado
-                        </a>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenCertificateModal(study.certificate_url as string)}
+                          className={styles.certificateLinkButton}
+                        >
+                          Mostrar certificado
+                        </button>
                       </Text>
                     )}
                   </div>
@@ -246,13 +263,13 @@ addToast('Error al guardar el estudio', 'error');
               {isUploadingCertificate && (
                 <Text as="p" variant="body-default-s">Subiendo certificado...</Text>
               )}
-              {!isUploadingCertificate && formData.certificate_url && (
+              {!isUploadingCertificate && certificatePreviewUrl && (
                 <Column gap="8">
                   <Text as="p" variant="body-default-s">
                     Certificado cargado correctamente.
                   </Text>
                   <img
-                    src={formData.certificate_url}
+                    src={certificatePreviewUrl}
                     alt="Vista previa del certificado"
                     className={styles.certificatePreview}
                   />
@@ -278,6 +295,25 @@ addToast('Error al guardar el estudio', 'error');
               </Button>
             </Row>
           </form>
+        </Column>
+      </Dialog>
+      <Dialog
+        isOpen={isCertificateDialogOpen}
+        onClose={() => {
+          setIsCertificateDialogOpen(false);
+          setSelectedCertificateUrl(null);
+        }}
+        title="Certificado"
+        description="Vista completa del certificado"
+      >
+        <Column fillWidth gap="12" marginTop="12">
+          {selectedCertificateUrl && (
+            <img
+              src={selectedCertificateUrl}
+              alt="Certificado"
+              className={styles.certificateModalImage}
+            />
+          )}
         </Column>
       </Dialog>
     </>
