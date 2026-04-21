@@ -68,9 +68,15 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
     e.preventDefault();
     try {
       if (!user) return;
+      if (!formData.start_date) {
+        addToast('La fecha de inicio es obligatoria', 'error');
+        return;
+      }
 
       const data = {
         ...formData,
+        start_date: formData.start_date,
+        end_date: formData.end_date ? formData.end_date : null,
         user_id: user.id,
         id: editingExp?.id
       };
