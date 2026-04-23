@@ -6,6 +6,7 @@ import { routes, protectedRoutes } from "@/resources";
 import { Flex, Spinner, Button, Heading, Column, PasswordInput } from "@once-ui-system/core";
 import NotFound from "@/app/not-found";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { stripLocalePrefix } from "@/i18n/locale";
 
 interface RouteGuardProps {
 	children: React.ReactNode;
@@ -30,10 +31,11 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
 
       const normalizePath = (path: string | null): string | null => {
         if (!path) return null;
-        if (path !== "/" && path.endsWith("/")) {
-          return path.replace(/\/+$/, "") || "/";
+        const withoutLocale = stripLocalePrefix(path);
+        if (withoutLocale !== "/" && withoutLocale.endsWith("/")) {
+          return withoutLocale.replace(/\/+$/, "") || "/";
         }
-        return path;
+        return withoutLocale;
       };
 
       const checkRouteEnabled = () => {
