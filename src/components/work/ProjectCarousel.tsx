@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Button, Icon, Flex, Text, Media, RevealFx } from '@once-ui-system/core';
+import { Button, Icon, Flex, Text, RevealFx } from '@once-ui-system/core';
 import { getYouTubeThumbnail } from '@/lib/supabase/storage';
+import Image from 'next/image';
 
 interface ProjectCarouselProps {
   images: string[];
@@ -22,6 +23,8 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const [imageFallbackSrc, setImageFallbackSrc] = useState<string | null>(null);
+  const [thumbnailFallbackSrc, setThumbnailFallbackSrc] = useState<string | null>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   // Función para validar si una URL de imagen es válida
@@ -124,6 +127,11 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
 
   const currentItem = carouselItems[currentIndex];
 
+  useEffect(() => {
+    setImageFallbackSrc(null);
+    setThumbnailFallbackSrc(null);
+  }, [currentIndex]);
+
   // Debug: Log carousel items
   console.log('ProjectCarousel - Original Images:', images);
   console.log('ProjectCarousel - Valid Images:', validImages);
@@ -162,14 +170,17 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
       <RevealFx fillWidth horizontal="center" paddingTop="16" paddingBottom="16">
         <div className="relative w-full h-96 rounded-lg overflow-hidden">
           {currentItem.type === 'image' ? (
-            <img
-              src={currentItem.src}
-              alt={currentItem.alt}
-              className="w-full h-full object-cover object-center rounded-lg"
-              onError={(e) => {
-                // Silenciar el error y usar placeholder
-                const target = e.target as HTMLImageElement;
-                target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';
+            <Image
+              src={
+                imageFallbackSrc ??
+                currentItem.src
+              }
+              alt={`Captura del proyecto ${title} (${currentItem.index + 1})`}
+              fill
+              sizes="(max-width: 768px) 100vw, 1024px"
+              className="object-cover object-center rounded-lg"
+              onError={() => {
+                setImageFallbackSrc('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==');
               }}
             />
           ) : (
@@ -187,14 +198,17 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
                   className="relative w-full h-full cursor-pointer group"
                   onClick={handleVideoClick}
                 >
-                  <img
-                    src={currentItem.thumbnail}
-                    alt={currentItem.alt}
-                    className="w-full h-full object-cover object-center rounded-lg"
-                    onError={(e) => {
-                      // Fallback si la miniatura no carga
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://img.youtube.com/vi/${getYouTubeVideoId(currentItem.src)}/hqdefault.jpg`;
+                  <Image
+                    src={
+                      thumbnailFallbackSrc ??
+                      currentItem.thumbnail
+                    }
+                    alt={`Miniatura del video del proyecto ${title}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 1024px"
+                    className="object-cover object-center rounded-lg"
+                    onError={() => {
+                      setThumbnailFallbackSrc(`https://img.youtube.com/vi/${getYouTubeVideoId(currentItem.src)}/hqdefault.jpg`);
                     }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg">

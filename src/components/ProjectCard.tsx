@@ -48,9 +48,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     <Column fillWidth gap="m">
       <Carousel
         sizes="(max-width: 960px) 100vw, 960px"
-        items={images.map((image) => ({
+        items={images.map((image, index) => ({
           slide: image,
-          alt: title,
+          alt: `Captura ${index + 1} del proyecto ${title}`,
         }))}
       />
       <Flex

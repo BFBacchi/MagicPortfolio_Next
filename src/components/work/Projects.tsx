@@ -21,29 +21,34 @@ interface ProjectsProps {
   showManagementButtons?: boolean;
   /** En inicio suele usarse `created_at` para mostrar el último proyecto creado primero. */
   orderBy?: ProjectsOrderBy;
+  /** Permite pre-render SSR con datos ya cargados desde un Server Component. */
+  initialProjects?: Project[];
 }
 
 export function Projects({
   range,
   showManagementButtons = false,
   orderBy,
+  initialProjects,
 }: ProjectsProps) {
   const { user } = useAuth();
   const { addToast } = useToast();
   const { t } = useLanguage();
   
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<Project[]>(initialProjects ?? []);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   useEffect(() => {
+    if (initialProjects) {
+      setProjects(initialProjects);
+      return;
+    }
     loadProjects();
-  }, [orderBy]);
+  }, [orderBy, initialProjects]);
 
   const loadProjects = async () => {
     try {
-      setLoading(true);
       const allProjects = await getProjectsFromDB(
         orderBy ? { orderBy } : undefined
       );
@@ -51,8 +56,6 @@ export function Projects({
     } catch (error) {
       console.error('Error loading projects:', error);
       addToast(t("work.load_error"), "error");
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -6,9 +6,13 @@ import Posts from "@/components/blog/Posts";
 import { HomeIntro } from "@/components/home/HomeIntro";
 import { HomeLatestBlogHeading } from "@/components/home/HomeLatestBlogHeading";
 import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
+import { getProjectsFromDB } from "@/lib/projects";
 
 export default async function Home() {
   const { imgSrc, absoluteForSeo } = await getPortfolioAvatarForSite();
+  const projects = await getProjectsFromDB({ orderBy: "created_at" });
+  const latestProject = projects.slice(0, 1);
+  const otherProjects = projects.slice(1);
 
   return (
     <Column maxWidth="m" gap="xl" horizontal="center">
@@ -27,7 +31,7 @@ export default async function Home() {
       />
       <HomeIntro aboutCtaAvatarSrc={imgSrc} />
       <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} orderBy="created_at" />
+        <Projects initialProjects={latestProject} />
       </RevealFx>
       {routes["/noticias"] && (
         <Flex fillWidth gap="24" mobileDirection="column">
@@ -37,7 +41,7 @@ export default async function Home() {
           </Flex>
         </Flex>
       )}
-      <Projects range={[2]} orderBy="created_at" />
+      <Projects initialProjects={otherProjects} />
       {newsletter.display && <Mailchimp />}
     </Column>
   );

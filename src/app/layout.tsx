@@ -8,38 +8,54 @@ import '@/resources/background-effect.css';
 import classNames from "classnames";
 import type { Metadata } from "next";
 
-import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
+import { Background, Column, Flex, opacity, SpacingToken } from "@once-ui-system/core";
 import { Footer, Header, RouteGuard, TrackingReporter } from '@/components';
 import { Providers } from '@/providers';
-import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
-import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
+import { effects, fonts, style, dataStyle } from '@/resources';
 
 /** Favicon / metadata leen `introduction`: no congelar en build tras cambiar avatar en Supabase. */
 export const revalidate = 60;
+const canonicalUrl = "https://brunodev.cloud";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { imgSrc } = await getPortfolioAvatarForSite();
-  const base = Meta.generate({
-    title: home.title,
-    description: home.description,
-    baseURL: baseURL,
-    path: home.path,
-    image: home.image,
-  }) as Metadata;
-
-  const prevIcons =
-    base.icons && typeof base.icons === "object" ? base.icons : {};
-
-  return {
-    ...base,
-    icons: {
-      ...prevIcons,
-      icon: [{ url: imgSrc }],
-      apple: [{ url: imgSrc }],
-      shortcut: [{ url: imgSrc }],
+export const metadata: Metadata = {
+  metadataBase: new URL(canonicalUrl),
+  title: {
+    default: "Bruno | Full Stack Developer",
+    template: "%s | Bruno",
+  },
+  description:
+    "Portfolio de Bruno, Full Stack Developer. Desarrollo soluciones web modernas con Next.js, React, TypeScript y Supabase, optimizadas para performance, SEO y conversión.",
+  alternates: {
+    canonical: canonicalUrl,
+  },
+  openGraph: {
+    type: "website",
+    url: canonicalUrl,
+    siteName: "Bruno Dev",
+    title: "Bruno | Full Stack Developer",
+    description:
+      "Creo productos web escalables y veloces con Next.js y Supabase: arquitectura, frontend, backend y despliegue en Vercel.",
+    images: [
+      {
+        url: "/api/og/generate?title=Bruno%20%7C%20Full%20Stack%20Developer",
+        width: 1200,
+        height: 630,
+        alt: "Bruno - Full Stack Developer",
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
     },
-  };
-}
+  },
+};
 
 export default async function RootLayout({
   children,
