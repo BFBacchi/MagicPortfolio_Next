@@ -38,8 +38,12 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
     setEditingSkill(skill);
     setFormData({
       name: skill.name || '',
+      name_es: skill.name_es || skill.name || "",
+      name_en: skill.name_en || "",
       level: skill.level || 'intermediate',
-      category: skill.category || ''
+      category: skill.category || '',
+      category_es: skill.category_es || skill.category || "",
+      category_en: skill.category_en || "",
     });
     setIsEditing(true);
     setIsDialogOpen(true);
@@ -49,8 +53,12 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
     setEditingSkill(null);
     setFormData({
       name: '',
+      name_es: '',
+      name_en: '',
       level: 'intermediate',
-      category: ''
+      category: '',
+      category_es: '',
+      category_en: '',
     });
     setIsEditing(false);
     setIsDialogOpen(true);
@@ -64,11 +72,19 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
       // Ensure all required fields are present
       const data: Partial<TechnicalSkill> = {
         name: formData.name || '',
+        name_es: formData.name_es || formData.name || "",
+        name_en: formData.name_en || "",
         level: formData.level || 'intermediate',
         category: formData.category || '',
+        category_es: formData.category_es || formData.category || "",
+        category_en: formData.category_en || "",
         user_id: user.id,
         ...(editingSkill?.id && { id: editingSkill.id })
       };
+      if (!data.name_es || !data.name_en || !data.category_es || !data.category_en) {
+        addToast("Completa nombre y categoría en ES y EN", "error");
+        return;
+      }
 
       console.log('Saving technical skill:', data); // Debug log
       
@@ -80,8 +96,12 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
       setEditingSkill(null);
       setFormData({
         name: '',
+        name_es: '',
+        name_en: '',
         level: 'intermediate',
-        category: ''
+        category: '',
+        category_es: '',
+        category_en: '',
       });
       setIsEditing(false);
       
@@ -199,8 +219,12 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
           setEditingSkill(null);
           setFormData({
             name: '',
+            name_es: '',
+            name_en: '',
             level: 'intermediate',
-            category: ''
+            category: '',
+            category_es: '',
+            category_en: '',
           });
           setIsEditing(false);
         }}
@@ -218,6 +242,22 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
                 onChange={handleChange}
                 required
               />
+              <Input
+                id="skill-form-name-es"
+                name="name_es"
+                label="Nombre de la habilidad (ES)"
+                value={formData.name_es || ''}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                id="skill-form-name-en"
+                name="name_en"
+                label="Nombre de la habilidad (EN)"
+                value={formData.name_en || ''}
+                onChange={handleChange}
+                required
+              />
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nivel</label>
@@ -226,6 +266,7 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
                   value={formData.level || 'intermediate'}
                   onChange={handleChange}
                   className={styles.skillLevelSelect}
+                  aria-label="Nivel de habilidad"
                 >
                   {skillLevels.map(level => (
                     <option key={level.value} value={level.value}>
@@ -242,6 +283,22 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
                 value={formData.category || ''}
                 onChange={handleChange}
               />
+              <Input
+                id="skill-form-category-es"
+                name="category_es"
+                label="Categoría (ES)"
+                value={formData.category_es || ''}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                id="skill-form-category-en"
+                name="category_en"
+                label="Categoría (EN)"
+                value={formData.category_en || ''}
+                onChange={handleChange}
+                required
+              />
             </Column>
             
             <Row fillWidth vertical="center" gap="8" style={{ justifyContent: "flex-end", marginTop: "24px" }}>
@@ -253,8 +310,12 @@ export const TechnicalSkillsSection = ({ technicalSkills, onUpdate }: TechnicalS
                   setEditingSkill(null);
                   setFormData({
                     name: '',
+                    name_es: '',
+                    name_en: '',
                     level: 'intermediate',
-                    category: ''
+                    category: '',
+                    category_es: '',
+                    category_en: '',
                   });
                   setIsEditing(false);
                 }}

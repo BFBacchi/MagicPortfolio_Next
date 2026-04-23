@@ -5,12 +5,19 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { iconLibrary } from "./resources/icons";
+import { AppLanguage } from "./i18n/messages";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  defaultLanguage = "es",
+}: {
+  children: React.ReactNode;
+  defaultLanguage?: AppLanguage;
+}) {
   return (
     <ThemeProvider>
       <DataThemeProvider>
-        <LanguageProvider>
+        <LanguageProvider defaultLanguage={defaultLanguage}>
           <AuthProvider>
             <ToastProvider>
               <IconProvider icons={iconLibrary}>

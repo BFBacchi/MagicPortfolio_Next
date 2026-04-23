@@ -7,10 +7,12 @@ import { HomeIntro } from "@/components/home/HomeIntro";
 import { HomeLatestBlogHeading } from "@/components/home/HomeLatestBlogHeading";
 import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
 import { getProjectsFromDB } from "@/lib/projects";
+import { getRequestLocale } from "@/i18n/locale.server";
 
 export default async function Home() {
+  const locale = await getRequestLocale();
   const { imgSrc, absoluteForSeo } = await getPortfolioAvatarForSite();
-  const projects = await getProjectsFromDB({ orderBy: "created_at" });
+  const projects = await getProjectsFromDB({ orderBy: "created_at", locale });
   const latestProject = projects.slice(0, 1);
   const otherProjects = projects.slice(1);
 

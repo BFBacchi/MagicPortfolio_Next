@@ -8,11 +8,13 @@ import {
   useCallback,
   ReactNode,
 } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   messages,
   interpolate,
   type AppLanguage,
 } from "@/i18n/messages";
+import { getLocaleFromPathname, withLocalePath } from "@/i18n/locale";
 
 interface LanguageContextType {
   language: AppLanguage;
@@ -33,19 +35,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
   defaultLanguage = "es",
 }) => {
+  const pathname = usePathname();
+  const router = useRouter();
   const [language, setLanguageState] = useState<AppLanguage>(defaultLanguage);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const saved = localStorage.getItem("language") as AppLanguage | null;
-      if (saved === "es" || saved === "en") {
-        setLanguageState(saved);
-      }
-    } catch (e) {
-      console.error("Error loading language from localStorage:", e);
-    }
-  }, []);
+    if (!pathname) return;
+    const localeFromPath = getLocaleFromPathname(pathname);
+    if (localeFromPath) setLanguageState(localeFromPath);
+  }, [pathname]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -54,14 +52,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
   const handleSetLanguage = useCallback((lang: AppLanguage) => {
     setLanguageState(lang);
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem("language", lang);
-      } catch (e) {
-        console.error("Error saving language to localStorage:", e);
-      }
+    if (pathname) {
+      const localizedPath = withLocalePath(pathname, lang);
+      router.push(localizedPath);
     }
-  }, []);
+  }, [pathname, router]);
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {

@@ -23,6 +23,7 @@ import {
   getStudies,
   getTechnicalSkills,
 } from "@/lib/supabase/queries";
+import { getRequestLocale } from "@/i18n/locale.server";
 
 /** Datos desde Supabase: sin esto, Next puede cachear HTML con avatar antiguo tras subir imagen. */
 export const dynamic = "force-dynamic";
@@ -40,12 +41,13 @@ export async function generateMetadata() {
 
 // Simplified About page
 export default async function About() {
+  const locale = await getRequestLocale();
   // Fetch data from Supabase
   const [introduction, workExperience, studies, technicalSkills] = await Promise.all([
-    getIntroduction(),
-    getWorkExperience(),
-    getStudies(),
-    getTechnicalSkills()
+    getIntroduction(locale),
+    getWorkExperience(locale),
+    getStudies(locale),
+    getTechnicalSkills(undefined, locale)
   ]);
 
   const structure = [

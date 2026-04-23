@@ -34,8 +34,12 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
     setEditingExp(exp);
     setFormData({
       position: exp.position,
+      position_es: exp.position_es || exp.position,
+      position_en: exp.position_en || "",
       company: exp.company,
       description: exp.description || '',
+      description_es: exp.description_es || exp.description || "",
+      description_en: exp.description_en || "",
       start_date: exp.start_date,
       end_date: exp.end_date || '',
       technologies: exp.technologies || []
@@ -55,8 +59,12 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
     setEditingExp(null);
     setFormData({
       position: '',
+      position_es: '',
+      position_en: '',
       company: '',
       description: '',
+      description_es: '',
+      description_en: '',
       start_date: '',
       end_date: ''
     });
@@ -70,6 +78,10 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
       if (!user) return;
       if (!formData.start_date) {
         addToast('La fecha de inicio es obligatoria', 'error');
+        return;
+      }
+      if (!formData.position_es || !formData.position_en) {
+        addToast("Completa el puesto en ES y EN", "error");
         return;
       }
 
@@ -177,6 +189,22 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
                 required
               />
               <Input
+                id="position_es"
+                name="position_es"
+                label="Puesto (ES)"
+                value={formData.position_es || ""}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                id="position_en"
+                name="position_en"
+                label="Puesto (EN)"
+                value={formData.position_en || ""}
+                onChange={handleChange}
+                required
+              />
+              <Input
                 id="company"
                 name="company"
                 label="Empresa"
@@ -208,6 +236,22 @@ export const WorkExperienceSection = ({ workExperience, onUpdate }: WorkExperien
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
+              />
+              <Textarea
+                id="description_es"
+                name="description_es"
+                label="Descripción (ES)"
+                value={formData.description_es || ""}
+                onChange={handleChange}
+                rows={3}
+              />
+              <Textarea
+                id="description_en"
+                name="description_en"
+                label="Descripción (EN)"
+                value={formData.description_en || ""}
+                onChange={handleChange}
+                rows={3}
               />
               <TagInput
                 id="technologies"

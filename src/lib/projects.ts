@@ -1,4 +1,5 @@
 import { getProjectsFromDB, getProjectBySlug, Project } from './supabase'
+import { AppLocale } from '@/i18n/config'
 
 // Re-exportar las funciones de Supabase
 export { getProjectsFromDB, getProjectBySlug }
@@ -36,10 +37,10 @@ export function hrefForWorkProject(slug: string | undefined | null): string | un
 }
 
 // Función de compatibilidad para mantener la API existente
-export async function getProjects() {
-  return await getProjectsFromDB()
+export async function getProjects(locale: AppLocale = "es") {
+  return await getProjectsFromDB({ locale })
 }
 
-export async function getProject(slug: string) {
-  return await getProjectBySlug(slug)
+export async function getProject(slug: string, locale: AppLocale = "es") {
+  return await getProjectBySlug(slug, locale)
 } 

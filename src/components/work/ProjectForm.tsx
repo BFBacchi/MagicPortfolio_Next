@@ -19,6 +19,7 @@ import { createProject, updateProject } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { AppLocale } from '@/i18n/config';
 
 interface ProjectFormProps {
   project?: Project;
@@ -35,7 +36,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 }) => {
   const { user } = useAuth();
   const { addToast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const activeLocale = language as AppLocale;
+  const [editingLocale, setEditingLocale] = useState<AppLocale>(activeLocale);
   
   const [formData, setFormData] = useState({
     title: project?.title || '',
@@ -48,6 +51,18 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     technologies: project?.technologies || [],
     featured: project?.featured || false,
     status: project?.status || 'published' as 'draft' | 'published' | 'archived'
+  });
+  const [translations, setTranslations] = useState<Record<AppLocale, { title: string; summary: string; content: string }>>({
+    es: {
+      title: project?.translations?.es?.title || (activeLocale === "es" ? project?.title || "" : ""),
+      summary: project?.translations?.es?.summary || (activeLocale === "es" ? project?.summary || "" : ""),
+      content: project?.translations?.es?.content || (activeLocale === "es" ? project?.content || "" : ""),
+    },
+    en: {
+      title: project?.translations?.en?.title || (activeLocale === "en" ? project?.title || "" : ""),
+      summary: project?.translations?.en?.summary || (activeLocale === "en" ? project?.summary || "" : ""),
+      content: project?.translations?.en?.content || (activeLocale === "en" ? project?.content || "" : ""),
+    },
   });
 
   const [images, setImages] = useState<string[]>(project?.images || []);
@@ -129,6 +144,25 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     }));
   };
 
+  const handleTranslationChange = (
+    locale: AppLocale,
+    field: "title" | "summary" | "content",
+    value: string
+  ) => {
+    setTranslations((prev) => ({
+      ...prev,
+      [locale]: {
+        ...prev[locale],
+        [field]: value,
+      },
+    }));
+    if (locale === activeLocale) {
+      if (field === "title") handleTitleChange(value);
+      if (field === "summary") handleInputChange("summary", value);
+      if (field === "content") handleInputChange("content", value);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!user) {
       addToast(t("projectForm.auth_required"), "error");
@@ -137,8 +171,20 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
     setIsLoading(true);
     try {
+      if (!translations.es.title || !translations.es.summary || !translations.es.content) {
+        addToast("Completa todos los campos en español", "error");
+        return;
+      }
+      if (!translations.en.title || !translations.en.summary || !translations.en.content) {
+        addToast("Completa todos los campos en inglés", "error");
+        return;
+      }
       const projectData = {
         ...formData,
+        title: translations[activeLocale].title || formData.title,
+        summary: translations[activeLocale].summary || formData.summary,
+        content: translations[activeLocale].content || formData.content,
+        translations,
         images,
         published_at: project?.published_at || new Date().toISOString(),
         video_thumbnail: formData.video_url ? getYouTubeThumbnail(formData.video_url) : undefined
@@ -198,11 +244,29 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
       <Row gap="l">
         <Column flex={1} gap="m">
+          <Flex gap="8" vertical="center">
+            <Button
+              type="button"
+              variant={editingLocale === "es" ? "primary" : "secondary"}
+              size="s"
+              onClick={() => setEditingLocale("es")}
+            >
+              ES
+            </Button>
+            <Button
+              type="button"
+              variant={editingLocale === "en" ? "primary" : "secondary"}
+              size="s"
+              onClick={() => setEditingLocale("en")}
+            >
+              EN
+            </Button>
+          </Flex>
           <Input
             id="project-title"
-            label={t("projectForm.title")}
-            value={formData.title}
-            onChange={(e) => handleTitleChange(e.target.value)}
+            label={`${t("projectForm.title")} (${editingLocale.toUpperCase()})`}
+            value={translations[editingLocale].title}
+            onChange={(e) => handleTranslationChange(editingLocale, "title", e.target.value)}
             description={t("projectForm.title_hint")}
             required
           />
@@ -218,9 +282,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
           <Textarea
             id="project-summary"
-            label={t("projectForm.summary")}
-            value={formData.summary}
-            onChange={(e) => handleInputChange("summary", e.target.value)}
+            label={`${t("projectForm.summary")} (${editingLocale.toUpperCase()})`}
+            value={translations[editingLocale].summary}
+            onChange={(e) => handleTranslationChange(editingLocale, "summary", e.target.value)}
             description={t("projectForm.summary_hint")}
             rows={3}
             required
@@ -228,9 +292,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
           <Textarea
             id="project-content"
-            label={t("projectForm.content")}
-            value={formData.content}
-            onChange={(e) => handleInputChange("content", e.target.value)}
+            label={`${t("projectForm.content")} (${editingLocale.toUpperCase()})`}
+            value={translations[editingLocale].content}
+            onChange={(e) => handleTranslationChange(editingLocale, "content", e.target.value)}
             description={t("projectForm.content_hint")}
             rows={8}
           />

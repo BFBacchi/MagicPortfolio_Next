@@ -5,10 +5,11 @@ import { formatDate } from "@/utils/formatDate";
 import { ScrollToHash, CustomMDX } from "@/components";
 import { Metadata } from "next";
 import { getProjectsFromDB, getProjectBySlug, isSafeProjectSlug } from "@/lib/projects";
+import { getRequestLocale } from "@/i18n/locale.server";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
-    const projects = await getProjectsFromDB();
+    const projects = await getProjectsFromDB({ locale: "es" });
     return projects
       .filter((project) => isSafeProjectSlug(project.slug))
       .map((project) => ({
@@ -26,10 +27,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string | string[] }>;
 }): Promise<Metadata> {
   try {
+    const locale = await getRequestLocale();
     const routeParams = await params;
     const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-    const project = await getProjectBySlug(slugPath);
+    const project = await getProjectBySlug(slugPath, locale);
 
     if (!project) {
       console.error(`Project not found for slug: ${slugPath}`);
@@ -53,10 +55,11 @@ export default async function Project({
   params
 }: { params: Promise<{ slug: string | string[] }> }) {
   try {
+    const locale = await getRequestLocale();
     const routeParams = await params;
     const slugPath = Array.isArray(routeParams.slug) ? routeParams.slug.join('/') : routeParams.slug || '';
 
-    const project = await getProjectBySlug(slugPath);
+    const project = await getProjectBySlug(slugPath, locale);
 
     if (!project) {
       console.error(`Project not found for slug: ${slugPath}`);

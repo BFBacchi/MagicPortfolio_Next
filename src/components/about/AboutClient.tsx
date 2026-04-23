@@ -30,7 +30,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
   const router = useRouter();
   const { user, loading } = useAuth();
   const { addToast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const introAvatar =
     (introduction as { avatar_url?: string } | null)?.avatar_url || "";
@@ -55,7 +55,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
     // Also refresh technical skills
     if (user?.id) {
       try {
-        const skills = await getTechnicalSkills(user.id);
+        const skills = await getTechnicalSkills(user.id, language);
         setCurrentTechnicalSkills(skills);
       } catch (error) {
         console.error('Error refreshing technical skills:', error);
@@ -68,7 +68,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
     const loadTechnicalSkills = async () => {
       if (user?.id) {
         try {
-          const skills = await getTechnicalSkills(user.id);
+          const skills = await getTechnicalSkills(user.id, language);
           setCurrentTechnicalSkills(skills);
         } catch (error) {
           console.error('Error loading technical skills:', error);
@@ -77,7 +77,7 @@ export const AboutClient = ({ introduction, workExperience, studies, technicalSk
     };
 
     loadTechnicalSkills();
-  }, [user?.id, refreshKey]);
+  }, [user?.id, refreshKey, language]);
 
   
 

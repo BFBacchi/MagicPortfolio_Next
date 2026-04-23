@@ -12,61 +12,71 @@ import { Background, Column, Flex, opacity, SpacingToken } from "@once-ui-system
 import { Footer, Header, RouteGuard, TrackingReporter } from '@/components';
 import { Providers } from '@/providers';
 import { effects, fonts, style, dataStyle } from '@/resources';
+import { getRequestLocale } from "@/i18n/locale.server";
 
 /** Favicon / metadata leen `introduction`: no congelar en build tras cambiar avatar en Supabase. */
 export const revalidate = 60;
 const canonicalUrl = "https://brunodev.cloud";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(canonicalUrl),
-  title: {
-    default: "Bruno | Full Stack Developer",
-    template: "%s | Bruno",
-  },
-  description:
-    "Portfolio de Bruno, Full Stack Developer. Desarrollo soluciones web modernas con Next.js, React, TypeScript y Supabase, optimizadas para performance, SEO y conversión.",
-  alternates: {
-    canonical: canonicalUrl,
-  },
-  openGraph: {
-    type: "website",
-    url: canonicalUrl,
-    siteName: "Bruno Dev",
-    title: "Bruno | Full Stack Developer",
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const localizedCanonical = `${canonicalUrl}/${locale}`;
+  return {
+    metadataBase: new URL(canonicalUrl),
+    title: {
+      default: "Bruno | Full Stack Developer",
+      template: "%s | Bruno",
+    },
     description:
-      "Creo productos web escalables y veloces con Next.js y Supabase: arquitectura, frontend, backend y despliegue en Vercel.",
-    images: [
-      {
-        url: "/api/og/generate?title=Bruno%20%7C%20Full%20Stack%20Developer",
-        width: 1200,
-        height: 630,
-        alt: "Bruno - Full Stack Developer",
+      "Portfolio de Bruno, Full Stack Developer. Desarrollo soluciones web modernas con Next.js, React, TypeScript y Supabase, optimizadas para performance, SEO y conversión.",
+    alternates: {
+      canonical: localizedCanonical,
+      languages: {
+        es: `${canonicalUrl}/es`,
+        en: `${canonicalUrl}/en`,
       },
-    ],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    },
+    openGraph: {
+      type: "website",
+      url: localizedCanonical,
+      siteName: "Bruno Dev",
+      title: "Bruno | Full Stack Developer",
+      description:
+        "Creo productos web escalables y veloces con Next.js y Supabase: arquitectura, frontend, backend y despliegue en Vercel.",
+      images: [
+        {
+          url: "/api/og/generate?title=Bruno%20%7C%20Full%20Stack%20Developer",
+          width: 1200,
+          height: 630,
+          alt: "Bruno - Full Stack Developer",
+        },
+      ],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-video-preview": -1,
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+        "max-snippet": -1,
+      },
     },
-  },
-};
+  };
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getRequestLocale();
   return (
     <Flex
       suppressHydrationWarning
       as="html"
-      lang="en"
+      lang={locale}
       fillWidth
       className={classNames(
         fonts.heading.variable,
@@ -166,7 +176,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <Providers>
+      <Providers defaultLanguage={locale}>
         <Column as="body" background="page" fillWidth style={{minHeight: "100vh"}} margin="0" padding="0" horizontal="center">
             <Background
               position="fixed"

@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { supabase as supabaseClient } from './supabase/client'
+import { AppLocale } from '@/i18n/config'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -32,15 +33,59 @@ export interface Project {
   featured?: boolean
   status?: 'draft' | 'published' | 'archived'
   video_thumbnail?: string
+  translations?: Partial<Record<AppLocale, {
+    title: string
+    summary: string
+    content: string
+  }>>
 }
 
 export type ProjectsOrderBy = 'created_at' | 'published_at'
 
+function buildLocaleOrder(locale: AppLocale): AppLocale[] {
+  return locale === "es" ? ["es", "en"] : ["en", "es"];
+}
+
+async function fetchProjectTranslationMap(
+  ids: number[],
+  locale: AppLocale
+): Promise<Map<number, { title: string; summary: string; content: string }>> {
+  if (ids.length === 0) return new Map();
+  const localeOrder = buildLocaleOrder(locale);
+  const { data, error } = await supabase
+    .from("project_translations")
+    .select("project_id, locale, title, summary, content")
+    .in("project_id", ids)
+    .in("locale", localeOrder);
+
+  if (error) {
+    console.error("Error fetching project translations:", error);
+    return new Map();
+  }
+
+  const byProject = new Map<number, { title: string; summary: string; content: string }>();
+  for (const projectId of ids) {
+    const preferred = data?.find((row) => row.project_id === projectId && row.locale === locale);
+    const fallback = data?.find((row) => row.project_id === projectId && row.locale === "es");
+    const picked = preferred ?? fallback;
+    if (picked) {
+      byProject.set(projectId, {
+        title: picked.title,
+        summary: picked.summary,
+        content: picked.content,
+      });
+    }
+  }
+  return byProject;
+}
+
 // Función para obtener todos los proyectos
 export async function getProjectsFromDB(options?: {
   orderBy?: ProjectsOrderBy
+  locale?: AppLocale
 }): Promise<Project[]> {
   const column = options?.orderBy ?? 'published_at'
+  const locale = options?.locale ?? "es";
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -51,11 +96,26 @@ export async function getProjectsFromDB(options?: {
     throw error
   }
 
-  return data || []
+  const projects = data || []
+  const translationMap = await fetchProjectTranslationMap(
+    projects.map((project) => project.id),
+    locale
+  );
+
+  return projects.map((project) => {
+    const tr = translationMap.get(project.id);
+    if (!tr) return project;
+    return {
+      ...project,
+      title: tr.title || project.title,
+      summary: tr.summary || project.summary,
+      content: tr.content || project.content,
+    };
+  })
 }
 
 // Proyecto por slug (tabla `projects`). No confundir con `work_experience` del About.
-export async function getProjectBySlug(slug: string): Promise<Project | null> {
+export async function getProjectBySlug(slug: string, locale: AppLocale = "es"): Promise<Project | null> {
   try {
     const { data, error } = await supabase
       .from('projects')
@@ -68,7 +128,12 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       return null
     }
 
-    return data
+    if (!data) return null;
+    const translationMap = await fetchProjectTranslationMap([data.id], locale);
+    const tr = translationMap.get(data.id);
+    return tr
+      ? { ...data, title: tr.title || data.title, summary: tr.summary || data.summary, content: tr.content || data.content }
+      : data;
   } catch (err) {
     console.error('Unexpected error in getProjectBySlug:', err)
     return null
@@ -92,9 +157,10 @@ export async function createProject(projectData: Omit<Project, 'id' | 'created_a
     
     console.log('Creating project with user:', session.user.email);
     
+    const { translations, ...projectPayload } = projectData;
     const { data, error } = await supabase
       .from('projects')
-      .insert([projectData])
+      .insert([projectPayload])
       .select()
       .single()
 
@@ -116,6 +182,26 @@ export async function createProject(projectData: Omit<Project, 'id' | 'created_a
 
     if (!data) {
       throw new Error('No se recibieron datos después de la creación');
+    }
+
+    if (translations && data?.id) {
+      const upserts = Object.entries(translations)
+        .filter(([locale, tr]) => (locale === "es" || locale === "en") && tr?.title && tr?.summary && tr?.content)
+        .map(([locale, tr]) => ({
+          project_id: data.id,
+          locale,
+          title: tr!.title,
+          summary: tr!.summary,
+          content: tr!.content,
+        }));
+      if (upserts.length > 0) {
+        const { error: translationsError } = await supabase
+          .from("project_translations")
+          .upsert(upserts, { onConflict: "project_id,locale" });
+        if (translationsError) {
+          console.error("Error saving project translations:", translationsError);
+        }
+      }
     }
 
     return data
@@ -148,9 +234,10 @@ export async function updateProject(id: number, projectData: Partial<Project>): 
     console.log('Project data:', JSON.stringify(projectData, null, 2));
     
     // Intentar la actualización
+    const { translations, ...projectPayload } = projectData;
     const updateResponse = await supabase
       .from('projects')
-      .update(projectData)
+      .update(projectPayload)
       .eq('id', id)
       .select()
       .single()
@@ -215,6 +302,26 @@ export async function updateProject(id: number, projectData: Partial<Project>): 
     if (!updateResponse.data) {
       console.error('No data returned from update, but no error either');
       throw new Error('No se recibieron datos después de la actualización. Verifica que el proyecto existe y que tienes permisos.');
+    }
+
+    if (translations) {
+      const upserts = Object.entries(translations)
+        .filter(([locale, tr]) => (locale === "es" || locale === "en") && tr?.title && tr?.summary && tr?.content)
+        .map(([locale, tr]) => ({
+          project_id: id,
+          locale,
+          title: tr!.title,
+          summary: tr!.summary,
+          content: tr!.content,
+        }));
+      if (upserts.length > 0) {
+        const { error: translationsError } = await supabase
+          .from("project_translations")
+          .upsert(upserts, { onConflict: "project_id,locale" });
+        if (translationsError) {
+          console.error("Error updating project translations:", translationsError);
+        }
+      }
     }
 
     console.log('Project updated successfully:', updateResponse.data);

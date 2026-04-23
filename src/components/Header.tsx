@@ -10,6 +10,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { AuthButton } from "./AuthButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { getLocaleFromPathname, stripLocalePrefix, withLocalePath } from "@/i18n/locale";
 import styles from "./Header.module.scss";
 
 type TimeDisplayProps = {
@@ -47,6 +48,8 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
+  const normalizedPath = stripLocalePrefix(pathname);
+  const currentLocale = getLocaleFromPathname(pathname) ?? "es";
   const { t, language, setLanguage } = useLanguage();
   const timeLocale = language === "es" ? "es-AR" : "en-US";
   const { user } = useAuth();
@@ -83,7 +86,7 @@ export const Header = () => {
           >
             <Flex gap="4" vertical="center" textVariant="body-default-s" suppressHydrationWarning>
               {routes["/"] && (
-                <ToggleButton prefixIcon="home" href="/" label={t('home')} selected={pathname === "/"} />
+                <ToggleButton prefixIcon="home" href={withLocalePath("/", currentLocale)} label={t('home')} selected={normalizedPath === "/"} />
               )}
               <Line background="neutral-alpha-medium" vert maxHeight="24" />
               {routes["/about"] && (
@@ -91,15 +94,15 @@ export const Header = () => {
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="person"
-                    href="/about"
+                    href={withLocalePath("/about", currentLocale)}
                     label={t('about')}
-                    selected={pathname === "/about"}
+                    selected={normalizedPath === "/about"}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="person"
-                    href="/about"
-                    selected={pathname === "/about"}
+                    href={withLocalePath("/about", currentLocale)}
+                    selected={normalizedPath === "/about"}
                   />
                 </>
               )}
@@ -108,15 +111,15 @@ export const Header = () => {
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="grid"
-                    href="/work"
+                    href={withLocalePath("/work", currentLocale)}
                     label={t('work')}
-                    selected={pathname.startsWith("/work")}
+                    selected={normalizedPath.startsWith("/work")}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="grid"
-                    href="/work"
-                    selected={pathname.startsWith("/work")}
+                    href={withLocalePath("/work", currentLocale)}
+                    selected={normalizedPath.startsWith("/work")}
                   />
                 </>
               )}
@@ -125,15 +128,15 @@ export const Header = () => {
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="book"
-                    href="/noticias"
+                    href={withLocalePath("/noticias", currentLocale)}
                     label={t('noticias')}
-                    selected={pathname.startsWith("/noticias")}
+                    selected={normalizedPath.startsWith("/noticias")}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="book"
-                    href="/noticias"
-                    selected={pathname.startsWith("/noticias")}
+                    href={withLocalePath("/noticias", currentLocale)}
+                    selected={normalizedPath.startsWith("/noticias")}
                   />
                 </>
               )}
@@ -142,15 +145,15 @@ export const Header = () => {
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="gallery"
-                    href="/gallery"
+                    href={withLocalePath("/gallery", currentLocale)}
                     label={t('gallery')}
-                    selected={pathname.startsWith("/gallery")}
+                    selected={normalizedPath.startsWith("/gallery")}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="gallery"
-                    href="/gallery"
-                    selected={pathname.startsWith("/gallery")}
+                    href={withLocalePath("/gallery", currentLocale)}
+                    selected={normalizedPath.startsWith("/gallery")}
                   />
                 </>
               )}
@@ -159,15 +162,15 @@ export const Header = () => {
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="document"
-                    href={admin.path}
+                    href={withLocalePath(admin.path, currentLocale)}
                     label={t('admin')}
-                    selected={pathname === admin.path}
+                    selected={normalizedPath === admin.path}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="document"
-                    href={admin.path}
-                    selected={pathname === admin.path}
+                    href={withLocalePath(admin.path, currentLocale)}
+                    selected={normalizedPath === admin.path}
                   />
                 </>
               )}

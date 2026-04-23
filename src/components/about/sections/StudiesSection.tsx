@@ -44,8 +44,12 @@ export const StudiesSection = ({ studies, onUpdate }: StudiesSectionProps) => {
     setEditingStudy(study);
     setFormData({
       degree: study.degree,
+      degree_es: study.degree_es || study.degree,
+      degree_en: study.degree_en || "",
       institution: study.institution,
       description: study.description || '',
+      description_es: study.description_es || study.description || "",
+      description_en: study.description_en || "",
       start_date: study.start_date,
       end_date: study.end_date || '',
       certificate_url: study.certificate_url || ''
@@ -58,8 +62,12 @@ export const StudiesSection = ({ studies, onUpdate }: StudiesSectionProps) => {
     setEditingStudy(null);
     setFormData({
       degree: '',
+      degree_es: '',
+      degree_en: '',
       institution: '',
       description: '',
+      description_es: '',
+      description_en: '',
       start_date: '',
       end_date: '',
       certificate_url: ''
@@ -80,6 +88,10 @@ export const StudiesSection = ({ studies, onUpdate }: StudiesSectionProps) => {
       if (!user) return;
       if (!formData.start_date) {
         addToast('La fecha de inicio es obligatoria', 'error');
+        return;
+      }
+      if (!formData.degree_es || !formData.degree_en) {
+        addToast("Completa el título en ES y EN", "error");
         return;
       }
 
@@ -220,6 +232,22 @@ addToast('Error al guardar el estudio', 'error');
                 required
               />
               <Input
+                id="degree_es"
+                name="degree_es"
+                label="Título o Certificación (ES)"
+                value={formData.degree_es || ""}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                id="degree_en"
+                name="degree_en"
+                label="Título o Certificación (EN)"
+                value={formData.degree_en || ""}
+                onChange={handleChange}
+                required
+              />
+              <Input
                 id="institution"
                 name="institution"
                 label="Institución"
@@ -251,6 +279,22 @@ addToast('Error al guardar el estudio', 'error');
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
+              />
+              <Textarea
+                id="description_es"
+                name="description_es"
+                label="Descripción (ES)"
+                value={formData.description_es || ""}
+                onChange={handleChange}
+                rows={3}
+              />
+              <Textarea
+                id="description_en"
+                name="description_en"
+                label="Descripción (EN)"
+                value={formData.description_en || ""}
+                onChange={handleChange}
+                rows={3}
               />
               <Input
                 id="certificate_file"

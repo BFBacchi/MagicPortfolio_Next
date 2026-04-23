@@ -11,6 +11,22 @@ export async function upsertIntroduction(payload: Nullable<Introduction>) {
     .select()
     .single();
   if (error) throw error;
+  if (payload.translations && data?.id) {
+    const upserts = Object.entries(payload.translations)
+      .filter(([locale, value]) => (locale === "es" || locale === "en") && value?.description)
+      .map(([locale, value]) => ({
+        introduction_id: data.id,
+        locale,
+        role: value?.role || payload.role || "",
+        description: value?.description || payload.description || "",
+      }));
+    if (upserts.length > 0) {
+      const { error: trError } = await supabase
+        .from("introduction_translations")
+        .upsert(upserts, { onConflict: "introduction_id,locale" });
+      if (trError) throw trError;
+    }
+  }
   return data as Introduction;
 }
 
@@ -21,6 +37,32 @@ export async function upsertWorkExperience(payload: Nullable<WorkExperience>) {
     .select()
     .single();
   if (error) throw error;
+  if (data?.id) {
+    const upserts = [
+      payload.position_es || payload.description_es
+        ? {
+            work_experience_id: data.id,
+            locale: "es",
+            position: payload.position_es || payload.position || "",
+            description: payload.description_es || payload.description || "",
+          }
+        : null,
+      payload.position_en || payload.description_en
+        ? {
+            work_experience_id: data.id,
+            locale: "en",
+            position: payload.position_en || payload.position || "",
+            description: payload.description_en || payload.description || "",
+          }
+        : null,
+    ].filter(Boolean);
+    if (upserts.length > 0) {
+      const { error: trError } = await supabase
+        .from("work_experience_translations")
+        .upsert(upserts, { onConflict: "work_experience_id,locale" });
+      if (trError) throw trError;
+    }
+  }
   return data as WorkExperience;
 }
 
@@ -31,6 +73,32 @@ export async function upsertStudy(payload: Nullable<Study>) {
     .select()
     .single();
   if (error) throw error;
+  if (data?.id) {
+    const upserts = [
+      payload.degree_es || payload.description_es
+        ? {
+            study_id: data.id,
+            locale: "es",
+            degree: payload.degree_es || payload.degree || "",
+            description: payload.description_es || payload.description || "",
+          }
+        : null,
+      payload.degree_en || payload.description_en
+        ? {
+            study_id: data.id,
+            locale: "en",
+            degree: payload.degree_en || payload.degree || "",
+            description: payload.description_en || payload.description || "",
+          }
+        : null,
+    ].filter(Boolean);
+    if (upserts.length > 0) {
+      const { error: trError } = await supabase
+        .from("studies_translations")
+        .upsert(upserts, { onConflict: "study_id,locale" });
+      if (trError) throw trError;
+    }
+  }
   return data as Study;
 }
 
@@ -88,5 +156,31 @@ export async function upsertTechnicalSkill(payload: Nullable<TechnicalSkill>) {
   }
   
   console.log('Successfully saved technical skill:', result);
+  if (result?.id) {
+    const upserts = [
+      payload.name_es || payload.category_es
+        ? {
+            technical_skill_id: result.id,
+            locale: "es",
+            name: payload.name_es || payload.name || "",
+            category: payload.category_es || payload.category || "",
+          }
+        : null,
+      payload.name_en || payload.category_en
+        ? {
+            technical_skill_id: result.id,
+            locale: "en",
+            name: payload.name_en || payload.name || "",
+            category: payload.category_en || payload.category || "",
+          }
+        : null,
+    ].filter(Boolean);
+    if (upserts.length > 0) {
+      const { error: trError } = await supabase
+        .from("technical_skills_translations")
+        .upsert(upserts, { onConflict: "technical_skill_id,locale" });
+      if (trError) throw trError;
+    }
+  }
   return result as TechnicalSkill;
 }
