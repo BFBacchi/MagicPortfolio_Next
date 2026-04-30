@@ -10,7 +10,7 @@ import {
   Badge,
   Row,
 } from "@once-ui-system/core";
-import { home, about, person } from "@/resources";
+import { home, person } from "@/resources";
 import { useLanguage } from "@/contexts/LanguageContext";
 import styles from "./homeIntro.module.scss";
 
@@ -81,16 +81,16 @@ export function HomeIntro({ aboutCtaAvatarSrc }: HomeIntroProps) {
       </RevealFx>
       <RevealFx paddingTop="12" delay={0.4} horizontal="start" paddingLeft="12">
         <Button
-          id="about"
+          id="home-cta"
           data-border="rounded"
-          href={about.path}
+          href="/contacto"
           variant="secondary"
           size="m"
           weight="default"
           arrowIcon
         >
           <Flex gap="8" vertical="center" paddingRight="4">
-            {about.avatar.display && (
+            {Boolean(ctaAvatarSrc) && (
               <img
                 src={ctaAvatarSrc}
                 alt=""

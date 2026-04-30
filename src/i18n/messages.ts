@@ -22,13 +22,52 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     admin_description:
       "Dashboard de analytics de visitas del portfolio.",
 
-    "home.headline": "Full stack moderno con IA y automatizaciones",
+    "home.headline": "Automatizacion con IA y software a medida para tu empresa",
     "home.subline":
-      "Diseño e implemento automatizaciones con IA para optimizar procesos, reducir tiempos y mejorar resultados de negocio.\n\nDesarrollo soluciones full stack end-to-end (frontend, backend e integraciones) con foco en performance, escalabilidad y experiencia de usuario.",
+      "Te ayudo a ahorrar tiempo, reducir costos y mejorar la atencion al cliente con soluciones simples y efectivas.\n\nTrabajo con empresas de Argentina y Latinoamerica, de punta a punta.",
     "home.featured_prefix": "Portfolio anterior:",
     "home.featured_highlight": "Mi portfolio anterior",
     "home.latest_blog": "Último en el blog",
-    "home.about_cta": "Acerca de – {name}",
+    "home.about_cta": "Conoce mi forma de trabajo",
+    "home.services_title": "Servicios para empresas",
+    "home.services_subtitle":
+      "Soluciones enfocadas en resultados concretos para pymes y equipos comerciales.",
+    "home.service_1_title": "Chatbots para empresas",
+    "home.service_1_desc":
+      "Asistentes que responden consultas, capturan datos y califican prospectos 24/7 por WhatsApp o web.",
+    "home.service_1_case":
+      "Caso real: un estudio contable automatiza preguntas frecuentes y agenda reuniones sin intervencion manual.",
+    "home.service_2_title": "Automatizacion de procesos con IA",
+    "home.service_2_desc":
+      "Conecto tus herramientas para eliminar tareas repetitivas y errores en procesos internos.",
+    "home.service_2_case":
+      "Caso real: una pyme automatiza cotizaciones y seguimiento comercial desde formularios y CRM.",
+    "home.service_3_title": "Software a medida",
+    "home.service_3_desc":
+      "Sistemas web adaptados a como trabaja tu negocio, sin soluciones genericas que quedan cortas.",
+    "home.service_3_case":
+      "Caso real: una empresa de logistica centraliza pedidos, estados y reportes en un panel unico.",
+    "home.service_4_title": "Integracion de IA en tu negocio",
+    "home.service_4_desc":
+      "Implementacion de IA en ventas, soporte y operaciones con objetivos claros y resultados medibles.",
+    "home.service_4_case":
+      "Caso real: un equipo comercial prioriza leads automaticamente segun intencion de compra.",
+    "home.why_title": "Por que elegirme",
+    "home.why_1_title": "Enfoque en resultados",
+    "home.why_1_desc":
+      "Cada propuesta esta orientada a ahorrar tiempo, bajar costos o aumentar conversiones.",
+    "home.why_2_title": "Comunicacion clara",
+    "home.why_2_desc":
+      "Explico cada paso sin tecnicismos para que siempre sepas en que estado esta tu proyecto.",
+    "home.why_3_title": "Implementacion rapida",
+    "home.why_3_desc":
+      "Arrancamos con una version funcional y mejoramos por etapas segun tus prioridades.",
+    "home.cta_title": "Quieres automatizar un proceso este mes?",
+    "home.cta_desc":
+      "Agendemos una llamada de 20 minutos y te llevo una propuesta concreta para tu negocio.",
+    "home.cta_button": "Agendar llamada",
+    "home.cta_trust":
+      "Respuesta en menos de 24 hs. Atencion para Argentina y Latinoamerica.",
 
     "news.title": "Noticias de desarrollo y tecnología",
     "news.description":
@@ -132,6 +171,14 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "auth.enter_hint": "para iniciar sesión",
 
     "about.nav_intro": "Introducción",
+    "about.intro_title": "Introducción",
+    "about.intro_edit_title": "Editar introducción",
+    "about.intro_edit_desc": "Actualiza la descripción de tu perfil",
+    "about.intro_description_label": "Descripción",
+    "about.intro_description_hint": "Escribe tu introducción aquí...",
+    "about.intro_placeholder": "Agrega una descripción sobre ti y tu experiencia...",
+    "about.intro_saved": "Introducción guardada correctamente",
+    "about.intro_save_error": "Error al guardar la introducción",
     "about.nav_work": "Experiencia",
     "about.nav_studies": "Estudios",
     "about.nav_skills": "Habilidades",
@@ -197,13 +244,52 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     admin_description:
       "Portfolio visits analytics dashboard.",
 
-    "home.headline": "Modern full-stack development with AI automation",
+    "home.headline": "AI automation and custom software for your business",
     "home.subline":
-      "I design and implement AI automations to streamline operations, cut delivery times, and improve business outcomes.\n\nI build end-to-end full-stack solutions (frontend, backend, and integrations) focused on performance, scalability, and user experience.",
+      "I help you save time, reduce costs, and improve customer support with practical AI solutions.\n\nI work with teams across Argentina and Latin America end to end.",
     "home.featured_prefix": "Previous portfolio:",
     "home.featured_highlight": "My previous portfolio",
     "home.latest_blog": "Latest from the blog",
-    "home.about_cta": "About – {name}",
+    "home.about_cta": "See how I work",
+    "home.services_title": "Business services",
+    "home.services_subtitle":
+      "Simple solutions focused on measurable outcomes for growing companies.",
+    "home.service_1_title": "Chatbots for companies",
+    "home.service_1_desc":
+      "Bots that answer questions, capture leads, and qualify prospects 24/7 on WhatsApp and web.",
+    "home.service_1_case":
+      "Use case: an accounting firm automates common questions and meeting scheduling.",
+    "home.service_2_title": "AI process automation",
+    "home.service_2_desc":
+      "I connect your tools to remove repetitive tasks and reduce operational errors.",
+    "home.service_2_case":
+      "Use case: a small business automates quotes and sales follow-up from forms and CRM.",
+    "home.service_3_title": "Custom software",
+    "home.service_3_desc":
+      "Web systems tailored to your workflows instead of generic products that do not fit.",
+    "home.service_3_case":
+      "Use case: a logistics company centralizes orders, statuses, and reports in one dashboard.",
+    "home.service_4_title": "AI integration for operations",
+    "home.service_4_desc":
+      "Practical AI implementation in sales, support, and operations with clear goals.",
+    "home.service_4_case":
+      "Use case: a sales team ranks leads automatically by purchase intent.",
+    "home.why_title": "Why work with me",
+    "home.why_1_title": "Outcome-focused",
+    "home.why_1_desc":
+      "Every engagement targets measurable impact: time savings, lower costs, or more revenue.",
+    "home.why_2_title": "Clear communication",
+    "home.why_2_desc":
+      "I explain decisions in plain language so you always know progress and next steps.",
+    "home.why_3_title": "Fast implementation",
+    "home.why_3_desc":
+      "We ship an initial version quickly, then improve in phases based on priorities.",
+    "home.cta_title": "Need to automate a process this month?",
+    "home.cta_desc":
+      "Book a 20-minute call and I will share a concrete action plan for your business.",
+    "home.cta_button": "Book a call",
+    "home.cta_trust":
+      "Reply in under 24h. Support for Argentina and Latin America.",
 
     "news.title": "Development & technology news",
     "news.description": "Stay up to date with dev and tech news",
@@ -305,6 +391,14 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "auth.enter_hint": "to sign in",
 
     "about.nav_intro": "Introduction",
+    "about.intro_title": "Introduction",
+    "about.intro_edit_title": "Edit introduction",
+    "about.intro_edit_desc": "Update your profile description",
+    "about.intro_description_label": "Description",
+    "about.intro_description_hint": "Write your introduction here...",
+    "about.intro_placeholder": "Add a description about yourself and your experience...",
+    "about.intro_saved": "Introduction saved successfully",
+    "about.intro_save_error": "Error saving introduction",
     "about.nav_work": "Experience",
     "about.nav_studies": "Education",
     "about.nav_skills": "Skills",

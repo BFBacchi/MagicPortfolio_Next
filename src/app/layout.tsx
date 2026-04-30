@@ -16,7 +16,7 @@ import { getRequestLocale } from "@/i18n/locale.server";
 
 /** Favicon / metadata leen `introduction`: no congelar en build tras cambiar avatar en Supabase. */
 export const revalidate = 60;
-const canonicalUrl = "https://brunodev.cloud";
+const canonicalUrl = "https://www.brunodev.cloud";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
@@ -24,31 +24,34 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(canonicalUrl),
     title: {
-      default: "Bruno | Full Stack Developer",
-      template: "%s | Bruno",
+      default: "Agencia de Inteligencia Artificial en Argentina | BrunoDev",
+      template: "%s",
     },
     description:
-      "Portfolio de Bruno, Full Stack Developer. Desarrollo soluciones web modernas con Next.js, React, TypeScript y Supabase, optimizadas para performance, SEO y conversión.",
+      "Automatizacion con IA y desarrollo de software a medida para empresas de Argentina y Latinoamerica.",
     alternates: {
       canonical: localizedCanonical,
       languages: {
         es: `${canonicalUrl}/es`,
+        "es-AR": `${canonicalUrl}/es`,
+        "es-419": `${canonicalUrl}/es`,
         en: `${canonicalUrl}/en`,
+        "x-default": `${canonicalUrl}/es`,
       },
     },
     openGraph: {
       type: "website",
       url: localizedCanonical,
       siteName: "Bruno Dev",
-      title: "Bruno | Full Stack Developer",
+      title: "Agencia de Inteligencia Artificial en Argentina | BrunoDev",
       description:
-        "Creo productos web escalables y veloces con Next.js y Supabase: arquitectura, frontend, backend y despliegue en Vercel.",
+        "Automatiza tareas y vende mas con IA. Soluciones a medida para empresas en Argentina y Latam.",
       images: [
         {
-          url: "/api/og/generate?title=Bruno%20%7C%20Full%20Stack%20Developer",
+          url: "/api/og/generate?title=Agencia%20de%20Inteligencia%20Artificial%20en%20Argentina%20%7C%20BrunoDev",
           width: 1200,
           height: 630,
-          alt: "Bruno - Full Stack Developer",
+          alt: "BrunoDev - Agencia de IA en Argentina",
         },
       ],
     },

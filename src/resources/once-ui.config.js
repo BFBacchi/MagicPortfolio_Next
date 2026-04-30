@@ -1,12 +1,15 @@
 import { home } from "./content";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL = "https://brunodev.cloud";
+const baseURL = "https://www.brunodev.cloud";
 
 const routes = {
   "/": true,
   "/about": true,
   "/work": true,
+  "/trabajo": true,
+  "/servicios": true,
+  "/contacto": true,
   "/blog": true,
   "/noticias": true,
   "/gallery": true,

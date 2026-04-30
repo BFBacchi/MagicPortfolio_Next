@@ -55,9 +55,10 @@ const home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name}'s Portfolio`,
-  description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Contruyendo Sofware combinando diseño y código</>,
+  title: "Agencia de Inteligencia Artificial en Argentina | BrunoDev",
+  description:
+    "Automatiza tareas y vende mas con IA. Desarrollo soluciones a medida para empresas en Argentina y Latinoamerica.",
+  headline: <>Automatizacion con IA y software a medida para tu empresa</>,
   featured: {
     display: true,
     title: <>Proyectos recientes: <strong className="ml-4">Creator Hub</strong></>,
@@ -65,8 +66,10 @@ const home = {
   },
   subline: (
     <>
-      Hola, Soy Bruno, un desarrollador fullstack que combina diseño y código para crear soluciones innovadoras.
-      <br />Desarrollo software desde 2018, con experiencia en desarrollo frontend y backend, siempre buscando aprender nuevas tecnologías y mejorar mis habilidades.
+      Te ayudo a ahorrar tiempo, reducir costos y mejorar la atencion al cliente
+      con soluciones simples y efectivas.
+      <br />
+      Trabajo con empresas de Argentina y Latinoamerica, de punta a punta.
     </>
   ),
 };
@@ -209,9 +212,9 @@ const blog = {
 
 const work = {
   path: "/work",
-  label: "Work",
-  title: `Projects – ${person.name}`,
-  description: `Design and dev projects by ${person.name}`,
+  label: "Trabajo",
+  title: `Desarrollo de software a medida en Argentina | ${person.firstName}`,
+  description: `Casos reales de desarrollo de software a medida, automatizacion con IA y chatbots para empresas en Argentina y Latam.`,
   // Create new project pages by adding a new .mdx file to app/blog/posts
   // All projects will be listed on the /home and /work routes
 };

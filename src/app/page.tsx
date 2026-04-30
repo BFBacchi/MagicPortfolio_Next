@@ -1,13 +1,24 @@
-import { Flex, RevealFx, Column, Schema } from "@once-ui-system/core";
+import { Flex, RevealFx, Column, Schema, Meta } from "@once-ui-system/core";
 import { home, about, person, newsletter, baseURL, routes } from "@/resources";
 import { Mailchimp } from "@/components";
 import { Projects } from "@/components/work/Projects";
 import Posts from "@/components/blog/Posts";
 import { HomeIntro } from "@/components/home/HomeIntro";
+import { HomeBusinessSections } from "@/components/home/HomeBusinessSections";
 import { HomeLatestBlogHeading } from "@/components/home/HomeLatestBlogHeading";
 import { getPortfolioAvatarForSite } from "@/lib/portfolioAvatar";
 import { getProjectsFromDB } from "@/lib/projects";
 import { getRequestLocale } from "@/i18n/locale.server";
+
+export async function generateMetadata() {
+  return Meta.generate({
+    title: home.title,
+    description: home.description,
+    baseURL,
+    path: home.path,
+    image: `/api/og/generate?title=${encodeURIComponent(home.title)}`,
+  });
+}
 
 export default async function Home() {
   const locale = await getRequestLocale();
@@ -32,6 +43,7 @@ export default async function Home() {
         }}
       />
       <HomeIntro aboutCtaAvatarSrc={imgSrc} />
+      <HomeBusinessSections />
       <RevealFx translateY="16" delay={0.6}>
         <Projects initialProjects={latestProject} />
       </RevealFx>
