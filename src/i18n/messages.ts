@@ -223,6 +223,17 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "date.days_ago": "hace {n} días",
     "date.months_ago": "hace {n} meses",
     "date.years_ago": "hace {n} años",
+
+    "chat.title": "Asistente",
+    "chat.open": "Abrir asistente",
+    "chat.close": "Cerrar",
+    "chat.placeholder": "Escribe un mensaje…",
+    "chat.send": "Enviar",
+    "chat.welcome":
+      "Hola, soy el asistente virtual. ¿En qué puedo ayudarte?",
+    "chat.error": "No pude obtener respuesta. Inténtalo de nuevo.",
+    "chat.unavailable": "El asistente no está disponible en este momento.",
+    "chat.robot_alt": "Robot asistente animado",
   },
   en: {
     home: "Home",
@@ -443,6 +454,16 @@ export const messages: Record<AppLanguage, Record<string, string>> = {
     "date.days_ago": "{n}d ago",
     "date.months_ago": "{n}mo ago",
     "date.years_ago": "{n}y ago",
+
+    "chat.title": "Assistant",
+    "chat.open": "Open assistant",
+    "chat.close": "Close",
+    "chat.placeholder": "Type a message…",
+    "chat.send": "Send",
+    "chat.welcome": "Hi, I am the virtual assistant. How can I help?",
+    "chat.error": "Could not get a reply. Please try again.",
+    "chat.unavailable": "The assistant is not available right now.",
+    "chat.robot_alt": "Animated assistant robot",
   },
 };
 

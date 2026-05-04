@@ -46,6 +46,44 @@ function buildLocaleOrder(locale: AppLocale): AppLocale[] {
   return locale === "es" ? ["es", "en"] : ["en", "es"];
 }
 
+async function updateOrInsertProjectTranslation(
+  projectId: number,
+  locale: "es" | "en",
+  payload: { title: string; summary: string; content: string }
+) {
+  const { data: existing, error: selectError } = await supabase
+    .from("project_translations")
+    .select("id")
+    .eq("project_id", projectId)
+    .eq("locale", locale)
+    .limit(1);
+
+  if (selectError) throw selectError;
+
+  if (existing && existing.length > 0) {
+    const { error: updateError } = await supabase
+      .from("project_translations")
+      .update({
+        ...payload,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existing[0].id);
+    if (updateError) throw updateError;
+    return;
+  }
+
+  const { error: insertError } = await supabase
+    .from("project_translations")
+    .insert([
+      {
+        project_id: projectId,
+        locale,
+        ...payload,
+      },
+    ]);
+  if (insertError) throw insertError;
+}
+
 async function fetchProjectTranslationMap(
   ids: number[],
   locale: AppLocale
@@ -185,22 +223,20 @@ export async function createProject(projectData: Omit<Project, 'id' | 'created_a
     }
 
     if (translations && data?.id) {
-      const upserts = Object.entries(translations)
+      const rows = Object.entries(translations)
         .filter(([locale, tr]) => (locale === "es" || locale === "en") && tr?.title && tr?.summary && tr?.content)
         .map(([locale, tr]) => ({
-          project_id: data.id,
-          locale,
+          locale: locale as "es" | "en",
           title: tr!.title,
           summary: tr!.summary,
           content: tr!.content,
         }));
-      if (upserts.length > 0) {
-        const { error: translationsError } = await supabase
-          .from("project_translations")
-          .upsert(upserts, { onConflict: "project_id,locale" });
-        if (translationsError) {
-          console.error("Error saving project translations:", translationsError);
-        }
+      for (const row of rows) {
+        await updateOrInsertProjectTranslation(data.id, row.locale, {
+          title: row.title,
+          summary: row.summary,
+          content: row.content,
+        });
       }
     }
 
@@ -305,22 +341,20 @@ export async function updateProject(id: number, projectData: Partial<Project>): 
     }
 
     if (translations) {
-      const upserts = Object.entries(translations)
+      const rows = Object.entries(translations)
         .filter(([locale, tr]) => (locale === "es" || locale === "en") && tr?.title && tr?.summary && tr?.content)
         .map(([locale, tr]) => ({
-          project_id: id,
-          locale,
+          locale: locale as "es" | "en",
           title: tr!.title,
           summary: tr!.summary,
           content: tr!.content,
         }));
-      if (upserts.length > 0) {
-        const { error: translationsError } = await supabase
-          .from("project_translations")
-          .upsert(upserts, { onConflict: "project_id,locale" });
-        if (translationsError) {
-          console.error("Error updating project translations:", translationsError);
-        }
+      for (const row of rows) {
+        await updateOrInsertProjectTranslation(id, row.locale, {
+          title: row.title,
+          summary: row.summary,
+          content: row.content,
+        });
       }
     }
 

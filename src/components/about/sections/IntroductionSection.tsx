@@ -18,7 +18,7 @@ interface IntroductionSectionProps {
 export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSectionProps) => {
   const { user, loading } = useAuth();
   const { addToast } = useToast();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [introText, setIntroText] = useState("");
@@ -32,10 +32,14 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
   useEffect(() => {
     if (introduction?.description) {
       setIntroText(introduction.description);
-      setIntroEs(introduction.translations?.es?.description || introduction.description);
-      setIntroEn(introduction.translations?.en?.description || "");
-      setRoleEs(introduction.translations?.es?.role || introduction.role || "");
-      setRoleEn(introduction.translations?.en?.role || "");
+      setIntroEs(
+        introduction.translations?.es?.description ||
+          introduction.description_es ||
+          ""
+      );
+      setIntroEn(introduction.translations?.en?.description || introduction.description_en || "");
+      setRoleEs(introduction.translations?.es?.role || introduction.role_es || introduction.role || "");
+      setRoleEn(introduction.translations?.en?.role || introduction.role_en || "");
     } else {
       setIntroText("Agrega una descripción sobre ti y tu experiencia...");
       setIntroEs("");
@@ -49,43 +53,73 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
     setEditingLocale(language);
   }, [language]);
 
+  useEffect(() => {
+    setIntroText(editingLocale === "es" ? introEs : introEn);
+  }, [editingLocale, introEs, introEn]);
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!introEs.trim() || !introEn.trim()) return;
+    const currentDescription = editingLocale === "es" ? introEs : introEn;
+    if (!currentDescription.trim()) return;
 
     try {
       setIsSaving(true);
+      const activeTranslation =
+        editingLocale === "es"
+          ? { es: { role: roleEs, description: introEs } }
+          : { en: { role: roleEn, description: introEn } };
 
       if (introduction?.id) {
         await upsertIntroduction({
           ...introduction,
-          description: editingLocale === "es" ? introEs : introEn,
-          translations: {
-            es: { role: roleEs, description: introEs },
-            en: { role: roleEn, description: introEn },
-          },
+          // Mantener la base en español evita fallback en EN sobre /es.
+          role: roleEs || introduction.role,
+          description: introEs || introduction.description,
+          translations: activeTranslation,
         } as Partial<Introduction> as Introduction);
       } else {
         await upsertIntroduction({
           id: 1,
           name: "Tu Nombre",
-          role: editingLocale === "es" ? roleEs : roleEn,
-          description: editingLocale === "es" ? introEs : introEn,
+          role: roleEs || roleEn,
+          description: introEs || introEn,
           created_at: new Date().toISOString(),
           avatar_url: "",
-          translations: {
-            es: { role: roleEs, description: introEs },
-            en: { role: roleEn, description: introEn },
-          },
+          translations: activeTranslation,
         } as Introduction);
       }
 
-      addToast("Introducción guardada correctamente", "success");
+      addToast(t("about.intro_saved"), "success");
       setIsDialogOpen(false);
       onUpdate?.();
-    } catch (error) {
-      console.error("Error saving introduction:", error);
-      addToast("Error al guardar la introducción", "error");
+    } catch (error: unknown) {
+      const errorText =
+        error instanceof Error
+          ? error.message
+          : typeof error === "string"
+            ? error
+            : JSON.stringify(error, Object.getOwnPropertyNames(error as object));
+      const supabaseError = error as { message?: string; details?: string; hint?: string; code?: string };
+      console.error("Error saving introduction:", {
+        errorText,
+        message: supabaseError?.message,
+        details: supabaseError?.details,
+        hint: supabaseError?.hint,
+        code: supabaseError?.code,
+        raw: error,
+      });
+      const isRlsTranslationsError =
+        errorText.includes("42501") ||
+        errorText.toLowerCase().includes("row-level security");
+
+      if (isRlsTranslationsError) {
+        addToast(
+          "Guardado parcial: se actualizo la introduccion base, pero faltan permisos RLS para guardar traducciones.",
+          "error"
+        );
+      } else {
+        addToast(`${t("about.intro_save_error")} ${errorText || ""}`.trim(), "error");
+      }
     } finally {
       setIsSaving(false);
     }
@@ -95,19 +129,19 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
     <>
       <Section
         id="introduction"
-        title="Introducción"
+        title={t("about.intro_title")}
         onEdit={!loading && !!user ? () => setIsDialogOpen(true) : undefined}
       >
         <p className={styles.sectionText}>
-          {introText || "Agrega una descripción sobre ti y tu experiencia..."}
+          {introText || t("about.intro_placeholder")}
         </p>
       </Section>
 
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => !isSaving && setIsDialogOpen(false)}
-        title="Editar Introducción"
-        description="Actualiza la descripción de tu perfil"
+        title={t("about.intro_edit_title")}
+        description={t("about.intro_edit_desc")}
       >
         <Column fillWidth gap="16" marginTop="12">
           <form onSubmit={handleSave}>
@@ -118,7 +152,7 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
               </Row>
               <Textarea
                 id="intro-description"
-                label={`Descripción (${editingLocale.toUpperCase()})`}
+                label={`${t("about.intro_description_label")} (${editingLocale.toUpperCase()})`}
                 value={editingLocale === "es" ? introEs : introEn}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                   const value = e.target.value;
@@ -128,7 +162,7 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
                 }}
                 disabled={isSaving}
                 required
-                description="Escribe tu introducción aquí..."
+                description={t("about.intro_description_hint")}
                 style={{
                   resize: "vertical",
                   minHeight: "120px",
@@ -142,10 +176,10 @@ export const IntroductionSection = ({ introduction, onUpdate }: IntroductionSect
               />
               <Row fillWidth vertical="center" gap="8" style={{ justifyContent: "flex-end" }}>
                 <Button variant="tertiary" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>
-                  Cancelar
+                  {t("cancel")}
                 </Button>
                 <Button type="submit" variant="primary" disabled={isSaving}>
-                  {isSaving ? "Guardando..." : "Guardar"}
+                  {isSaving ? t("about.saving") : t("about.save")}
                 </Button>
               </Row>
             </Column>

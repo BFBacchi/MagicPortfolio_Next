@@ -10,6 +10,7 @@ import type { Metadata } from "next";
 
 import { Background, Column, Flex, opacity, SpacingToken } from "@once-ui-system/core";
 import { Footer, Header, RouteGuard, TrackingReporter } from '@/components';
+import { N8nChatbot } from '@/components/chat/N8nChatbot';
 import { Providers } from '@/providers';
 import { effects, fonts, style, dataStyle } from '@/resources';
 import { getRequestLocale } from "@/i18n/locale.server";
@@ -239,6 +240,7 @@ export default async function RootLayout({
               </Flex>
             </Flex>
             <Footer/>
+            <N8nChatbot />
           </Column>
       </Providers>
     </Flex>

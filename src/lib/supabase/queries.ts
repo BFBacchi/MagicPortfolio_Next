@@ -7,6 +7,10 @@ export interface Introduction {
   name: string
   role: string
   description: string
+  role_es?: string
+  role_en?: string
+  description_es?: string
+  description_en?: string
   avatar_url?: string
   created_at: string
   translations?: Partial<Record<AppLocale, {
@@ -84,25 +88,41 @@ export async function getIntroduction(locale: AppLocale = "es"): Promise<Introdu
 
   const preferred = translations?.find((row) => row.locale === locale);
   const fallback = translations?.find((row) => row.locale === "es");
-  const tr = preferred ?? fallback;
+  const esTr = translations?.find((row) => row.locale === "es");
+  const enTr = translations?.find((row) => row.locale === "en");
+  const dataWithLegacy = data as Introduction;
+  const legacyPreferred = locale === "en"
+    ? {
+        role: dataWithLegacy.role_en,
+        description: dataWithLegacy.description_en,
+      }
+    : {
+        role: dataWithLegacy.role_es,
+        description: dataWithLegacy.description_es,
+      };
+  const tr = preferred ?? (legacyPreferred?.description ? legacyPreferred : fallback);
 
   return {
     ...data,
-    role: tr?.role || data.role,
-    description: tr?.description || data.description,
+    role: tr?.role || dataWithLegacy.role_es || data.role,
+    description: tr?.description || dataWithLegacy.description_es || data.description,
     translations: {
-      es: translations?.find((row) => row.locale === "es")
-        ? {
-            role: translations.find((row) => row.locale === "es")!.role,
-            description: translations.find((row) => row.locale === "es")!.description,
-          }
-        : undefined,
-      en: translations?.find((row) => row.locale === "en")
-        ? {
-            role: translations.find((row) => row.locale === "en")!.role,
-            description: translations.find((row) => row.locale === "en")!.description,
-          }
-        : undefined,
+      es: esTr
+        ? { role: esTr.role, description: esTr.description }
+        : (dataWithLegacy.description_es
+            ? {
+                role: dataWithLegacy.role_es || dataWithLegacy.role,
+                description: dataWithLegacy.description_es,
+              }
+            : undefined),
+      en: enTr
+        ? { role: enTr.role, description: enTr.description }
+        : (dataWithLegacy.description_en
+            ? {
+                role: dataWithLegacy.role_en || dataWithLegacy.role,
+                description: dataWithLegacy.description_en,
+              }
+            : undefined),
     },
   };
 }

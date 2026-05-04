@@ -55,6 +55,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     if (pathname) {
       const localizedPath = withLocalePath(pathname, lang);
       router.push(localizedPath);
+      router.refresh();
     }
   }, [pathname, router]);
 

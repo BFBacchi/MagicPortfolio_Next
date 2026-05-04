@@ -1,0 +1,270 @@
+.wrap {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 10050;
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: linear-gradient(145deg, #3b82f6, #2563eb);
+  box-shadow:
+    0 4px 14px rgba(37, 99, 235, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toggle:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 6px 20px rgba(37, 99, 235, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.robotWrap {
+  display: block;
+  animation: chatbotFloat 2.4s ease-in-out infinite;
+}
+
+.robotSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.antenna {
+  transform-origin: 32px 10px;
+  animation: chatbotAntenna 3s ease-in-out infinite;
+}
+
+.eye {
+  transform-origin: center;
+  animation: chatbotBlink 4.5s infinite;
+}
+
+.armL {
+  transform-origin: 22px 38px;
+  animation: chatbotArmL 2s ease-in-out infinite;
+}
+
+.armR {
+  transform-origin: 42px 38px;
+  animation: chatbotArmR 2s ease-in-out infinite;
+}
+
+.panel {
+  position: absolute;
+  right: 0;
+  bottom: 64px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(420px, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(14, 14, 18, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(59, 130, 246, 0.15);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(30, 30, 38, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panelHeaderMini {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.panelTitle {
+  flex: 1;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #f4f4f5;
+}
+
+.panelClose {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #a1a1aa;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.panelClose:hover {
+  color: #fafafa;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.messages {
+  flex: 1;
+  min-height: 180px;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bubble {
+  max-width: 90%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bubbleUser {
+  align-self: flex-end;
+  background: linear-gradient(145deg, #2563eb, #1d4ed8);
+  color: #fff;
+}
+
+.bubbleBot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e4e4e7;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.form {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 18, 22, 0.9);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fafafa;
+  font: inherit;
+}
+
+.input::placeholder {
+  color: #71717a;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35);
+}
+
+.send {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff;
+  background: #3b82f6;
+}
+
+.send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.typing {
+  align-self: flex-start;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+@keyframes chatbotFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes chatbotAntenna {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-8deg);
+  }
+  75% {
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes chatbotBlink {
+  0%,
+  44%,
+  48%,
+  100% {
+    transform: scaleY(1);
+  }
+  46% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes chatbotArmL {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes chatbotArmR {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-12deg);
+  }
+}
