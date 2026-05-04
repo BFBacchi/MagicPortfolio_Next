@@ -70,19 +70,13 @@ export function N8nChatbot() {
     setMessages((prev) => [...prev, userLine]);
     setLoading(true);
 
-    const historyPayload = [...messages, userLine].map((m) => ({
-      role: m.role,
-      content: m.content,
-    }));
-
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text,
-          sessionId,
-          messages: historyPayload,
+          ...(sessionId ? { sessionId } : {}),
         }),
       });
 
@@ -114,7 +108,7 @@ export function N8nChatbot() {
     } finally {
       setLoading(false);
     }
-  }, [input, loading, messages, sessionId, t]);
+  }, [input, loading, sessionId, t]);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

@@ -59,10 +59,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  const { message, sessionId, messages } = body as {
+  const { message, sessionId } = body as {
     message?: unknown;
     sessionId?: unknown;
-    messages?: unknown;
   };
 
   if (typeof message !== "string" || !message.trim()) {
@@ -76,7 +75,6 @@ export async function POST(request: NextRequest) {
     ...(typeof sessionId === "string" && sessionId
       ? { sessionId: sessionId.slice(0, 128) }
       : {}),
-    ...(Array.isArray(messages) ? { messages } : {}),
   };
 
   let upstream: Response;
